@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance chooseDialog:ChooseFolderDialog}"
-        Title="Choose folder dialog" Height="450" Width="600">
+        Title="Choose folder dialog" MinHeight="450" MinWidth="600">
     <Window.Resources>
         <converters:AnyValueToVisibilityConverter x:Key="AnyValueToVisibilityConverter" />
     </Window.Resources>
@@ -19,16 +19,19 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Drive: " Style="{StaticResource StepExpenderTextPrefix}" />
-            <ComboBox ItemsSource="{Binding Drives}" SelectedItem="{Binding SelectedDrive}" IsSynchronizedWithCurrentItem="True" SelectedIndex="0" Width="70"/>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Drive: " Style="{StaticResource StepExpenderTextPrefix}" Margin="0,0,10,0"/>
+            <ComboBox ItemsSource="{Binding Drives}" SelectedItem="{Binding SelectedDrive}" IsSynchronizedWithCurrentItem="True" SelectedIndex="0" Width="70" Margin="10,0"/>
+            <Button Margin="10,0" ToolTip="Up" Click="UpperFolder">
+                <Image Source="../../Images/ArrowUp.png" Width="20"/>
+            </Button>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ListBox ItemsSource="{Binding FoldersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox ItemsSource="{Binding FoldersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectedItem="{Binding SelectedFolder}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -36,7 +39,7 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" MouseDown="SelectedFolderMouseDown">
                             <Image Width="30">
                                 <Image.Style>
                                     <Style TargetType="{x:Type Image}">
@@ -55,28 +58,27 @@
                                     </Style>
                                 </Image.Style>
                             </Image>
-                            <TextBlock Text="{Binding Name}" Style="{StaticResource StepExpenderTextPrefix}" Width="110" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
+                            <TextBlock VerticalAlignment="Stretch" Text="{Binding Name}" Style="{StaticResource StepExpenderTextPrefix}" Width="110" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             <!-- Folders list -->
         </Grid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Image Source="../../Images/RedAlert.png" Width="20" Visibility="{Binding PathErrorText, Converter={StaticResource AnyValueToVisibilityConverter}}">
-                <Image.ToolTip>
+            <TextBlock Grid.Column="1" Text="Selected Folder:" Style="{StaticResource StepExpenderTextPrefix}" />
+            <TextBox Grid.Column="2" AcceptsReturn="False" Text="{Binding SelectedFolderName, Mode=TwoWay}">
+                <TextBox.ToolTip>
                     <ToolTip x:Name="ErrorToolTip">
                         <TextBlock Text="{Binding PathErrorText}"/>
                     </ToolTip>
-                </Image.ToolTip>
-            </Image>
-            <TextBlock Grid.Column="1" Text="Selected Folder:" Style="{StaticResource StepExpenderTextPrefix}" />
-            <RichTextBox Grid.Column="2" AcceptsReturn="False" x:Name="SelectedFolder" KeyUp="SelectedFolderTextChanged" />
+                </TextBox.ToolTip>
+            </TextBox>
         </Grid>
         <StackPanel Grid.Row="3">
             <TextBlock Text="Description:" Margin="0,15,0,0"/>

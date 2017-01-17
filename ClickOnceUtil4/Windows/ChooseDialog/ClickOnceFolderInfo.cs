@@ -8,8 +8,6 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
     /// </summary>
     public class ClickOnceFolderInfo
     {
-        private string _path;
-
         private TextBlock _folderInfo;
 
         /// <summary>
@@ -17,8 +15,8 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
         /// </summary>
         public ClickOnceFolderInfo(string path)
         {
-            _path = path;
-            Name = Path.GetFileName(_path);
+            FullPath = path;
+            Name = Path.GetFileName(path);
         }
         
         /// <summary>
@@ -36,6 +34,11 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
         /// Icon description.
         /// </summary>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Full path.
+        /// </summary>
+        public string FullPath { get; private set; }
 
         /// <summary>
         /// Formatted selected folder info.

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Documents;
+using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 
 using ClickOnceUtil4UI.Annotations;
 using ClickOnceUtil4UI.Utils;
@@ -27,6 +24,10 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
         private string _selectedDrive;
 
         private bool _isInitializing = true;
+
+        private string _selectedFolderName;
+
+        private ClickOnceFolderInfo _selectedFolder;
 
         /// <summary>
         /// Создание экземпляра класса <see cref="ChooseFolderDialog"/>.
@@ -51,12 +52,39 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
         /// <summary>
         /// Current directory folders list.
         /// </summary>
-        public ObservableCollection<ClickOnceFolderInfo> FoldersList { get; } = new ObservableCollection<ClickOnceFolderInfo>(); 
+        public ObservableCollection<ClickOnceFolderInfo> FoldersList { get; } =
+            new ObservableCollection<ClickOnceFolderInfo>();
+
+        /// <summary>
+        /// Selected folder from the list.
+        /// </summary>
+        public ClickOnceFolderInfo SelectedFolder
+        {
+            get
+            {
+                return _selectedFolder;
+            }
+            set
+            {
+                _selectedFolder = value;
+                OnPropertyChanged(nameof(SelectedFolder));
+                SelectedFolderChanged();
+            }
+        }
+
+        private void SelectedFolderChanged()
+        {
+            if (_selectedFolder != null)
+            {
+                SelectedFolderName = _selectedFolder.Name;
+            }
+        }
 
         /// <summary>
         /// History help items under path.
         /// </summary>
         public ObservableCollection<HistoryHelp> HistoryHelpItems { get; } = new ObservableCollection<HistoryHelp>();
+
         /// <summary>
         /// Chosen drive.
         /// </summary>
@@ -72,7 +100,7 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
                 SourcePath = value;
             }
         }
-        
+
         /// <summary>
         /// Error image ToolTip text.
         /// </summary>
@@ -110,26 +138,44 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
             }
         }
 
-        private void SourcePathChanged()
+        /// <summary>
+        /// Selected folder name.
+        /// </summary>
+        public string SelectedFolderName
         {
-            string validationResult;
-            
-            ColorizePath();
-            if (!PathUtils.IsFolderPathValid(SourcePath, out validationResult))
+            get
             {
-                PathErrorText = validationResult;
-                return;
+                return _selectedFolderName;
             }
-
-            PathErrorText = null;
-            foreach (var folderPath in Directory.GetDirectories(SourcePath))
+            set
             {
-                FoldersList.Add(new ClickOnceFolderInfo(folderPath));
+                _selectedFolderName = value;
+                SelectedFolderNameChanged();
+                OnPropertyChanged(nameof(SelectedFolderName));
             }
-
         }
 
-        private FlowDocument SelectedFolderDocument => SelectedFolder.Document;
+        private void SelectedFolderNameChanged()
+        {
+            if (Directory.Exists(SelectedFolderName))
+            {
+                SourcePath = SelectedFolderName;
+                _selectedFolderName = string.Empty;
+            }
+
+            // Relevant Path not works
+            //else
+            //{
+            //    // Path.Combine for "C:\123\abc" & "abc" gives "C:\123\abc" except "C:\123\abc\abc"
+            //    //var relevantPath = Path.Combine(SourcePath, SelectedFolderName);
+            //    var relevantPath = $@"{SourcePath}\{SelectedFolderName}";
+            //    if (Directory.Exists(relevantPath))
+            //    {
+            //        SourcePath = relevantPath;
+            //        _selectedFolderName = string.Empty;
+            //    }
+            //}
+        }
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged(params string[] propertyNames)
@@ -137,6 +183,24 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
             foreach (var propertyName in propertyNames)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void SourcePathChanged()
+        {
+            string validationResult;
+
+            if (!PathUtils.IsFolderPathValid(SourcePath, out validationResult))
+            {
+                PathErrorText = validationResult;
+                return;
+            }
+
+            PathErrorText = null;
+            FoldersList.Clear();
+            foreach (var folderPath in Directory.GetDirectories(SourcePath))
+            {
+                FoldersList.Add(new ClickOnceFolderInfo(folderPath));
             }
         }
 
@@ -165,29 +229,26 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
             {
                 HistoryHelpItems.Add(new HistoryHelp(pair.Desr, pair.FolderType));
             }
-            
         }
         
-        private void ColorizePath()
+        private void SelectedFolderMouseDown(object sender, MouseButtonEventArgs e)
         {
-            SelectedFolder.Document.Blocks.Clear();
-            if (string.IsNullOrEmpty(SourcePath))
+            if (e.ClickCount == 2 && SelectedFolder != null)
             {
-                return;
+                SourcePath = SelectedFolder.FullPath;
             }
-
-            var directoryName = Path.GetDirectoryName(SourcePath) ?? string.Empty;
-            var prefixPath = SourcePath.Substring(0, SourcePath.Length - directoryName.Length);
-            var paragraph = new Paragraph();
-            paragraph.Inlines.Add(new Run(prefixPath));
-            paragraph.Inlines.Add(new Run(directoryName) { Foreground = Brushes.ForestGreen });
-
-            SelectedFolder.Document.Blocks.Add(paragraph);
         }
 
-        private void SelectedFolderTextChanged(object sender, KeyEventArgs e)
+        private void UpperFolder(object sender, RoutedEventArgs e)
         {
-            SourcePath = new TextRange(SelectedFolderDocument.ContentStart, SelectedFolderDocument.ContentEnd).Text.Replace(Environment.NewLine, string.Empty);
+            if (!string.IsNullOrEmpty(SourcePath))
+            {
+                var parent = Directory.GetParent(SourcePath);
+                if (parent != null)
+                {
+                    SourcePath = parent.FullName;
+                }
+            }
         }
     }
 }
