@@ -1,0 +1,58 @@
+﻿<Window x:Class="ClickOnceUtil4UI.Windows.Main.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:main="clr-namespace:ClickOnceUtil4UI.Windows.Main"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance main:MainWindow}"
+        WindowStartupLocation="CenterScreen"
+        Title="ClickOnce application utility" Height="350" Width="525">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="StepExpenderTextDescription" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource StepExpenderTextPrefix}">
+                <Setter Property="Foreground" Value="Green" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="Do steps below:" Style="{StaticResource StepExpenderTextPrefix}"/>
+        <Expander Grid.Row="1">
+            <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Step 1. " Style="{StaticResource StepExpenderTextPrefix}" />
+                    <TextBlock Text="Choose source folder" Style="{StaticResource StepExpenderTextDescription}" />
+                </StackPanel>
+            </Expander.Header>
+            <Expander.Content>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource StepExpenderTextPrefix}" Text="Folder path:"/>
+                    <TextBox Grid.Column="1" IsReadOnly="True" />
+                    <Button Content="Choose" Grid.Column="2" Click="ChooseClick"/>
+                </Grid>    
+            </Expander.Content>
+        </Expander> 
+        <Expander Grid.Row="2">
+            <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Step 2. " Style="{StaticResource StepExpenderTextPrefix}" />
+                    <TextBlock Text="Choose action" Style="{StaticResource StepExpenderTextDescription}" />
+                </StackPanel>
+            </Expander.Header>
+            <Expander.Content>
+                <StackPanel></StackPanel>
+            </Expander.Content>
+        </Expander>
+    </Grid>
+</Window>
