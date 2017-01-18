@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Windows.Controls;
 
-namespace ClickOnceUtil4UI.Windows.ChooseDialog
+namespace ClickOnceUtil4UI.UI.Models
 {
     /// <summary>
     /// ClickOnce information about folder.

@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
-using ClickOnceUtil4UI.Annotations;
+using ClickOnceUtil4UI.UI.Models;
+using ClickOnceUtil4UI.UI.Views;
 using ClickOnceUtil4UI.Utils;
+using ClickOnceUtil4UI.Utils.Prism;
 
-namespace ClickOnceUtil4UI.Windows.ChooseDialog
+namespace ClickOnceUtil4UI.UI.ViewModels
 {
-    // TODO MVVM
     /// <summary>
-    /// Interaction logic for ChooseFolderDialog.xaml
+    /// <see cref="ChooseFolderDialog"/> view model.
     /// </summary>
-    public partial class ChooseFolderDialog : INotifyPropertyChanged
+    public class ChooseFolderDialogViewModel : NotificationObject
     {
         private string _pathErrorText;
 
@@ -32,17 +35,31 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
         /// <summary>
         /// Создание экземпляра класса <see cref="ChooseFolderDialog"/>.
         /// </summary>
-        public ChooseFolderDialog(string sourcePath)
+        public ChooseFolderDialogViewModel(string sourcePath)
         {
-            DataContext = this;
-            InitializeComponent();
+            UpperFolderCommand = new DelegateCommand(UpperFolderHandler);
+            SelectedFolderDoubleClickCommand = new DelegateCommand(SelectedFolderDoubleClickHandler);
             Initialize();
             SourcePath = sourcePath;
             _isInitializing = false;
         }
 
-        /// <inheritdoc/>
-        public event PropertyChangedEventHandler PropertyChanged;
+        private void UpperFolderHandler(object obj)
+        {
+            if (!string.IsNullOrEmpty(SourcePath))
+            {
+                var parent = Directory.GetParent(SourcePath);
+                if (parent != null)
+                {
+                    SourcePath = parent.FullName;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Folder double click command.
+        /// </summary>
+        public DelegateCommand SelectedFolderDoubleClickCommand { get; private set; }
 
         /// <summary>
         /// Local computer logical drives.
@@ -67,7 +84,7 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
             set
             {
                 _selectedFolder = value;
-                OnPropertyChanged(nameof(SelectedFolder));
+                RaisePropertyChanged(() => SelectedFolder);
                 SelectedFolderChanged();
             }
         }
@@ -79,6 +96,11 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
                 SelectedFolderName = _selectedFolder.Name;
             }
         }
+
+        /// <summary>
+        /// Upper folder click command.
+        /// </summary>
+        public DelegateCommand UpperFolderCommand { get; private set; }
 
         /// <summary>
         /// History help items under path.
@@ -102,7 +124,7 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
         }
 
         /// <summary>
-        /// Error image ToolTip text.
+        /// Error ToolTip text.
         /// </summary>
         public string PathErrorText
         {
@@ -114,10 +136,10 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
             private set
             {
                 _pathErrorText = value;
-                OnPropertyChanged(nameof(PathErrorText));
+                RaisePropertyChanged(() => PathErrorText);
                 if (!string.IsNullOrEmpty(_pathErrorText) && !_isInitializing)
                 {
-                    ErrorToolTip.IsOpen = true;
+                    //ErrorToolTip.IsOpen = true;
                 }
             }
         }
@@ -151,7 +173,7 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
             {
                 _selectedFolderName = value;
                 SelectedFolderNameChanged();
-                OnPropertyChanged(nameof(SelectedFolderName));
+                RaisePropertyChanged(() => SelectedFolderName);
             }
         }
 
@@ -175,15 +197,6 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
             //        _selectedFolderName = string.Empty;
             //    }
             //}
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged(params string[] propertyNames)
-        {
-            foreach (var propertyName in propertyNames)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
         private void SourcePathChanged()
@@ -230,25 +243,14 @@ namespace ClickOnceUtil4UI.Windows.ChooseDialog
                 HistoryHelpItems.Add(new HistoryHelp(pair.Desr, pair.FolderType));
             }
         }
-        
-        private void SelectedFolderMouseDown(object sender, MouseButtonEventArgs e)
+
+        private void SelectedFolderDoubleClickHandler(object obj)
         {
-            if (e.ClickCount == 2 && SelectedFolder != null)
+            if (SelectedFolder != null)
             {
                 SourcePath = SelectedFolder.FullPath;
             }
         }
-
-        private void UpperFolder(object sender, RoutedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(SourcePath))
-            {
-                var parent = Directory.GetParent(SourcePath);
-                if (parent != null)
-                {
-                    SourcePath = parent.FullName;
-                }
-            }
-        }
+        
     }
 }

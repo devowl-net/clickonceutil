@@ -1,4 +1,4 @@
-﻿namespace ClickOnceUtil4UI.Windows.ChooseDialog
+﻿namespace ClickOnceUtil4UI.UI.Models
 {
     /// <summary>
     /// History model item.

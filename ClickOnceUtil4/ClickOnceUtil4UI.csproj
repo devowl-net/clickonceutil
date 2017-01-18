@@ -70,11 +70,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\ChooseDialog\ChooseFolderDialog.xaml">
+    <Page Include="UI\Views\ChooseFolderDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Main\MainWindow.xaml">
+    <Page Include="UI\Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -83,16 +83,20 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\AnyValueToVisibilityConverter.cs" />
-    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="UI\ViewModels\ChooseFolderDialogViewModel.cs" />
+    <Compile Include="UI\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Utils\ClickOnceFolderInfoUtils.cs" />
+    <Compile Include="Utils\Prism\DelegateCommand.cs" />
     <Compile Include="Utils\PathUtils.cs" />
-    <Compile Include="Windows\ChooseDialog\ChooseFolderDialog.xaml.cs">
+    <Compile Include="UI\Views\ChooseFolderDialog.xaml.cs">
       <DependentUpon>ChooseFolderDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ChooseDialog\ClickOnceFolderInfo.cs" />
-    <Compile Include="Windows\ChooseDialog\FolderTypes.cs" />
-    <Compile Include="Windows\ChooseDialog\HistoryHelp.cs" />
-    <Compile Include="Windows\Main\MainWindow.xaml.cs">
+    <Compile Include="Utils\Prism\NotificationObject.cs" />
+    <Compile Include="Utils\Prism\PropertySupport.cs" />
+    <Compile Include="UI\Models\ClickOnceFolderInfo.cs" />
+    <Compile Include="UI\Models\FolderTypes.cs" />
+    <Compile Include="UI\Models\HistoryHelp.cs" />
+    <Compile Include="UI\Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -127,10 +131,7 @@
     <Resource Include="Images\FolderCommon.png" />
     <Resource Include="Images\FolderError.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\RedAlert.png" />
   </ItemGroup>

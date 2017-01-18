@@ -1,11 +1,11 @@
-﻿<Window x:Class="ClickOnceUtil4UI.Windows.Main.MainWindow"
+﻿<Window x:Class="ClickOnceUtil4UI.UI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:main="clr-namespace:ClickOnceUtil4UI.Windows.Main"
+        xmlns:viewModels="clr-namespace:ClickOnceUtil4UI.UI.ViewModels"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance main:MainWindow}"
+        d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
         WindowStartupLocation="CenterScreen"
         Title="ClickOnce application utility" Height="350" Width="525">
     <Window.Resources>
@@ -39,7 +39,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Style="{StaticResource StepExpenderTextPrefix}" Text="Folder path:"/>
                     <TextBox Grid.Column="1" IsReadOnly="True" />
-                    <Button Content="Choose" Grid.Column="2" Click="ChooseClick"/>
+                    <Button Content="Choose" Grid.Column="2" Command="{Binding ChooseCommand}"/>
                 </Grid>    
             </Expander.Content>
         </Expander> 

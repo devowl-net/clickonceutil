@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ClickOnceUtil4UI.Windows.ChooseDialog
+﻿namespace ClickOnceUtil4UI.UI.Models
 {
     /// <summary>
     /// Folder types.
