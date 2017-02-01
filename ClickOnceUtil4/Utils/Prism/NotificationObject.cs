@@ -19,16 +19,22 @@ namespace ClickOnceUtil4UI.Utils.Prism
         }
 
         /// <summary>
+        /// Raised when a property on this object has a new value.
+        /// </summary>        
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
         /// Raises this object's PropertyChanged event.
         /// </summary>
         /// <param name="propertyName">The property that has a new value.</param>
         protected virtual void RaisePropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler propertyChangedEventHandler = this.PropertyChanged;
-            if (propertyChangedEventHandler != null)
+            if (PropertyChanged == null)
             {
-                propertyChangedEventHandler(this, new PropertyChangedEventArgs(propertyName));
+                return;
             }
+
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -37,14 +43,19 @@ namespace ClickOnceUtil4UI.Utils.Prism
         /// <param name="propertyNames">The properties that have a new value.</param>
         protected void RaisePropertyChanged(params string[] propertyNames)
         {
+            if (PropertyChanged == null)
+            {
+                return;
+            }
+
             if (propertyNames == null)
             {
-                throw new ArgumentNullException("propertyNames");
+                throw new ArgumentNullException(nameof(propertyNames));
             }
             string[] strArrays = propertyNames;
-            for (int i = 0; i < (int)strArrays.Length; i++)
+            foreach (string propertyName in strArrays)
             {
-                this.RaisePropertyChanged(strArrays[i]);
+                this.RaisePropertyChanged(propertyName);
             }
         }
 
@@ -55,12 +66,12 @@ namespace ClickOnceUtil4UI.Utils.Prism
         /// <param name="propertyExpression">A Lambda expression representing the property that has a new value.</param>
         protected void RaisePropertyChanged<T>(Expression<Func<T>> propertyExpression)
         {
+            if (PropertyChanged == null)
+            {
+                return;
+            }
+
             this.RaisePropertyChanged(PropertySupport.ExtractPropertyName<T>(propertyExpression));
         }
-
-        /// <summary>
-        /// Raised when a property on this object has a new value.
-        /// </summary>        
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

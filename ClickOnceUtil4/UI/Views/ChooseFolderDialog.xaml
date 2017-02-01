@@ -16,6 +16,23 @@
         Title="Choose folder dialog" >
     <Window.Resources>
         <converters:AnyValueToVisibilityConverter x:Key="AnyValueToVisibilityConverter" />
+        <Style TargetType="{x:Type Image}" x:Key="FolderImageStyle">
+            <Setter Property="Source" Value="../../Images/FolderCommon.png"/>
+            <Style.Triggers>
+                <DataTrigger Value="ClickOnceApplication" Binding="{Binding FolderType}">
+                    <Setter Property="Source" Value="../../Images/FoldeAccept.png" />
+                </DataTrigger>
+                <DataTrigger Value="UnknownClickOnceApplication" Binding="{Binding FolderType}">
+                    <Setter Property="Source" Value="../../Images/FolderError.png" />
+                </DataTrigger>
+                <DataTrigger Value="CanBeAnApplication" Binding="{Binding FolderType}">
+                    <Setter Property="Source" Value="../../Images/FolderAdd.png" />
+                </DataTrigger>
+                <DataTrigger Value="HaveProblems" Binding="{Binding FolderType}">
+                    <Setter Property="Source" Value="../../Images/FolderInfo.png" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -23,11 +40,15 @@
             <RowDefinition />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <TextBlock Text="Drive: " Style="{StaticResource StepExpenderTextPrefix}" Margin="0,0,10,0"/>
             <ComboBox ItemsSource="{Binding Drives}" SelectedItem="{Binding SelectedDrive}" IsSynchronizedWithCurrentItem="True" SelectedIndex="0" Width="70" Margin="10,0"/>
             <Button Margin="10,0" ToolTip="Up" Command="{Binding UpperFolderCommand}">
+                <Image Source="../../Images/ArrowUp.png" Width="20"/>
+            </Button>
+            <Button Margin="10,0" ToolTip="Refresh" Command="{Binding RefreshFolderCommand}">
                 <Image Source="../../Images/ArrowUp.png" Width="20"/>
             </Button>
         </StackPanel>
@@ -44,28 +65,11 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" ToolTip="{Binding Name}">
                             <StackPanel.InputBindings>
                                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding ElementName=ChooseWindow, Path=DataContext.SelectedFolderDoubleClickCommand}"/>
                             </StackPanel.InputBindings>
-                            <Image Width="30">
-                                <Image.Style>
-                                    <Style TargetType="{x:Type Image}">
-                                        <Setter Property="Source" Value="../../Images/FolderCommon.png"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="ClickOnceApplication" Binding="{Binding FolderType}">
-                                                <Setter Property="Source" Value="../../Images/FoldeAccept.png" />
-                                            </DataTrigger>
-                                            <DataTrigger Value="UnknownClickOnceApplication" Binding="{Binding FolderType}">
-                                                <Setter Property="Source" Value="../../Images/FolderError.png" />
-                                            </DataTrigger>
-                                            <DataTrigger Value="CanBeAnApplication" Binding="{Binding FolderType}">
-                                                <Setter Property="Source" Value="../../Images/FolderAdd.png" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
+                            <Image Width="30" Style="{StaticResource FolderImageStyle}" />
                             <TextBlock VerticalAlignment="Stretch" Text="{Binding Name}" Style="{StaticResource StepExpenderTextPrefix}" Width="110" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
                         </StackPanel>
                     </DataTemplate>
@@ -88,8 +92,11 @@
                 </TextBox.ToolTip>
             </TextBox>
         </Grid>
-        <StackPanel Grid.Row="3">
-            <TextBlock Text="Description:" Margin="0,15,0,0"/>
+        <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Content="Select folder" Command="{Binding SelectFolderCommand}" CommandParameter="{Binding ElementName=ChooseWindow}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="4">
+            <TextBlock Text="Choose folder for more information. Presentation details below:" Margin="0,15,0,0" FontStyle="Italic"/>
             <ItemsControl ItemsSource="{Binding HistoryHelpItems}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -99,24 +106,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Image Width="30">
-                                <Image.Style>
-                                    <Style TargetType="{x:Type Image}">
-                                        <Setter Property="Source" Value="../../Images/FolderCommon.png"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="ClickOnceApplication" Binding="{Binding FolderType}">
-                                                <Setter Property="Source" Value="../../Images/FoldeAccept.png" />
-                                            </DataTrigger>
-                                            <DataTrigger Value="UnknownClickOnceApplication" Binding="{Binding FolderType}">
-                                                <Setter Property="Source" Value="../../Images/FolderError.png" />
-                                            </DataTrigger>
-                                            <DataTrigger Value="CanBeAnApplication" Binding="{Binding FolderType}">
-                                                <Setter Property="Source" Value="../../Images/FolderAdd.png" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
+                            <Image Width="30" Style="{StaticResource FolderImageStyle}" />
                             <TextBlock Text="{Binding Description}" Style="{StaticResource StepExpenderTextPrefix}" />
                         </StackPanel>
                     </DataTemplate>

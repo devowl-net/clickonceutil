@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Input;
 
+using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.UI.Models;
 using ClickOnceUtil4UI.UI.Views;
 using ClickOnceUtil4UI.Utils;
@@ -25,9 +21,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         private string _sourcePath;
 
         private string _selectedDrive;
-
-        private bool _isInitializing = true;
-
+        
         private string _selectedFolderName;
 
         private ClickOnceFolderInfo _selectedFolder;
@@ -39,27 +33,21 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         {
             UpperFolderCommand = new DelegateCommand(UpperFolderHandler);
             SelectedFolderDoubleClickCommand = new DelegateCommand(SelectedFolderDoubleClickHandler);
+            SelectFolderCommand = new DelegateCommand(SelectFolderHandler);
+            RefreshFolderCommand = new DelegateCommand(RefreshFolderHandler);
             Initialize();
             SourcePath = sourcePath;
-            _isInitializing = false;
-        }
-
-        private void UpperFolderHandler(object obj)
-        {
-            if (!string.IsNullOrEmpty(SourcePath))
-            {
-                var parent = Directory.GetParent(SourcePath);
-                if (parent != null)
-                {
-                    SourcePath = parent.FullName;
-                }
-            }
         }
 
         /// <summary>
         /// Folder double click command.
         /// </summary>
         public DelegateCommand SelectedFolderDoubleClickCommand { get; private set; }
+
+        /// <summary>
+        /// Select folder command.
+        /// </summary>
+        public DelegateCommand SelectFolderCommand { get; private set; }
 
         /// <summary>
         /// Local computer logical drives.
@@ -89,18 +77,15 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             }
         }
 
-        private void SelectedFolderChanged()
-        {
-            if (_selectedFolder != null)
-            {
-                SelectedFolderName = _selectedFolder.Name;
-            }
-        }
-
         /// <summary>
         /// Upper folder click command.
         /// </summary>
         public DelegateCommand UpperFolderCommand { get; private set; }
+
+        /// <summary>
+        /// Upper folder click command.
+        /// </summary>
+        public DelegateCommand RefreshFolderCommand { get; private set; }
 
         /// <summary>
         /// History help items under path.
@@ -137,10 +122,6 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             {
                 _pathErrorText = value;
                 RaisePropertyChanged(() => PathErrorText);
-                if (!string.IsNullOrEmpty(_pathErrorText) && !_isInitializing)
-                {
-                    //ErrorToolTip.IsOpen = true;
-                }
             }
         }
 
@@ -174,6 +155,43 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 _selectedFolderName = value;
                 SelectedFolderNameChanged();
                 RaisePropertyChanged(() => SelectedFolderName);
+            }
+        }
+
+        private void RefreshFolderHandler(object obj)
+        {
+            foreach (var folder in FoldersList)
+            {
+                folder.Update();
+            }
+        }
+
+        private void SelectFolderHandler(object obj)
+        {
+            Window window = (Window)obj;
+            if (window != null)
+            {
+                window.DialogResult = true;
+            }
+        }
+
+        private void UpperFolderHandler(object obj)
+        {
+            if (!string.IsNullOrEmpty(SourcePath))
+            {
+                var parent = Directory.GetParent(SourcePath);
+                if (parent != null)
+                {
+                    SourcePath = parent.FullName;
+                }
+            }
+        }
+
+        private void SelectedFolderChanged()
+        {
+            if (_selectedFolder != null)
+            {
+                SelectedFolderName = _selectedFolder.Name;
             }
         }
 
@@ -234,8 +252,9 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             {
                 new { Desr = "Common folder", FolderType = FolderTypes.CommonFolder },
                 new { Desr = "ClickOnce application", FolderType = FolderTypes.ClickOnceApplication },
-                new { Desr = "Unknown ClickOnce application", FolderType = FolderTypes.UnknownClickOnceApplication },
                 new { Desr = "Folder can be an application", FolderType = FolderTypes.CanBeAnApplication },
+                new { Desr = "Unknown ClickOnce application", FolderType = FolderTypes.UnknownClickOnceApplication },
+                new { Desr = "No access", FolderType = FolderTypes.HaveProblems }
             };
 
             foreach (var pair in helpPairs)
@@ -251,6 +270,5 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 SourcePath = SelectedFolder.FullPath;
             }
         }
-        
     }
 }

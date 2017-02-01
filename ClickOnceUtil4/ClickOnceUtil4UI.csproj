@@ -82,7 +82,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Clickonce\Constants.cs" />
     <Compile Include="Converters\AnyValueToVisibilityConverter.cs" />
+    <Compile Include="Converters\TextLeftTrimmerConverter.cs" />
     <Compile Include="UI\ViewModels\ChooseFolderDialogViewModel.cs" />
     <Compile Include="UI\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Utils\ClickOnceFolderInfoUtils.cs" />
@@ -94,7 +96,7 @@
     <Compile Include="Utils\Prism\NotificationObject.cs" />
     <Compile Include="Utils\Prism\PropertySupport.cs" />
     <Compile Include="UI\Models\ClickOnceFolderInfo.cs" />
-    <Compile Include="UI\Models\FolderTypes.cs" />
+    <Compile Include="Clickonce\FolderTypes.cs" />
     <Compile Include="UI\Models\HistoryHelp.cs" />
     <Compile Include="UI\Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -131,7 +133,9 @@
     <Resource Include="Images\FolderCommon.png" />
     <Resource Include="Images\FolderError.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\FolderInfo.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\RedAlert.png" />
   </ItemGroup>

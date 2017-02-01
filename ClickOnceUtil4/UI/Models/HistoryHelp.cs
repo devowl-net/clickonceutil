@@ -1,4 +1,6 @@
-﻿namespace ClickOnceUtil4UI.UI.Models
+﻿using ClickOnceUtil4UI.Clickonce;
+
+namespace ClickOnceUtil4UI.UI.Models
 {
     /// <summary>
     /// History model item.

@@ -11,6 +11,14 @@ namespace ClickOnceUtil4UI.Utils
     /// </summary>
     public static class PathUtils
     {
+        private static readonly string[] IgnoredFolderNames = {
+            "Documents and Settings",
+            "System Volume Information",
+            "$RECYCLE.BIN",
+            "Users",
+            "Windows"
+        };
+
         private static readonly char[] InvalidDirectoryNameCharactors =
         {
             '<',
@@ -84,7 +92,7 @@ namespace ClickOnceUtil4UI.Utils
                 return false;
             }
 
-            if (!CheckApplicationWritePermissions(sourcePath))
+            if (!CheckFolderWritePermissions(sourcePath))
             {
                 validationResult = "No write permissions for chosen folder";
                 return false;
@@ -109,7 +117,54 @@ namespace ClickOnceUtil4UI.Utils
             return true;
         }
 
-        private static bool CheckApplicationWritePermissions(string sourcePath)
+        /// <summary>
+        /// Check write to folder permissions.
+        /// </summary>
+        /// <param name="sourcePath">Path to folder.</param>
+        /// <returns>Have or not access.</returns>
+        public static bool CheckFolderReadPermissions(string sourcePath)
+        {
+            if (!Directory.Exists(sourcePath))
+            {
+                return true;
+            }
+
+            var readAllow = false;
+            var readDeny = false;
+            var accessControlList = Directory.GetAccessControl(sourcePath);
+            if (accessControlList == null)
+            {
+                return false;
+            }
+
+            var accessRules = accessControlList.GetAccessRules(true, true, typeof(SecurityIdentifier));
+
+            foreach (FileSystemAccessRule rule in accessRules)
+            {
+                if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
+                {
+                    continue;
+                }
+
+                if (rule.AccessControlType == AccessControlType.Allow)
+                {
+                    readAllow = true;
+                }
+                else if (rule.AccessControlType == AccessControlType.Deny)
+                {
+                    readDeny = true;
+                }
+            }
+
+            return readAllow && !readDeny;
+        }
+
+        /// <summary>
+        /// Check write to folder permissions.
+        /// </summary>
+        /// <param name="sourcePath">Path to folder.</param>
+        /// <returns>Have or not access.</returns>
+        public static bool CheckFolderWritePermissions(string sourcePath)
         {
             if (!Directory.Exists(sourcePath))
             {
@@ -144,6 +199,17 @@ namespace ClickOnceUtil4UI.Utils
             }
 
             return writeAllow && !writeDeny;
+        }
+
+        /// <summary>
+        /// Is path in ignore list.
+        /// </summary>
+        /// <param name="fullPath">Folder path.</param>
+        /// <returns>Is it or not.</returns>
+        public static bool IsIgnoredPath(string fullPath)
+        {
+            var folderName = Path.GetFileName(fullPath);
+            return IgnoredFolderNames.Any(badName => string.Equals(folderName, badName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

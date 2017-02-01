@@ -1,4 +1,4 @@
-﻿namespace ClickOnceUtil4UI.UI.Models
+﻿namespace ClickOnceUtil4UI.Clickonce
 {
     /// <summary>
     /// Folder types.
@@ -23,6 +23,11 @@
         /// <summary>
         /// Folder can be chosen as target for ClickOnce application.
         /// </summary>
-        CanBeAnApplication
+        CanBeAnApplication,
+
+        /// <summary>
+        /// Have some problems.
+        /// </summary>
+        HaveProblems
     }
 }

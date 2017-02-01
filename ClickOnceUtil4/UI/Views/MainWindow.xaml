@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:ClickOnceUtil4UI.UI.ViewModels"
+        xmlns:converters="clr-namespace:ClickOnceUtil4UI.Converters"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
         WindowStartupLocation="CenterScreen"
@@ -13,6 +14,7 @@
             <Style x:Key="StepExpenderTextDescription" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource StepExpenderTextPrefix}">
                 <Setter Property="Foreground" Value="Green" />
             </Style>
+            <converters:TextLeftTrimmerConverter MaxLength="15" x:Key="TextLeftTrimmerConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="10">
@@ -28,6 +30,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Step 1. " Style="{StaticResource StepExpenderTextPrefix}" />
                     <TextBlock Text="Choose source folder" Style="{StaticResource StepExpenderTextDescription}" />
+                    <TextBlock Text="{Binding SourcePath, Converter={StaticResource TextLeftTrimmerConverter}}" MaxWidth="150" ToolTip="{Binding SourcePath}" />
                 </StackPanel>
             </Expander.Header>
             <Expander.Content>
@@ -38,7 +41,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Style="{StaticResource StepExpenderTextPrefix}" Text="Folder path:"/>
-                    <TextBox Grid.Column="1" IsReadOnly="True" />
+                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SourcePath, Mode=OneWay}" />
                     <Button Content="Choose" Grid.Column="2" Command="{Binding ChooseCommand}"/>
                 </Grid>    
             </Expander.Content>
