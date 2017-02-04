@@ -1,0 +1,149 @@
+﻿<UserControl x:Class="ClickOnceUtil4UI.UI.Views.ClickOnceDescriptionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ClickOnceUtil4UI.UI.Views"
+             xmlns:models="clr-namespace:ClickOnceUtil4UI.UI.Models"
+             xmlns:converters="clr-namespace:ClickOnceUtil4UI.Converters"
+             xmlns:utils="clr-namespace:ClickOnceUtil4UI.Utils"
+             d:DataContext="{d:DesignInstance models:ClickOnceFolderInfo}"
+             mc:Ignorable="d" 
+             Margin="10">
+    <UserControl.Resources>
+        <converters:AnyValueToVisibilityConverter x:Key="AnyValueToVisibilityConverter" />
+        <converters:AnyValueToVisibilityConverter Inverted="True" x:Key="InvertedAnyValueToVisibilityConverter" />
+        <converters:StringToUriConverter x:Key="StringToUriConverter"/>
+        <Style TargetType="{x:Type TextBlock}" x:Key="TextWrappingStyle">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextWrappingStyle}">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="BlockDescrtiptionStyle">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+        <Style TargetType="{x:Type Run}" x:Key="CommonRunTextStyle">
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FontStyle" Value="Italic" />
+        </Style>
+        <Style TargetType="{x:Type Run}" x:Key="ErrorRunTextStyle" BasedOn="{StaticResource CommonRunTextStyle}">
+            <Setter Property="Foreground" Value="OrangeRed" />
+        </Style>
+        <Style TargetType="{x:Type Hyperlink}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="DarkSlateBlue" />
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Foreground" Value="SteelBlue" />
+            <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+        </Style>
+        <Style TargetType="{x:Type FrameworkElement}" x:Key="BaseMargingStyle">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        
+        <!-- Read error -->
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ErrorDescription, Mode=OneWay, Converter={StaticResource AnyValueToVisibilityConverter}}" Style="{StaticResource BaseMargingStyle}">
+            <TextBlock>
+                Folder read error:
+                <LineBreak />
+                <Run Text="{Binding ErrorDescription, Mode=OneWay}" Style="{StaticResource ErrorRunTextStyle}" />
+            </TextBlock>
+         </StackPanel>
+
+        <StackPanel Visibility="{Binding ErrorDescription, Mode=OneWay, Converter={StaticResource InvertedAnyValueToVisibilityConverter}}" Style="{StaticResource BaseMargingStyle}">
+            <TextBlock Text="Application file info:" Style="{StaticResource BlockDescrtiptionStyle}" />
+            <!-- Application Error -->
+            <StackPanel Visibility="{Binding DeployManifestError, Mode=OneWay, Converter={StaticResource AnyValueToVisibilityConverter}}">
+                <TextBlock>
+                    Error:<LineBreak /><Run Text="{Binding DeployManifestError, Mode=OneWay}" Style="{StaticResource ErrorRunTextStyle}"/>
+                </TextBlock>
+            </StackPanel>
+            
+            <!-- Application info-->
+            <StackPanel Visibility="{Binding DeployManifestError, Mode=OneWay, Converter={StaticResource InvertedAnyValueToVisibilityConverter}}" Orientation="Vertical">
+                <TextBlock>
+                    Publisher:<Run Text="{Binding DeployManifest.Publisher, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    Product:<Run Text="{Binding DeployManifest.Product, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    TargetFrameworkMoniker:<Run Text="{Binding DeployManifest.TargetFrameworkMoniker, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    EntryPoint:
+                    <Run Text="{Binding DeployManifest.EntryPoint, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}"/>
+                </TextBlock>
+                <TextBlock>
+                    DeploymentUrl:
+                    <Hyperlink NavigateUri="{Binding DeployManifest.DeploymentUrl, Mode=OneWay, Converter={StaticResource StringToUriConverter}}" utils:HyperlinkExtensions.IsExternal="true">
+                        <TextBlock Style="{StaticResource TextWrappingStyle}" Text="{Binding DeployManifest.DeploymentUrl, Mode=OneWay}" FontSize="12" Foreground="Blue" ToolTip="{Binding DeployManifest.DeploymentUrl, Mode=OneWay}"/>
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    ErrorReportUrl:
+                    <Hyperlink NavigateUri="{Binding DeployManifest.ErrorReportUrl, Mode=OneWay, Converter={StaticResource StringToUriConverter}}" utils:HyperlinkExtensions.IsExternal="true">
+                        <TextBlock Style="{StaticResource TextWrappingStyle}" Text="{Binding DeployManifest.ErrorReportUrl, Mode=OneWay}" FontSize="12" Foreground="Blue" ToolTip="{Binding DeployManifest.ErrorReportUrl, Mode=OneWay}" />
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    DisallowUrlActivation:<Run Text="{Binding DeployManifest.DisallowUrlActivation, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}"/>
+                </TextBlock>
+                <TextBlock>
+                    UpdateEnabled:<Run Text="{Binding DeployManifest.UpdateEnabled, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}"/>
+                </TextBlock>
+                <TextBlock>
+                    UpdateMode:<Run Text="{Binding DeployManifest.UpdateMode, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}"/>
+                </TextBlock>
+                <TextBlock>
+                    Description:<Run Text="{Binding DeployManifest.Description, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Visibility="{Binding ErrorDescription, Mode=OneWay, Converter={StaticResource InvertedAnyValueToVisibilityConverter}}" Style="{StaticResource BaseMargingStyle}">
+            <TextBlock Text="Manifest file info:" Style="{StaticResource BlockDescrtiptionStyle}" />
+            
+            <!-- Manifest Error -->
+            <StackPanel Visibility="{Binding ApplicationManifestError, Mode=OneWay, Converter={StaticResource AnyValueToVisibilityConverter}}">
+                <TextBlock>
+                    Error:<LineBreak /><Run Text="{Binding ApplicationManifestError, Mode=OneWay}" Style="{StaticResource ErrorRunTextStyle}" />
+                </TextBlock>
+            </StackPanel>
+
+            <!-- Application info-->
+            <StackPanel Visibility="{Binding ApplicationManifestError, Mode=OneWay, Converter={StaticResource InvertedAnyValueToVisibilityConverter}}" Orientation="Vertical">
+                <TextBlock>
+                    Publisher:<Run Text="{Binding ApplicationManifest.Product, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    Product:<Run Text="{Binding ApplicationManifest.Product, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    EntryPoint:<Run Text="{Binding ApplicationManifest.EntryPoint, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    HostInBrowser:<Run Text="{Binding ApplicationManifest.HostInBrowser, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    IsClickOnceManifest:<Run Text="{Binding ApplicationManifest.IsClickOnceManifest, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    OSVersion:<Run Text="{Binding ApplicationManifest.OSVersion, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    OSDescription:<Run Text="{Binding ApplicationManifest.OSDescription, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+                <TextBlock>
+                    IconFile:<Run Text="{Binding ApplicationManifest.IconFile, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

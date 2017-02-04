@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Windows.Threading;
 
 namespace ClickOnceUtil4UI.Utils.Prism
 {
@@ -71,7 +72,15 @@ namespace ClickOnceUtil4UI.Utils.Prism
                 return;
             }
 
-            this.RaisePropertyChanged(PropertySupport.ExtractPropertyName<T>(propertyExpression));
+            var propertyName = PropertySupport.ExtractPropertyName<T>(propertyExpression);
+            if (!Dispatcher.CurrentDispatcher.CheckAccess())
+            {
+                Dispatcher.CurrentDispatcher.Invoke(new Action(() => RaisePropertyChanged(propertyName)));
+            }
+            else
+            {
+                RaisePropertyChanged(propertyName);
+            }
         }
     }
 }

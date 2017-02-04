@@ -13,10 +13,15 @@ namespace ClickOnceUtil4UI.Converters
     /// </summary>
     public class AnyValueToVisibilityConverter : IValueConverter
     {
+        /// <summary>
+        /// Invert result value.
+        /// </summary>
+        public bool Inverted { get; set; }
+
         /// <inheritdoc/>
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value != null ? Visibility.Visible : Visibility.Collapsed;
+            return value != null ^ Inverted ? Visibility.Visible : Visibility.Collapsed;
         }
 
         /// <inheritdoc/>

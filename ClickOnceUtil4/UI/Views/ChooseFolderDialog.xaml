@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:ClickOnceUtil4UI.Converters"
         xmlns:viewModels="clr-namespace:ClickOnceUtil4UI.UI.ViewModels"
+        xmlns:views="clr-namespace:ClickOnceUtil4UI.UI.Views"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d"
         x:Name="ChooseWindow"
@@ -33,6 +34,19 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type FrameworkElement}" x:Key="HideDescriptionStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.SelectedFolder.FolderType, Mode=OneWay, ElementName=ChooseWindow}" Value="CommonFolder" >
+                    <Setter Property="Visibility" Value="Collapsed"  />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DataContext.SelectedFolder.FolderType, Mode=OneWay, ElementName=ChooseWindow}" Value="CanBeAnApplication" >
+                    <Setter Property="Visibility" Value="Collapsed"  />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DataContext.SelectedFolder, Converter={StaticResource AnyValueToVisibilityConverter}, Mode=OneWay, ElementName=ChooseWindow}" Value="Collapsed" >
+                    <Setter Property="Visibility" Value="Collapsed"  />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -56,8 +70,9 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ListBox ItemsSource="{Binding FoldersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectedItem="{Binding SelectedFolder}">
+            <ListBox ItemsSource="{Binding FoldersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectedItem="{Binding SelectedFolder}" MinWidth="200">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -75,7 +90,11 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <!-- Folders list -->
+            <!-- TODO Long strings problem!! -->
+            <!--<GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext" />-->
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <views:ClickOnceDescriptionView DataContext="{Binding SelectedFolder, Mode=OneWay}" Style="{StaticResource HideDescriptionStyle}" Width="220" />
+            </ScrollViewer>
         </Grid>
         <Grid Grid.Row="2" Margin="0,10,0,0">
             <Grid.ColumnDefinitions>

@@ -74,6 +74,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Views\ClickOnceDescriptionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -84,10 +88,15 @@
     </Compile>
     <Compile Include="Clickonce\Constants.cs" />
     <Compile Include="Converters\AnyValueToVisibilityConverter.cs" />
+    <Compile Include="Converters\StringToUriConverter.cs" />
     <Compile Include="Converters\TextLeftTrimmerConverter.cs" />
     <Compile Include="UI\ViewModels\ChooseFolderDialogViewModel.cs" />
     <Compile Include="UI\ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="UI\Views\ClickOnceDescriptionView.xaml.cs">
+      <DependentUpon>ClickOnceDescriptionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\ClickOnceFolderInfoUtils.cs" />
+    <Compile Include="Utils\HyperlinkExtensions.cs" />
     <Compile Include="Utils\Prism\DelegateCommand.cs" />
     <Compile Include="Utils\PathUtils.cs" />
     <Compile Include="UI\Views\ChooseFolderDialog.xaml.cs">

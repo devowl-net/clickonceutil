@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.Utils;
@@ -207,7 +209,7 @@ namespace ClickOnceUtil4UI.UI.Models
 
             try
             {
-                InternalUpdate();
+                Task.Factory.StartNew(InternalUpdate);
             }
             catch (Exception exception)
             {
