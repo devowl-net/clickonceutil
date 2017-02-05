@@ -16,7 +16,8 @@ namespace ClickOnceUtil4UI.Converters
             System.Globalization.CultureInfo culture)
         {
             var input = value as string;
-            return string.IsNullOrEmpty(input) ? null : new Uri(input, UriKind.Absolute);
+            Uri result;
+            return Uri.TryCreate(input, UriKind.Absolute, out result) ? result : null;
         }
 
         /// <inheritdoc/>

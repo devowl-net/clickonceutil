@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 
+using ClickOnceUtil4UI.UI.Models;
 using ClickOnceUtil4UI.UI.Views;
 using ClickOnceUtil4UI.Utils.Prism;
 
@@ -10,7 +11,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
     /// </summary>
     public class MainWindowViewModel : NotificationObject
     {
-        private string _sourcePath;
+        private ClickOnceFolderInfo _selectedFolder;
 
         public MainWindowViewModel()
         {
@@ -22,27 +23,27 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         /// <summary>
         /// Folder source path.
         /// </summary>
-        public string SourcePath
+        public ClickOnceFolderInfo SelectedFolder
         {
             get
             {
-                return _sourcePath;
+                return _selectedFolder;
             }
 
             private set
             {
-                _sourcePath = value;
-                RaisePropertyChanged(() => SourcePath);
+                _selectedFolder = value;
+                RaisePropertyChanged(() => SelectedFolder);
             }
         }
 
         private void ChooseHandler(object obj)
         {
-            var dataContext = new ChooseFolderDialogViewModel(SourcePath);
+            var dataContext = new ChooseFolderDialogViewModel(SelectedFolder?.FullPath);
             var dialog = new ChooseFolderDialog(dataContext) { Owner = Application.Current.MainWindow };
             if (dialog.ShowDialog().GetValueOrDefault())
             {
-                SourcePath = dataContext.SourcePath;
+                SelectedFolder = dataContext.SelectedFolder;
             }
         }
     }

@@ -33,10 +33,17 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         {
             UpperFolderCommand = new DelegateCommand(UpperFolderHandler);
             SelectedFolderDoubleClickCommand = new DelegateCommand(SelectedFolderDoubleClickHandler);
-            SelectFolderCommand = new DelegateCommand(SelectFolderHandler);
+            SelectFolderCommand = new DelegateCommand(SelectFolderHandler, CanSelectFolder);
             RefreshFolderCommand = new DelegateCommand(RefreshFolderHandler);
             Initialize();
             SourcePath = sourcePath;
+        }
+
+        private bool CanSelectFolder(object obj)
+        {
+            return SelectedFolder != null &&
+                   (SelectedFolder.FolderType == FolderTypes.CanBeAnApplication ||
+                    SelectedFolder.FolderType == FolderTypes.ClickOnceApplication);
         }
 
         /// <summary>
@@ -74,6 +81,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 _selectedFolder = value;
                 RaisePropertyChanged(() => SelectedFolder);
                 SelectedFolderChanged();
+                SelectFolderCommand.RaiseCanExecuteChanged();
             }
         }
 

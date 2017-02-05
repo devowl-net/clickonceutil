@@ -14,7 +14,7 @@
             <Style x:Key="StepExpenderTextDescription" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource StepExpenderTextPrefix}">
                 <Setter Property="Foreground" Value="Green" />
             </Style>
-            <converters:TextLeftTrimmerConverter MaxLength="15" x:Key="TextLeftTrimmerConverter"/>
+            <converters:TextLeftTrimmerConverter MaxLength="50" x:Key="TextLeftTrimmerConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="10">
@@ -30,7 +30,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Step 1. " Style="{StaticResource StepExpenderTextPrefix}" />
                     <TextBlock Text="Choose source folder" Style="{StaticResource StepExpenderTextDescription}" />
-                    <TextBlock Text="{Binding SourcePath, Converter={StaticResource TextLeftTrimmerConverter}}" MaxWidth="150" ToolTip="{Binding SourcePath}" />
+                    <TextBlock Text="{Binding SelectedFolder.FullPath, Converter={StaticResource TextLeftTrimmerConverter}}" ToolTip="{Binding SelectedFolder.FullPath}" />
                 </StackPanel>
             </Expander.Header>
             <Expander.Content>

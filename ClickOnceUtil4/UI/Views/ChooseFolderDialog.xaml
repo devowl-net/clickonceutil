@@ -63,7 +63,7 @@
                 <Image Source="../../Images/ArrowUp.png" Width="20"/>
             </Button>
             <Button Margin="10,0" ToolTip="Refresh" Command="{Binding RefreshFolderCommand}">
-                <Image Source="../../Images/ArrowUp.png" Width="20"/>
+                <Image Source="../../Images/Refresh.png" Width="20"/>
             </Button>
         </StackPanel>
         <Grid Grid.Row="1">
@@ -72,7 +72,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ListBox ItemsSource="{Binding FoldersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectedItem="{Binding SelectedFolder}" MinWidth="200">
+            <ListBox ItemsSource="{Binding FoldersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectedItem="{Binding SelectedFolder}" MinWidth="230">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -112,7 +112,7 @@
             </TextBox>
         </Grid>
         <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="Select folder" Command="{Binding SelectFolderCommand}" CommandParameter="{Binding ElementName=ChooseWindow}"/>
+            <Button Content="Select folder" Command="{Binding SelectFolderCommand}" CommandParameter="{Binding ElementName=ChooseWindow}" Margin="5"/>
         </StackPanel>
         <StackPanel Grid.Row="4">
             <TextBlock Text="Choose folder for more information. Presentation details below:" Margin="0,15,0,0" FontStyle="Italic"/>
