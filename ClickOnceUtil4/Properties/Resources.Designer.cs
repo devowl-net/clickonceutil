@@ -59,5 +59,44 @@ namespace ClickOnceUtil4UI.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] makecert {
+            get {
+                object obj = ResourceManager.GetObject("makecert", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;doc&gt;
+        ///  &lt;assembly&gt;
+        ///    &lt;name&gt;Microsoft.Build.Tasks.v4.0&lt;/name&gt;
+        ///  &lt;/assembly&gt;
+        ///  &lt;members&gt;
+        ///    &lt;member name=&quot;T:Microsoft.Build.Tasks.AL&quot;&gt;
+        ///      &lt;summary&gt;Implements the AL task. Use the AL element in your project file to create and execute this task. For usage and parameter information, see AL (Assembly Linker) Task.&lt;/summary&gt;
+        ///    &lt;/member&gt;
+        ///    &lt;member name=&quot;M:Microsoft.Build.Tasks.AL.#ctor&quot;&gt;
+        ///      &lt;summary&gt;Initializes a new instance of the &lt;see cref=&quot;T:Microsof [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Microsoft_Build_Tasks_v4_0 {
+            get {
+                return ResourceManager.GetString("Microsoft_Build_Tasks_v4_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] pvk2pfx {
+            get {
+                object obj = ResourceManager.GetObject("pvk2pfx", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

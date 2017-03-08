@@ -15,7 +15,7 @@ namespace ClickOnceUtil4UI.Utils.Prism
         public event EventHandler CanExecuteChanged;
 
         /// <summary>
-        /// Создание экземпляра класса <see cref="DelegateCommand"/>.
+        /// Constructor for <see cref="DelegateCommand"/>.
         /// </summary>
         public DelegateCommand(Action<object> execute)
                        : this(execute, null)
@@ -23,7 +23,7 @@ namespace ClickOnceUtil4UI.Utils.Prism
         }
 
         /// <summary>
-        /// Создание экземпляра класса <see cref="DelegateCommand"/>.
+        /// Constructor for <see cref="DelegateCommand"/>.
         /// </summary>
         public DelegateCommand(Action<object> execute,
                        Predicate<object> canExecute)

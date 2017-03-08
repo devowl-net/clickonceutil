@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="ClickOnceUtil4UI.UI.Views.ManifestEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ClickOnceUtil4UI.UI.Views"
+             xmlns:behaviors="clr-namespace:ClickOnceUtil4UI.UI.Behaviors"
+             xmlns:viewModels="clr-namespace:ClickOnceUtil4UI.UI.ViewModels"
+             xmlns:models="clr-namespace:ClickOnceUtil4UI.UI.Models"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModels:ManifestEditorViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300" Name="UserControl">
+    <UserControl.Resources>
+        <Style x:Key="DockPanelCell" TargetType="{x:Type DockPanel}">
+            <Setter Property="Margin" Value="5,5,5,15"/>
+        </Style>
+        <behaviors:PropertyTypeStyleSelector x:Key="StyleSelector" />
+        <Style TargetType="{x:Type TextBlock}" x:Key="DescriptionStyle">
+            <Setter Property="Text" Value="{Binding Description}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="Chocolate" />
+            <Setter Property="FontWeight" Value="ExtraLight"/>
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="Empty" TargetType="{x:Type ContentPresenter}">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate />
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="AssemblyReferenceProperty" TargetType="{x:Type ContentPresenter}">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <DockPanel d:DataContext="{d:DesignInstance models:PropertyObject}" Style="{StaticResource DockPanelCell}">
+                            <TextBlock Style="{StaticResource DescriptionStyle}" DockPanel.Dock="Bottom" />
+                            <TextBlock Text="?????????????????????????????"/>
+                            <!--<CheckBox IsChecked="{Binding BooleanValue}" Content="{Binding PropertyName}" />-->
+                        </DockPanel>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="BooleanProperty" TargetType="{x:Type ContentPresenter}">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <DockPanel d:DataContext="{d:DesignInstance models:PropertyObject}" Style="{StaticResource DockPanelCell}">
+                            <TextBlock Style="{StaticResource DescriptionStyle}" DockPanel.Dock="Bottom" />
+                            <CheckBox IsChecked="{Binding BooleanValue}" Content="{Binding PropertyName}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="StringProperty" TargetType="{x:Type ContentPresenter}">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <DockPanel d:DataContext="{d:DesignInstance models:PropertyObject}" Style="{StaticResource DockPanelCell}">
+                            <TextBlock Style="{StaticResource DescriptionStyle}" DockPanel.Dock="Bottom" />
+                            <Label Content="{Binding PropertyName}" DockPanel.Dock="Left" />
+                            <TextBox Text="{Binding StringValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" MinWidth="150" DockPanel.Dock="Right" />
+                        </DockPanel>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="UriStringProperty" TargetType="{x:Type ContentPresenter}">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <DockPanel d:DataContext="{d:DesignInstance models:PropertyObject}" Style="{StaticResource DockPanelCell}">
+                            <TextBlock Style="{StaticResource DescriptionStyle}" DockPanel.Dock="Bottom" />
+                            <Label Content="{Binding PropertyName}" DockPanel.Dock="Left" />
+                            <TextBox Foreground="DodgerBlue" Text="{Binding StringValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" MinWidth="150" DockPanel.Dock="Right" />
+                        </DockPanel>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="EnumProperty" TargetType="{x:Type ContentPresenter}">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <DockPanel d:DataContext="{d:DesignInstance models:PropertyObject}" Style="{StaticResource DockPanelCell}">
+                            <TextBlock Style="{StaticResource DescriptionStyle}" DockPanel.Dock="Bottom" />
+                            <Label Content="{Binding PropertyName}" DockPanel.Dock="Top" />
+                            <ComboBox ItemsSource="{Binding EnumValues}" SelectedItem="{Binding SelectedEnumValue}" IsSynchronizedWithCurrentItem="True" DockPanel.Dock="Top" />
+                        </DockPanel>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="IntegerProperty" TargetType="{x:Type ContentPresenter}">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <DockPanel d:DataContext="{d:DesignInstance models:PropertyObject}" Style="{StaticResource DockPanelCell}">
+                            <TextBlock Style="{StaticResource DescriptionStyle}" DockPanel.Dock="Bottom" />
+                            <Label Content="{Binding PropertyName}" DockPanel.Dock="Top" />
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                                <TextBox Margin="5,5,0,5" Width="50" Text="0">
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:IntegerUpDownBehavior ButtonDown="{Binding ElementName=ButtonDown}" ButtonUp="{Binding ElementName=ButtonUp}" IntegerValue="{Binding IntegerValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </i:Interaction.Behaviors>
+                                </TextBox>
+                                <Button x:Name="ButtonUp" Margin="5,5,0,5" Content="˄" Width="20" />
+                                <Button x:Name="ButtonDown" Margin="0,5,0,5"  Content="˅" Width="20"  />
+                            </StackPanel>
+                        </DockPanel>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <ItemsControl ItemContainerStyleSelector="{StaticResource StyleSelector}" ItemsSource="{Binding Properties}" />
+</UserControl>

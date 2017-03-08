@@ -8,7 +8,7 @@ namespace ClickOnceUtil4UI.UI.Views
     public partial class MainWindow
     {
         /// <summary>
-        /// Создание экземпляра класса <see cref="MainWindow"/>.
+        /// Constructor for  <see cref="MainWindow"/>.
         /// </summary>
         public MainWindow()
         {

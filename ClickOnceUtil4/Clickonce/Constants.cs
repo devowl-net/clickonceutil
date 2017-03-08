@@ -24,5 +24,25 @@
         /// Default executable file extension.
         /// </summary>
         public const string ExecutableFileExtension = "exe";
+
+        /// <summary>
+        /// Default .application file name.
+        /// </summary>
+        public const string DefaultApplicationName = "Launcher";
+
+        /// <summary>
+        /// Default .manifest file name.
+        /// </summary>
+        public const string DefaultManifestName = "LauncherManifest";
+
+        /// <summary>
+        /// makecert.exe file name.
+        /// </summary>
+        public const string MakecertFileName = "makecert.exe";
+
+        /// <summary>
+        /// pvk2pfx.exe file name.
+        /// </summary>
+        public const string Pvk2PfxFileName = "pvk2pfx.exe";
     }
 }

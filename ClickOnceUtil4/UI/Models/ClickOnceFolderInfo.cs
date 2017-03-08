@@ -33,7 +33,7 @@ namespace ClickOnceUtil4UI.UI.Models
         private string _deployManifestError;
 
         /// <summary>
-        /// Создание экземпляра класса <see cref="ClickOnceFolderInfo"/>.
+        /// Constructor for  <see cref="ClickOnceFolderInfo"/>.
         /// </summary>
         public ClickOnceFolderInfo(string path)
         {
@@ -200,7 +200,8 @@ namespace ClickOnceUtil4UI.UI.Models
         /// <summary>
         /// Update folder information.
         /// </summary>
-        public void Update()
+        /// <param name="synchronously">Synchronously update or not.</param>
+        public void Update(bool synchronously = false)
         {
             if (PathUtils.IsIgnoredPath(FullPath))
             {
@@ -209,7 +210,14 @@ namespace ClickOnceUtil4UI.UI.Models
 
             try
             {
-                Task.Factory.StartNew(InternalUpdate);
+                if (synchronously)
+                {
+                    InternalUpdate();
+                }
+                else
+                {
+                    Task.Factory.StartNew(InternalUpdate);
+                }
             }
             catch (Exception exception)
             {

@@ -39,6 +39,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,12 +62,17 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -115,15 +123,33 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Clickonce\Constants.cs" />
-    <Compile Include="Converters\AnyValueToVisibilityConverter.cs" />
-    <Compile Include="Converters\StringToUriConverter.cs" />
-    <Compile Include="Converters\TextLeftTrimmerConverter.cs" />
+    <Compile Include="Clickonce\UserActions.cs" />
+    <Compile Include="UI\Behaviors\IntegerUpDownBehavior.cs" />
+    <Compile Include="UI\Converters\AnyValueToVisibilityConverter.cs" />
+    <Compile Include="UI\Converters\EnumDisplayAttributeConverter.cs" />
+    <Compile Include="UI\Converters\StringToUriConverter.cs" />
+    <Compile Include="UI\Converters\TextLeftTrimmerConverter.cs" />
+    <Compile Include="Utils\BuildTasks40SummaryUtils.cs" />
+    <Compile Include="Utils\CertificateUtils.cs" />
+    <Compile Include="Utils\Flow\FlowController.cs" />
+    <Compile Include="Utils\Flow\FlowOperations\FlowBase.cs" />
+    <Compile Include="Utils\Flow\FlowOperations\NewFlow.cs" />
+    <Compile Include="Utils\Flow\FlowOperations\RemoveFlow.cs" />
+    <Compile Include="Utils\Flow\FlowOperations\ResigningFlow.cs" />
+    <Compile Include="Utils\Flow\FlowOperations\UpdateFlow.cs" />
+    <Compile Include="UI\Behaviors\PropertyTypeStyleSelector.cs" />
+    <Compile Include="UI\Models\PropertyObject.cs" />
     <Compile Include="UI\ViewModels\ChooseFolderDialogViewModel.cs" />
     <Compile Include="UI\ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="UI\ViewModels\ManifestEditorViewModel.cs" />
     <Compile Include="UI\Views\ClickOnceDescriptionView.xaml.cs">
       <DependentUpon>ClickOnceDescriptionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\ManifestEditorView.xaml.cs">
+      <DependentUpon>ManifestEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\ClickOnceFolderInfoUtils.cs" />
+    <Compile Include="Utils\DisplayExtension.cs" />
     <Compile Include="Utils\HyperlinkExtensions.cs" />
     <Compile Include="Utils\Prism\DelegateCommand.cs" />
     <Compile Include="Utils\PathUtils.cs" />
@@ -139,6 +165,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UI\Views\ManifestEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -198,6 +228,23 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="app.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Microsoft.Build.Tasks.v4.0.xml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TASK.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pvk2pfx.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\makecert.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

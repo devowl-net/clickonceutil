@@ -6,7 +6,7 @@
     public partial class ChooseFolderDialog
     {
         /// <summary>
-        /// Создание экземпляра класса <see cref="ChooseFolderDialog"/>.
+        /// Constructor for  <see cref="ChooseFolderDialog"/>.
         /// </summary>
         public ChooseFolderDialog(object dataContext)
         {

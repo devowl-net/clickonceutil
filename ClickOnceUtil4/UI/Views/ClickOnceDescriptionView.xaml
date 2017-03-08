@@ -5,15 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ClickOnceUtil4UI.UI.Views"
              xmlns:models="clr-namespace:ClickOnceUtil4UI.UI.Models"
-             xmlns:converters="clr-namespace:ClickOnceUtil4UI.Converters"
              xmlns:utils="clr-namespace:ClickOnceUtil4UI.Utils"
+             xmlns:converters1="clr-namespace:ClickOnceUtil4UI.UI.Converters"
              d:DataContext="{d:DesignInstance models:ClickOnceFolderInfo}"
              mc:Ignorable="d" 
              Margin="10">
     <UserControl.Resources>
-        <converters:AnyValueToVisibilityConverter x:Key="AnyValueToVisibilityConverter" />
-        <converters:AnyValueToVisibilityConverter Inverted="True" x:Key="InvertedAnyValueToVisibilityConverter" />
-        <converters:StringToUriConverter x:Key="StringToUriConverter"/>
+        <converters1:AnyValueToVisibilityConverter x:Key="AnyValueToVisibilityConverter" />
+        <converters1:AnyValueToVisibilityConverter Inverted="True" x:Key="InvertedAnyValueToVisibilityConverter" />
+        <converters1:StringToUriConverter x:Key="StringToUriConverter"/>
         <Style TargetType="{x:Type TextBlock}" x:Key="TextWrappingStyle">
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />

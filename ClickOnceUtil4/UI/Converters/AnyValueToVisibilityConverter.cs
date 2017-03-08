@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Data;
 
-namespace ClickOnceUtil4UI.Converters
+namespace ClickOnceUtil4UI.UI.Converters
 {
     /// <summary>
     /// Visible is property not null.

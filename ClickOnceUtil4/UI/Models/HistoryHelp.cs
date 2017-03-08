@@ -8,7 +8,7 @@ namespace ClickOnceUtil4UI.UI.Models
     public class HistoryHelp
     {
         /// <summary>
-        /// Создание экземпляра класса <see cref="HistoryHelp"/>.
+        /// Constructor for  <see cref="HistoryHelp"/>.
         /// </summary>
         public HistoryHelp(string description, FolderTypes folderType)
         {

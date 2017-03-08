@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 
+using ClickOnceUtil4UI.Clickonce;
+
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 
 namespace ClickOnceUtil4UI.Utils
@@ -41,8 +43,10 @@ namespace ClickOnceUtil4UI.Utils
         /// <typeparam name="TResult">Result manifest type.</typeparam>
         /// <param name="filePath">Path to file.</param>
         /// <param name="result">Manifest result.</param>
+        /// <param name="error">Error string.</param>
         /// <returns>Is file read successful.</returns>
-        public static bool TryReadClickOnceFile<TResult>(string filePath, out TResult result, out string error) where TResult : Manifest
+        public static bool TryReadClickOnceFile<TResult>(string filePath, out TResult result, out string error)
+            where TResult : Manifest
         {
             result = null;
             error = null;
@@ -73,7 +77,9 @@ namespace ClickOnceUtil4UI.Utils
              1. Inside folder exists any executable file which one target is v4.0. (EntryPoint)
              2. (?) Every dll should be managed (?)
              */
-            foreach (var executableFilePath in Directory.GetFiles(fullPath, $"*.{Clickonce.Constants.ExecutableFileExtension}"))
+            foreach (
+                var executableFilePath in
+                    Directory.GetFiles(fullPath, $"*.{Clickonce.Constants.ExecutableFileExtension}"))
             {
                 Assembly assembly;
 
@@ -89,7 +95,8 @@ namespace ClickOnceUtil4UI.Utils
 
                 var q = assembly.ImageRuntimeVersion;
                 TargetFrameworkAttribute targetFrameworkAttribute =
-                    (TargetFrameworkAttribute)assembly.GetCustomAttributes(typeof(TargetFrameworkAttribute), false).FirstOrDefault();
+                    (TargetFrameworkAttribute)
+                        assembly.GetCustomAttributes(typeof(TargetFrameworkAttribute), false).FirstOrDefault();
 
                 // TargetFrameworkAttribute framework v4.0 only
                 if (targetFrameworkAttribute != null)
@@ -99,6 +106,41 @@ namespace ClickOnceUtil4UI.Utils
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Rename .deploy files, just remove extension.
+        /// </summary>
+        /// <param name="path">Directory path.</param>
+        public static void RenameDeployFiles(string path)
+        {
+            var deployExtension = $".{Constants.DeployFileExtension}";
+            RecursiveDirectoryWalker(
+                path,
+                fileName =>
+                    Path.GetExtension(fileName) == deployExtension
+                        ? Path.GetFileNameWithoutExtension(fileName)
+                        : fileName);
+        }
+
+        private static void RecursiveDirectoryWalker(string path, Func<string, string> action)
+        {
+            var currentDirectory = new DirectoryInfo(path);
+            foreach (var file in currentDirectory.GetFiles())
+            {
+                var fileName = file.Name;
+                var newName = action(fileName);
+                if (newName != fileName)
+                {
+                    var fullNewName = Path.Combine(path, newName);
+                    File.Move(file.FullName, fullNewName);
+                }
+            }
+
+            foreach (var subDirectory in currentDirectory.GetDirectories())
+            {
+                RecursiveDirectoryWalker(subDirectory.FullName, action);
+            }
         }
     }
 }

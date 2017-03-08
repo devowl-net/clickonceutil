@@ -27,7 +27,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         private ClickOnceFolderInfo _selectedFolder;
 
         /// <summary>
-        /// Создание экземпляра класса <see cref="ChooseFolderDialog"/>.
+        /// Constructor for <see cref="ChooseFolderDialog"/>.
         /// </summary>
         public ChooseFolderDialogViewModel(string sourcePath)
         {
@@ -258,11 +258,11 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
             var helpPairs = new[]
             {
-                new { Desr = "Common folder", FolderType = FolderTypes.CommonFolder },
-                new { Desr = "ClickOnce application", FolderType = FolderTypes.ClickOnceApplication },
-                new { Desr = "Folder can be an application", FolderType = FolderTypes.CanBeAnApplication },
-                new { Desr = "Unknown ClickOnce application", FolderType = FolderTypes.UnknownClickOnceApplication },
-                new { Desr = "No access", FolderType = FolderTypes.HaveProblems }
+                new { Desr = FolderTypes.CommonFolder.GetDescription(), FolderType = FolderTypes.CommonFolder },
+                new { Desr = FolderTypes.ClickOnceApplication.GetDescription(), FolderType = FolderTypes.ClickOnceApplication },
+                new { Desr = FolderTypes.CanBeAnApplication.GetDescription(), FolderType = FolderTypes.CanBeAnApplication },
+                new { Desr = FolderTypes.UnknownClickOnceApplication.GetDescription(), FolderType = FolderTypes.UnknownClickOnceApplication },
+                new { Desr = FolderTypes.HaveProblems.GetDescription(), FolderType = FolderTypes.HaveProblems }
             };
 
             foreach (var pair in helpPairs)

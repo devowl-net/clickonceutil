@@ -4,58 +4,111 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:ClickOnceUtil4UI.UI.ViewModels"
-        xmlns:converters="clr-namespace:ClickOnceUtil4UI.Converters"
+        xmlns:converters="clr-namespace:ClickOnceUtil4UI.UI.Converters"
+        xmlns:views="clr-namespace:ClickOnceUtil4UI.UI.Views"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
         WindowStartupLocation="CenterScreen"
-        Title="ClickOnce application utility" Height="350" Width="525">
+        Title="ClickOnce application utility" MinHeight="450" MinWidth="800" Height="450" Width="800">
     <Window.Resources>
         <ResourceDictionary>
+            <Style x:Key="ManifestNameTitleStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="Red" />
+                <Setter Property="FontSize" Value="25" />
+            </Style>
             <Style x:Key="StepExpenderTextDescription" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource StepExpenderTextPrefix}">
                 <Setter Property="Foreground" Value="Green" />
             </Style>
             <converters:TextLeftTrimmerConverter MaxLength="50" x:Key="TextLeftTrimmerConverter"/>
+            <converters:EnumDisplayAttributeConverter x:Key="EnumDisplayAttributeConverter" />
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Margin="10">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Text="Do steps below:" Style="{StaticResource StepExpenderTextPrefix}"/>
-        <Expander Grid.Row="1">
-            <Expander.Header>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Step 1. " Style="{StaticResource StepExpenderTextPrefix}" />
-                    <TextBlock Text="Choose source folder" Style="{StaticResource StepExpenderTextDescription}" />
-                    <TextBlock Text="{Binding SelectedFolder.FullPath, Converter={StaticResource TextLeftTrimmerConverter}}" ToolTip="{Binding SelectedFolder.FullPath}" />
-                </StackPanel>
-            </Expander.Header>
-            <Expander.Content>
-                <Grid Margin="5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource StepExpenderTextPrefix}" Text="Folder path:"/>
-                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SourcePath, Mode=OneWay}" />
-                    <Button Content="Choose" Grid.Column="2" Command="{Binding ChooseCommand}"/>
-                </Grid>    
-            </Expander.Content>
-        </Expander> 
-        <Expander Grid.Row="2">
-            <Expander.Header>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Step 2. " Style="{StaticResource StepExpenderTextPrefix}" />
-                    <TextBlock Text="Choose action" Style="{StaticResource StepExpenderTextDescription}" />
-                </StackPanel>
-            </Expander.Header>
-            <Expander.Content>
-                <StackPanel></StackPanel>
-            </Expander.Content>
-        </Expander>
+        <ScrollViewer>
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Do steps below:" Style="{StaticResource StepExpenderTextPrefix}"/>
+                <Expander Grid.Row="1">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Step 1. " Style="{StaticResource StepExpenderTextPrefix}" />
+                            <TextBlock Text="Choose source folder" Style="{StaticResource StepExpenderTextDescription}" />
+                            <TextBlock Text="{Binding SelectedFolder.FullPath, Converter={StaticResource TextLeftTrimmerConverter}}" ToolTip="{Binding SelectedFolder.FullPath}" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <Expander.Content>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource StepExpenderTextPrefix}" Text="Folder path:"/>
+                            <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedFolder.FullPath, Mode=OneWay}" />
+                            <Button Content="Choose" Grid.Column="2" Command="{Binding ChooseCommand}"/>
+                        </Grid>
+                    </Expander.Content>
+                </Expander>
+                <Expander Grid.Row="2">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Step 2. " Style="{StaticResource StepExpenderTextPrefix}" />
+                            <TextBlock Text="Choose action" Style="{StaticResource StepExpenderTextDescription}" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <Expander.Content>
+                        <StackPanel>
+                            <TextBlock Text="Available actions:"/>
+                            <ComboBox ItemsSource="{Binding AvaliableActions}" SelectedItem="{Binding SelectedAction}" IsSynchronizedWithCurrentItem="True">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource EnumDisplayAttributeConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </Expander.Content>
+                </Expander>
+                <Expander Grid.Row="3">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Step 3. " Style="{StaticResource StepExpenderTextPrefix}" />
+                            <TextBlock Text="Settings" Style="{StaticResource StepExpenderTextDescription}" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <Expander.Content>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text=".Application file" Style="{StaticResource ManifestNameTitleStyle}" />
+                                <views:ManifestEditorView x:Name="DeployManifest" DataContext="{Binding DeployManifest}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Vertical">
+                                <TextBlock Text=".Manifest file" Style="{StaticResource ManifestNameTitleStyle}" />
+                                <views:ManifestEditorView x:Name="ApplicationManifest" DataContext="{Binding ApplicationManifest}" />
+                            </StackPanel>
+                        </Grid>
+                    </Expander.Content>
+                </Expander>
+            </Grid>
+        </ScrollViewer>
+        <StackPanel HorizontalAlignment="Right" Grid.Row="1" Orientation="Horizontal" Margin="5">
+            <Button Command="{Binding BuildCommand}">
+                <TextBlock Text="Build" FontWeight="Bold" Margin="5" Foreground="MediumSeaGreen" />
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

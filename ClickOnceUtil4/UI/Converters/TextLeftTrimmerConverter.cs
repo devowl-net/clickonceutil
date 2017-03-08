@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace ClickOnceUtil4UI.Converters
+namespace ClickOnceUtil4UI.UI.Converters
 {
     /// <summary>
     /// Trim from left text converter.

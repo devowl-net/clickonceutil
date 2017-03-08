@@ -15,6 +15,9 @@ namespace ClickOnceUtil4UI.Utils.Prism
     [Serializable]
     public abstract class NotificationObject : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Constructor for <see cref="NotificationObject"/>.
+        /// </summary>
         protected NotificationObject()
         {
         }

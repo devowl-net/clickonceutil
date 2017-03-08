@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Data;
 
-namespace ClickOnceUtil4UI.Converters
+namespace ClickOnceUtil4UI.UI.Converters
 {
     /// <summary>
     /// String to <see cref="Uri"/> converter.

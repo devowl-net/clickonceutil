@@ -10,7 +10,7 @@ namespace ClickOnceUtil4UI
     public partial class App : Application
     {
         /// <summary>
-        /// Создание экземпляра класса <see cref="App"/>.
+        /// Constructor for  <see cref="App"/>.
         /// </summary>
         public App()
         {

@@ -685,7 +685,7 @@
 						<Border x:Name="ValidationErrorElement" BorderBrush="{StaticResource ValidationErrorElement}" BorderThickness="{TemplateBinding BorderThickness}" Visibility="Collapsed">
                 <ToolTipService.ToolTip>
 								<ToolTip x:Name="validationTooltip" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" Placement="Right" PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ValidationToolTipTemplate}">
-								<ToolTip.Triggers>
+								<!--<ToolTip.Triggers>
 									<EventTrigger RoutedEvent="Canvas.Loaded">
 									<BeginStoryboard>
 										<Storyboard>
@@ -699,7 +699,7 @@
 										</Storyboard>
 									</BeginStoryboard>
 									</EventTrigger>
-								</ToolTip.Triggers>
+								</ToolTip.Triggers>-->
 								</ToolTip>
                 </ToolTipService.ToolTip>
 						</Border>
@@ -768,7 +768,7 @@
 						<Border x:Name="ValidationErrorElement" BorderBrush="{StaticResource ValidationErrorElement}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" Visibility="Collapsed">
 							<ToolTipService.ToolTip>
 								<ToolTip x:Name="validationTooltip" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" Placement="Right" PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ValidationToolTipTemplate}">
-									<ToolTip.Triggers>
+									<!--<ToolTip.Triggers>
 										<EventTrigger RoutedEvent="Canvas.Loaded">
 											<BeginStoryboard>
 												<Storyboard>
@@ -782,7 +782,7 @@
 												</Storyboard>
 											</BeginStoryboard>
 										</EventTrigger>
-									</ToolTip.Triggers>
+									</ToolTip.Triggers>-->
 								</ToolTip>
 							</ToolTipService.ToolTip>
 							<Grid Background="{StaticResource TransparentBrush}" HorizontalAlignment="Right" Height="10" Margin="0,-4,-4,0" VerticalAlignment="Top" Width="10">
