@@ -107,40 +107,5 @@ namespace ClickOnceUtil4UI.Utils
 
             return false;
         }
-
-        /// <summary>
-        /// Rename .deploy files, just remove extension.
-        /// </summary>
-        /// <param name="path">Directory path.</param>
-        public static void RenameDeployFiles(string path)
-        {
-            var deployExtension = $".{Constants.DeployFileExtension}";
-            RecursiveDirectoryWalker(
-                path,
-                fileName =>
-                    Path.GetExtension(fileName) == deployExtension
-                        ? Path.GetFileNameWithoutExtension(fileName)
-                        : fileName);
-        }
-
-        private static void RecursiveDirectoryWalker(string path, Func<string, string> action)
-        {
-            var currentDirectory = new DirectoryInfo(path);
-            foreach (var file in currentDirectory.GetFiles())
-            {
-                var fileName = file.Name;
-                var newName = action(fileName);
-                if (newName != fileName)
-                {
-                    var fullNewName = Path.Combine(path, newName);
-                    File.Move(file.FullName, fullNewName);
-                }
-            }
-
-            foreach (var subDirectory in currentDirectory.GetDirectories())
-            {
-                RecursiveDirectoryWalker(subDirectory.FullName, action);
-            }
-        }
     }
 }

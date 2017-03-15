@@ -17,22 +17,11 @@ namespace ClickOnceUtil4UI.UI.Behaviors
     /// </summary>
     public class PropertyTypeStyleSelector : StyleSelector
     {
-        private readonly IEnumerable<string> _ignoredProperties = new[] 
-        {
-            nameof(DeployManifest.OutputMessages),
-            //nameof(DeployManifest.SourcePath),
-            //nameof(DeployManifest.InputStream),
-
-        };
-
         private readonly Dictionary<Type, string> _mapping = new Dictionary<Type, string>()
         {
             { typeof(string), "StringProperty" },
             { typeof(bool), "BooleanProperty" },
-            { typeof(int), "IntegerProperty" },
-            { typeof(Stream), "Empty" },
-            { typeof(AssemblyReference), "AssemblyReferenceProperty" },
-            { typeof(CompatibleFrameworkCollection), "Empty" }
+            { typeof(int), "IntegerProperty" }
         };
 
         /// <inheritdoc/>
@@ -41,14 +30,10 @@ namespace ClickOnceUtil4UI.UI.Behaviors
             var propertyObject = item as PropertyObject;
             if (propertyObject == null)
             {
-                throw new ArgumentNullException(nameof(propertyObject));
-            }
-
-            if (_ignoredProperties.Contains(propertyObject.PropertyName))
-            {
+                // Designer show exception
                 return null;
             }
-
+            
             return ReadStyle(container, propertyObject);
         }
         
@@ -70,8 +55,7 @@ namespace ClickOnceUtil4UI.UI.Behaviors
             // Last check
             if (key == null && !_mapping.TryGetValue(propertyType, out key))
             {
-                // TODO ПОТОМ ПОПРОСТУ ВОЗРАЩАТЬ "EMPTY"
-                return null;
+                return (Style)resources["Empty"];
             }
 
             return (Style)resources[key];

@@ -26,8 +26,10 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         }
 
         /// <inheritdoc/>
-        public override bool Execute(ApplicationManifest application, DeployManifest deploy, X509Certificate2 certificate, out string errorString)
+        public override bool Execute(Container container, out string errorString)
         {
+            ApplicationManifest application = container.Application;
+            DeployManifest deploy = container.Deploy;
             errorString = null;
 
             if (application == null)

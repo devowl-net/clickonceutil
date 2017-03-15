@@ -28,12 +28,12 @@
         /// <summary>
         /// Default .application file name.
         /// </summary>
-        public const string DefaultApplicationName = "Launcher";
+        public const string DefaultApplicationName = "Launcher.application";
 
         /// <summary>
         /// Default .manifest file name.
         /// </summary>
-        public const string DefaultManifestName = "LauncherManifest";
+        public const string DefaultManifestName = "LauncherManifest.manifest";
 
         /// <summary>
         /// makecert.exe file name.
@@ -44,5 +44,10 @@
         /// pvk2pfx.exe file name.
         /// </summary>
         public const string Pvk2PfxFileName = "pvk2pfx.exe";
+
+        /// <summary>
+        /// Default target framework.
+        /// </summary>
+        public const string DefaultFramework = "v4.0";
     }
 }

@@ -1,4 +1,5 @@
-﻿
+﻿http://localhost/IISRoot/DELME/Launcher.application
+
 При выполнении на 
 INPUT: 
 1. SourcePath
@@ -37,3 +38,127 @@ Actions:
 
 2.	- win32.exe
 3.	
+
+
+http://localhost/IISRoot/DELME/Launcher.application
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ .manifest: ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+EntryPoint	{WpfApplication4.exe}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReference
+-		base	{WpfApplication4.exe}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.BaseReference {Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReference}
+		Group	null	string
+		Hash	"+/hMbbFBv3hGdbjnaUy02USBs3g="	string
+		IsOptional	false	bool
+		ResolvedPath	null	string
+		Size	9624	long
+		SourcePath	null	string
+		TargetPath	"WpfApplication4.exe"	string
+		XmlGroup	null	string
+		XmlHash	"+/hMbbFBv3hGdbjnaUy02USBs3g="	string
+		XmlHashAlgorithm	null	string
+		XmlIsOptional	null	string
+		XmlPath	"WpfApplication4.exe"	string
+		XmlSize	"9624"	string	
++		AssemblyIdentity	{WpfApplication4, Version=1.0.0.0, Culture=neutral, ProcessorArchitecture=msil}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyIdentity
+		IsPrerequisite	false	bool
+		ReferenceType	ManagedAssembly	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReferenceType
++		XmlAssemblyIdentity	{WpfApplication4, Version=1.0.0.0, Culture=neutral, ProcessorArchitecture=msil}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyIdentity
+		XmlIsNative	"false"	string
+		XmlIsPrerequisite	"false"	string
+
+AssemblyIdentity	{WpfApplication4.exe, Version=1.0.0.24, Culture=neutral, PublicKeyToken=f858d6da6615c078, ProcessorArchitecture=msil, Type=win32}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyIdentity
+		Culture	"neutral"	string
+		IsFrameworkAssembly	false	bool
+		IsNeutralPlatform	true	bool
+		IsStrongName	true	bool
+		Name	"WpfApplication4.exe"	string
+		ProcessorArchitecture	"msil"	string
+		PublicKeyToken	"f858d6da6615c078"	string
+		Type	"win32"	string
+		Version	"1.0.0.24"	string
+		XmlCulture	"neutral"	string
+		XmlName	"WpfApplication4.exe"	string
+		XmlProcessorArchitecture	"msil"	string
+		XmlPublicKeyToken	"f858d6da6615c078"	string
+		XmlType	"win32"	string
+		XmlVersion	"1.0.0.24"	string
+
+AssemblyReferences	{Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReferenceCollection}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReferenceCollection
+		Count	2	int
++		Non-Public members		
+-		Results View	Expanding the Results View will enumerate the IEnumerable	
++		[0]	{Microsoft.Windows.CommonLanguageRuntime, Version=4.0.30319.0}	object {Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReference}
++		[1]	{WpfApplication4.exe}	object {Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReference}
+
+SourcePath	"C:\\_WpfApplication4_1_0_0_52\\WpfApplication4.exe.manifest"	string
+
+FileReferences	{Microsoft.Build.Tasks.Deployment.ManifestUtilities.FileReferenceCollection}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.FileReferenceCollection
+		Count	1	int
++		Non-Public members		
+-		Results View	Expanding the Results View will enumerate the IEnumerable	
++		[0]	{WpfApplication4.exe.config}	object {Microsoft.Build.Tasks.Deployment.ManifestUtilities.FileReference}
+
+ReadOnly	false	bool
+
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ .application (deploy) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+
+EntryPoint	{Application Files\WpfApplication4_1_0_0_24\WpfApplication4.exe.manifest}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReference
+-		base	{Application Files\WpfApplication4_1_0_0_24\WpfApplication4.exe.manifest}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.BaseReference {Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReference}
+		Group	null	string
+		Hash	"XbYsY/nCak4xCFvae5bCPgTduPs="	string
+		IsOptional	false	bool
+		ResolvedPath	null	string
+		Size	7066	long
+		SourcePath	null	string
+		TargetPath	"Application Files\\WpfApplication4_1_0_0_24\\WpfApplication4.exe.manifest"	string
+		XmlGroup	null	string
+		XmlHash	"XbYsY/nCak4xCFvae5bCPgTduPs="	string
+		XmlHashAlgorithm	null	string
+		XmlIsOptional	null	string
+		XmlPath	"Application Files\\WpfApplication4_1_0_0_24\\WpfApplication4.exe.manifest"	string
+		XmlSize	"7066"	string
++		Non-Public members		
++		AssemblyIdentity	{WpfApplication4.exe, Version=1.0.0.24, Culture=neutral, PublicKeyToken=f858d6da6615c078, ProcessorArchitecture=msil, Type=win32}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyIdentity
+		IsPrerequisite	false	bool
+		ReferenceType	ClickOnceManifest	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReferenceType
++		XmlAssemblyIdentity	{WpfApplication4.exe, Version=1.0.0.24, Culture=neutral, PublicKeyToken=f858d6da6615c078, ProcessorArchitecture=msil, Type=win32}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyIdentity
+		XmlIsNative	"false"	string
+		XmlIsPrerequisite	"false"	string
++		Non-Public members		
+
+
+AssemblyIdentity	{WpfApplication4.application, Version=1.0.0.24, Culture=neutral, PublicKeyToken=f858d6da6615c078, ProcessorArchitecture=msil}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyIdentity
+		Culture	"neutral"	string
+		IsFrameworkAssembly	false	bool
+		IsNeutralPlatform	true	bool
+		IsStrongName	true	bool
+		Name	"WpfApplication4.application"	string
+		ProcessorArchitecture	"msil"	string
+		PublicKeyToken	"f858d6da6615c078"	string
+		Type	null	string
+		Version	"1.0.0.24"	string
+		XmlCulture	"neutral"	string
+		XmlName	"WpfApplication4.application"	string
+		XmlProcessorArchitecture	"msil"	string
+		XmlPublicKeyToken	"f858d6da6615c078"	string
+		XmlType	null	string
+		XmlVersion	"1.0.0.24"	string
++		Non-Public members		
+
+AssemblyReferences	{Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReferenceCollection}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReferenceCollection
+		Count	1	int
++		Non-Public members		
+-		Results View	Expanding the Results View will enumerate the IEnumerable	
++		[0]	{Application Files\WpfApplication4_1_0_0_24\WpfApplication4.exe.manifest}	object {Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyReference}
+
+
+FileReferences	{Microsoft.Build.Tasks.Deployment.ManifestUtilities.FileReferenceCollection}	Microsoft.Build.Tasks.Deployment.ManifestUtilities.FileReferenceCollection
+		Count	0	int
++		Non-Public members		
+-		Results View	Expanding the Results View will enumerate the IEnumerable	
+		Empty	"Enumeration yielded no results"	string
+
+ReadOnly	false	bool
+SourcePath	"C:\\_WpfApplication4_1_0_0_52\\WpfApplication4.application"	string

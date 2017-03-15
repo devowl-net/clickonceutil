@@ -12,6 +12,10 @@
         Title="ClickOnce application utility" MinHeight="450" MinWidth="800" Height="450" Width="800">
     <Window.Resources>
         <ResourceDictionary>
+            <Style TargetType="{x:Type Expander}" x:Key="GlobalExpanderStyle">
+                <Setter Property="IsExpanded" Value="True" />
+            </Style>
+            <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource GlobalExpanderStyle}" />
             <Style x:Key="ManifestNameTitleStyle" TargetType="{x:Type TextBlock}">
                 <Setter Property="Foreground" Value="Red" />
                 <Setter Property="FontSize" Value="25" />
@@ -42,7 +46,7 @@
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Step 1. " Style="{StaticResource StepExpenderTextPrefix}" />
-                            <TextBlock Text="Choose source folder" Style="{StaticResource StepExpenderTextDescription}" />
+                            <TextBlock Text="Choose source root" Style="{StaticResource StepExpenderTextDescription}" />
                             <TextBlock Text="{Binding SelectedFolder.FullPath, Converter={StaticResource TextLeftTrimmerConverter}}" ToolTip="{Binding SelectedFolder.FullPath}" />
                         </StackPanel>
                     </Expander.Header>
@@ -80,6 +84,19 @@
                     </Expander.Content>
                 </Expander>
                 <Expander Grid.Row="3">
+                    <Expander.Style>
+                        <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource GlobalExpanderStyle}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedAction}" Value="New">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedAction}" Value="Update">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Expander.Style>
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Step 3. " Style="{StaticResource StepExpenderTextPrefix}" />
@@ -88,15 +105,29 @@
                     </Expander.Header>
                     <Expander.Content>
                         <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Vertical">
+                            <StackPanel Grid.ColumnSpan="2" Orientation="Vertical">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="Entry point executable file" Style="{StaticResource ManifestNameTitleStyle}" />
+                                    <ComboBox ItemsSource="{Binding ApplicationEntryPoints}" SelectedItem="{Binding SelectedEntrypoint, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" />
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="ClickOnce application version (Not your application)" Style="{StaticResource ManifestNameTitleStyle}" />
+                                    <TextBox Text="{Binding Version}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Grid.Row="1" >
                                 <TextBlock Text=".Application file" Style="{StaticResource ManifestNameTitleStyle}" />
                                 <views:ManifestEditorView x:Name="DeployManifest" DataContext="{Binding DeployManifest}" />
                             </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Vertical">
+                            <StackPanel Grid.Column="1" Orientation="Vertical" Grid.Row="1">
                                 <TextBlock Text=".Manifest file" Style="{StaticResource ManifestNameTitleStyle}" />
                                 <views:ManifestEditorView x:Name="ApplicationManifest" DataContext="{Binding ApplicationManifest}" />
                             </StackPanel>

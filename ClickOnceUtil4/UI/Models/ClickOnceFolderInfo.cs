@@ -233,6 +233,9 @@ namespace ClickOnceUtil4UI.UI.Models
 
         private void InternalUpdate()
         {
+            ApplicationManifest = null;
+            DeployManifest = null;
+
             if (!PathUtils.CheckFolderReadPermissions(FullPath))
             {
                 FolderType = FolderTypes.HaveProblems;

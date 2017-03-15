@@ -26,22 +26,20 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         }
 
         /// <inheritdoc/>
-        public override bool Execute(ApplicationManifest application, DeployManifest deploy, X509Certificate2 certificate, out string errorString)
+        public override bool Execute(Container container, out string errorString)
         {
+            string fullPath = container.FullPath;
             errorString = null;
             try
             {
-                string sourcePath = application?.SourcePath ?? deploy?.SourcePath;
-                var path = Path.GetDirectoryName(sourcePath);
-
-                if (string.IsNullOrEmpty(path))
+                if (string.IsNullOrEmpty(fullPath))
                 {
                     errorString = $"{nameof(DeployManifest.SourcePath)} value is not path.";
                     return false;
                 }
 
-                ClickOnceFolderInfoUtils.RenameDeployFiles(path);
-                var currentDirectory = new DirectoryInfo(path);
+                FlowUtils.RemoveDeployExtention(fullPath);
+                var currentDirectory = new DirectoryInfo(fullPath);
                 var manifestFiles =
                     currentDirectory.GetFiles($"*.{Constants.ApplicationExtension}")
                         .Union(currentDirectory.GetFiles($"*.{Constants.ManifestExtension}")).ToArray();

@@ -8,9 +8,9 @@ using ClickOnceUtil4UI.Utils.Flow.FlowOperations;
 namespace ClickOnceUtil4UI.Utils.Flow
 {
     /// <summary>
-    /// User action flow controller.
+    /// User action flow container.
     /// </summary>
-    public class FlowController
+    public class FlowsContainer
     {
         private readonly IDictionary<UserActions, FlowBase> _flows = new FlowBase[]
         {

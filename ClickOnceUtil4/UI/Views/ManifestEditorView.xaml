@@ -32,19 +32,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="AssemblyReferenceProperty" TargetType="{x:Type ContentPresenter}">
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <DockPanel d:DataContext="{d:DesignInstance models:PropertyObject}" Style="{StaticResource DockPanelCell}">
-                            <TextBlock Style="{StaticResource DescriptionStyle}" DockPanel.Dock="Bottom" />
-                            <TextBlock Text="?????????????????????????????"/>
-                            <!--<CheckBox IsChecked="{Binding BooleanValue}" Content="{Binding PropertyName}" />-->
-                        </DockPanel>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
         <Style x:Key="BooleanProperty" TargetType="{x:Type ContentPresenter}">
             <Setter Property="ContentTemplate">
                 <Setter.Value>
@@ -90,7 +77,7 @@
                         <DockPanel d:DataContext="{d:DesignInstance models:PropertyObject}" Style="{StaticResource DockPanelCell}">
                             <TextBlock Style="{StaticResource DescriptionStyle}" DockPanel.Dock="Bottom" />
                             <Label Content="{Binding PropertyName}" DockPanel.Dock="Top" />
-                            <ComboBox ItemsSource="{Binding EnumValues}" SelectedItem="{Binding SelectedEnumValue}" IsSynchronizedWithCurrentItem="True" DockPanel.Dock="Top" />
+                            <ComboBox ItemsSource="{Binding EnumValues}" SelectedItem="{Binding SelectedEnumValue, Mode=TwoWay}" DockPanel.Dock="Top" />
                         </DockPanel>
                     </DataTemplate>
                 </Setter.Value>

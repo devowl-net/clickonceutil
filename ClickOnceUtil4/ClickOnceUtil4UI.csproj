@@ -29,6 +29,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,10 +70,12 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Conversion.v4.0" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -131,7 +135,9 @@
     <Compile Include="UI\Converters\TextLeftTrimmerConverter.cs" />
     <Compile Include="Utils\BuildTasks40SummaryUtils.cs" />
     <Compile Include="Utils\CertificateUtils.cs" />
-    <Compile Include="Utils\Flow\FlowController.cs" />
+    <Compile Include="Utils\DeepCopyExtension.cs" />
+    <Compile Include="Utils\Flow\Container.cs" />
+    <Compile Include="Utils\Flow\FlowsContainer.cs" />
     <Compile Include="Utils\Flow\FlowOperations\FlowBase.cs" />
     <Compile Include="Utils\Flow\FlowOperations\NewFlow.cs" />
     <Compile Include="Utils\Flow\FlowOperations\RemoveFlow.cs" />
@@ -150,6 +156,7 @@
     </Compile>
     <Compile Include="Utils\ClickOnceFolderInfoUtils.cs" />
     <Compile Include="Utils\DisplayExtension.cs" />
+    <Compile Include="Utils\Flow\FlowUtils.cs" />
     <Compile Include="Utils\HyperlinkExtensions.cs" />
     <Compile Include="Utils\Prism\DelegateCommand.cs" />
     <Compile Include="Utils\PathUtils.cs" />

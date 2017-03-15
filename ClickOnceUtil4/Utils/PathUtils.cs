@@ -94,7 +94,7 @@ namespace ClickOnceUtil4UI.Utils
 
             if (!CheckFolderWritePermissions(sourcePath))
             {
-                validationResult = "No write permissions for chosen folder";
+                validationResult = "No write permissions for chosen root";
                 return false;
             }
             
@@ -118,9 +118,9 @@ namespace ClickOnceUtil4UI.Utils
         }
 
         /// <summary>
-        /// Check write to folder permissions.
+        /// Check write to root permissions.
         /// </summary>
-        /// <param name="sourcePath">Path to folder.</param>
+        /// <param name="sourcePath">Path to root.</param>
         /// <returns>Have or not access.</returns>
         public static bool CheckFolderReadPermissions(string sourcePath)
         {
@@ -160,9 +160,9 @@ namespace ClickOnceUtil4UI.Utils
         }
 
         /// <summary>
-        /// Check write to folder permissions.
+        /// Check write to root permissions.
         /// </summary>
-        /// <param name="sourcePath">Path to folder.</param>
+        /// <param name="sourcePath">Path to root.</param>
         /// <returns>Have or not access.</returns>
         public static bool CheckFolderWritePermissions(string sourcePath)
         {
@@ -210,6 +210,32 @@ namespace ClickOnceUtil4UI.Utils
         {
             var folderName = Path.GetFileName(fullPath);
             return IgnoredFolderNames.Any(badName => string.Equals(folderName, badName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Get relative path from root to filespec.
+        /// </summary>
+        /// <param name="filespec">Path to file.</param>
+        /// <param name="root">Root folder.</param>
+        /// <returns>Returns relative path.</returns>
+        /// <remarks>
+        /// For example:
+        /// file: C:\abc\def\1.txt
+        /// root: C:\abc
+        /// returns: def\1.txt
+        /// </remarks>
+        public static string GetRelativePath(string filespec, string root)
+        {
+            Uri pathUri = new Uri(filespec);
+
+            // Folders must end in a slash
+            if (!root.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                root += Path.DirectorySeparatorChar;
+            }
+
+            Uri folderUri = new Uri(root);
+            return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
         }
     }
 }

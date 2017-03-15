@@ -25,27 +25,12 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         }
 
         /// <inheritdoc/>
-        public override bool Execute(
-            ApplicationManifest application,
-            DeployManifest deploy,
-            X509Certificate2 certificate,
-            out string errorString)
+        public override bool Execute(Container container, out string errorString)
         {
             errorString = null;
-            certificate = certificate ?? CertificateUtils.GenerateSelfSignedCertificate();
-
-            if (application != null)
-            {
-                var path = application.SourcePath;
-                SecurityUtilities.SignFile(certificate, null, path);
-            }
-
-            if (deploy != null)
-            {
-                var path = deploy.SourcePath;
-                SecurityUtilities.SignFile(certificate, null, path);
-            }
-
+            
+            FlowUtils.SignFile(container.Application, container.Certificate);
+            FlowUtils.SignFile(container.Deploy, container.Certificate);
             return true;
         }
     }

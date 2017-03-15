@@ -14,7 +14,7 @@
         MinWidth="750"
         Height="500"
         Width="750"
-        Title="Choose folder dialog" >
+        Title="Choose root dialog" >
     <Window.Resources>
         <converters1:AnyValueToVisibilityConverter x:Key="AnyValueToVisibilityConverter" />
         <Style TargetType="{x:Type Image}" x:Key="FolderImageStyle">
@@ -112,10 +112,10 @@
             </TextBox>
         </Grid>
         <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="Select folder" Command="{Binding SelectFolderCommand}" CommandParameter="{Binding ElementName=ChooseWindow}" Margin="5"/>
+            <Button Content="Select root" Command="{Binding SelectFolderCommand}" CommandParameter="{Binding ElementName=ChooseWindow}" Margin="5"/>
         </StackPanel>
         <StackPanel Grid.Row="4">
-            <TextBlock Text="Choose folder for more information. Presentation details below:" Margin="0,15,0,0" FontStyle="Italic"/>
+            <TextBlock Text="Choose root for more information. Presentation details below:" Margin="0,15,0,0" FontStyle="Italic"/>
             <ItemsControl ItemsSource="{Binding HistoryHelpItems}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

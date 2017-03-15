@@ -2,15 +2,17 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
-using System.Text;
 using System.Windows;
 
 using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.UI.Models;
 using ClickOnceUtil4UI.UI.Views;
+using ClickOnceUtil4UI.Utils;
 using ClickOnceUtil4UI.Utils.Flow;
+using ClickOnceUtil4UI.Utils.Flow.FlowOperations;
 using ClickOnceUtil4UI.Utils.Prism;
 
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
@@ -22,7 +24,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
     /// </summary>
     public class MainWindowViewModel : NotificationObject
     {
-        private readonly FlowController _flowController = new FlowController();
+        private readonly FlowsContainer _flowsContainer = new FlowsContainer();
 
         private ClickOnceFolderInfo _selectedFolder;
 
@@ -31,6 +33,10 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         private ManifestEditorViewModel<ApplicationManifest> _applicationManifest;
 
         private UserActions _selectedAction = UserActions.None;
+
+        private string _selectedEntrypoint = string.Empty;
+
+        private string _version = "1.0.0.0";
 
         /// <summary>
         /// Constructor.
@@ -41,7 +47,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             BuildCommand = new DelegateCommand(BuildHandler);
 
             // TODO DELETE
-            var newFolder = new ClickOnceFolderInfo(@"C:\_WpfApplication4_1_0_0_52");
+            var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
             newFolder.Update(true);
             SelectedFolder = newFolder;
         }
@@ -70,13 +76,18 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             {
                 _selectedFolder = value;
                 RaisePropertyChanged(() => SelectedFolder);
-                if (value != null)
+                FolderUpdated(value);   
+            }
+        }
+
+        private void FolderUpdated(ClickOnceFolderInfo value)
+        {
+            if (value != null)
+            {
+                AvaliableActions.Clear();
+                foreach (var action in _flowsContainer.GetActions(value))
                 {
-                    AvaliableActions.Clear();
-                    foreach (var action in _flowController.GetActions(value))
-                    {
-                        AvaliableActions.Add(action);
-                    }
+                    AvaliableActions.Add(action);
                 }
             }
         }
@@ -139,60 +150,75 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// ClickOnce directory executable file names.
+        /// </summary> 
+        public ObservableCollection<string> ApplicationEntryPoints { get; } = new ObservableCollection<string>();
+
+        /// <summary>
+        /// ClickOnce application version
+        /// </summary>
+        public string Version
+        {
+            get
+            {
+                return _version;
+            }
+            set
+            {
+                _version = value;
+                RaisePropertyChanged(() => Version);
+            }
+        }
+
+        /// <summary>
+        /// Selected entry point value.
+        /// </summary>
+        public string SelectedEntrypoint
+        {
+            get
+            {
+                return _selectedEntrypoint;
+            }
+            set
+            {
+                _selectedEntrypoint = value;
+                RaisePropertyChanged(() => SelectedEntrypoint);
+            }
+        }
+
         private void BuildHandler(object obj)
         {
+            var container = new Container
+            {
+                FullPath = SelectedFolder.FullPath,
+                Application = ApplicationManifest?.Manifest,
+                Deploy = DeployManifest?.Manifest,
+                Certificate = CertificateUtils.GenerateSelfSignedCertificate(),
+                Version = _version,
+                EntrypointPath = !string.IsNullOrEmpty(SelectedEntrypoint) ? Path.Combine(SelectedFolder.FullPath, SelectedEntrypoint) : null
+            };
+            
             string errorString;
             if (
-                !_flowController[SelectedAction].Execute(
-                    SelectedFolder.ApplicationManifest,
-                    SelectedFolder.DeployManifest,
-                    null,
-                    out errorString))
+                !_flowsContainer[SelectedAction].Execute(container, out errorString))
             {
                 MessageBox.Show(errorString, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
-                MessageBox.Show("Operation completed successfully!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(
+                    "Operation completed successfully!",
+                    "Information",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                _selectedFolder.Update(true);
+                FolderUpdated(_selectedFolder);
+                SelectedAction = AvaliableActions.FirstOrDefault();
             }
-
-            // Deploy (.application) http://take.ms/6vydt
-            // Application (.manifest) http://take.ms/v099L
-            
-            // var deployManifest = DeployManifest.Manifest;
-            // var applicationManifest = ApplicationManifest.Manifest;
-            // 
-            // var deployOutputMessages = deployManifest.OutputMessages;
-            // var applicationOutputMessages = applicationManifest.OutputMessages;
-            // 
-            // DeployManifest.Manifest.Validate();
-            // ApplicationManifest.Manifest.Validate();
-            // 
-            // if (deployOutputMessages.ErrorCount > 0 && applicationOutputMessages.ErrorCount > 0)
-            // {
-            //     var messageText =
-            //         $"{ReadOutputMessages(deployOutputMessages)}{Environment.NewLine}{ReadOutputMessages(applicationOutputMessages)}";
-            // 
-            //     MessageBox.Show(messageText);
-            //     return;
-            // }
         }
-
-        private StringBuilder ReadOutputMessages(OutputMessageCollection outputMessages)
-        {
-            var buffer = new StringBuilder();
-            int counter = 1;
-
-            foreach (var outputMessage in outputMessages)
-            {
-                buffer.AppendFormat($"{counter}) {outputMessage}");
-                buffer.AppendLine();
-                counter++;
-            }
-
-            return buffer;
-        }
-
+        
         private void ChooseHandler(object obj)
         {
             var dataContext = new ChooseFolderDialogViewModel(SelectedFolder?.FullPath);
@@ -203,35 +229,42 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             }
         }
 
-        private DeployManifest CreateDeployManifest()
+        private void InitEntrypoints(UserActions action)
         {
-            Version clickOnceUtilVersion =
-                new Version(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion);
-
-            Version manikerVersion = new Version(clickOnceUtilVersion.Major, clickOnceUtilVersion.Minor);
-            return new DeployManifest((new FrameworkName(".NETFramework", manikerVersion, "Client")).FullName)
+            ApplicationEntryPoints.Clear();
+            switch (action)
             {
-                SourcePath = Path.Combine(SelectedFolder.FullPath, Constants.DefaultApplicationName)
-            };
-        }
+                case UserActions.New:
+                    var rootDirectory = new DirectoryInfo(SelectedFolder.FullPath);
+                    var entrypoints =
+                        rootDirectory.GetFiles("*.exe")
+                            .Union(rootDirectory.GetFiles($"*.{Constants.DeployFileExtension}")).ToArray();
+                    
+                    foreach (var entrypointFile in entrypoints)
+                    {
+                        ApplicationEntryPoints.Add(FlowUtils.GetNormalFilePath(entrypointFile.Name));
+                    }
 
-        private ApplicationManifest CreateApplicationManifest()
-        {
-            // 4.0 in ClickOnceUtil4UI name. 
-            const string DefaultFramework = "v4.0";
-
-            return new ApplicationManifest(DefaultFramework)
-            {
-                SourcePath = Path.Combine(SelectedFolder.FullPath, Constants.DefaultManifestName)
-            };
+                    SelectedEntrypoint = entrypoints.Select(entry => entry.Name).FirstOrDefault();
+                    break;
+                case UserActions.Update:
+                    var entrypoint = SelectedFolder.ApplicationManifest?.EntryPoint;
+                    if (entrypoint != null)
+                    {
+                        ApplicationEntryPoints.Add(entrypoint.TargetPath);
+                        SelectedEntrypoint = entrypoint.TargetPath;
+                    }
+                    break;
+            }
         }
 
         private void SelectedActionChanges(UserActions action)
         {
+            InitEntrypoints(action);
             if (action == UserActions.New || action == UserActions.Update)
             {
-                var deploy = SelectedFolder.DeployManifest ?? CreateDeployManifest();
-                var application = SelectedFolder.ApplicationManifest ?? CreateApplicationManifest();
+                var deploy = SelectedFolder.DeployManifest ?? FlowUtils.CreateDeployManifest(SelectedFolder.FullPath, SelectedEntrypoint);
+                var application = SelectedFolder.ApplicationManifest ?? FlowUtils.CreateApplicationManifest(SelectedFolder.FullPath, SelectedEntrypoint);
 
                 DeployManifest = new ManifestEditorViewModel<DeployManifest>(deploy);
                 ApplicationManifest = new ManifestEditorViewModel<ApplicationManifest>(application);

@@ -342,8 +342,8 @@
       <returns>The input files.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.AssignTargetPath.RootFolder">
-      <summary>Gets or sets the root folder that the target file paths are relative to.</summary>
-      <returns>The root folder that the target file paths are relative to.</returns>
+      <summary>Gets or sets the root root that the target file paths are relative to.</summary>
+      <returns>The root root that the target file paths are relative to.</returns>
     </member>
     <member name="T:Microsoft.Build.Tasks.CallTarget">
       <summary>Implements the CallTarget task. Use the CallTarget element in your project file to create and execute this task. For usage and parameter information, see CallTarget Task.</summary>
@@ -970,8 +970,8 @@
       <returns>The items that were not found under the specified path.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.FindUnderPath.Path">
-      <summary>Gets or sets the folder path to use as the reference.</summary>
-      <returns>The folder path to use as the reference.</returns>
+      <summary>Gets or sets the root path to use as the reference.</summary>
+      <returns>The root path to use as the reference.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.FindUnderPath.UpdateToAbsolutePaths">
       <summary>Gets or sets a Boolean value that indicates whether the paths of the output items should be updated to be absolute.</summary>
@@ -1084,8 +1084,8 @@
       <returns>true if the application requires .NET Framework 3.5 SP1; false otherwise.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GenerateApplicationManifest.SuiteName">
-      <summary>Gets or sets the name of the folder on the Start menu where the application is located after ClickOnce deployment.</summary>
-      <returns>A string that represents the name of a Start menu folder.</returns>
+      <summary>Gets or sets the name of the root on the Start menu where the application is located after ClickOnce deployment.</summary>
+      <returns>A string that represents the name of a Start menu root.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GenerateApplicationManifest.SupportUrl">
       <summary>Specifies the SupportUrl property in the project file.</summary>
@@ -1224,8 +1224,8 @@
       <returns>The publisher of the application.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GenerateDeploymentManifest.SuiteName">
-      <summary>Gets or sets the name of the folder on the Start menu where the application is located after ClickOnce deployment.</summary>
-      <returns>A string that represents the name of a Start menu folder.</returns>
+      <summary>Gets or sets the name of the root on the Start menu where the application is located after ClickOnce deployment.</summary>
+      <returns>A string that represents the name of a Start menu root.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GenerateDeploymentManifest.SupportUrl">
       <summary>Gets or sets the link that appears in the Uninstall or change a program dialog box for the application. The specified value should be a fully qualified URL or UNC path.</summary>
@@ -1520,27 +1520,27 @@
       <returns>true in all cases.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GetFrameworkPath.FrameworkVersion11Path">
-      <summary>Gets or sets the path of the folder that contains the .NET Framework 1.1 assemblies.</summary>
-      <returns>The path of the folder that contains the .NET Framework 1.1 assemblies.</returns>
+      <summary>Gets or sets the path of the root that contains the .NET Framework 1.1 assemblies.</summary>
+      <returns>The path of the root that contains the .NET Framework 1.1 assemblies.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GetFrameworkPath.FrameworkVersion20Path">
-      <summary>Gets or sets the path of the folder that contains the .NET Framework 2.0 assemblies.</summary>
-      <returns>The path of the folder that contains the .NET Framework 2.0 assemblies.</returns>
+      <summary>Gets or sets the path of the root that contains the .NET Framework 2.0 assemblies.</summary>
+      <returns>The path of the root that contains the .NET Framework 2.0 assemblies.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GetFrameworkPath.FrameworkVersion30Path">
-      <summary>Gets or sets the path of the folder that contains the .NET Framework 3.0 assemblies.</summary>
-      <returns>The path of the folder that contains the .NET Framework 3.0 assemblies.</returns>
+      <summary>Gets or sets the path of the root that contains the .NET Framework 3.0 assemblies.</summary>
+      <returns>The path of the root that contains the .NET Framework 3.0 assemblies.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GetFrameworkPath.FrameworkVersion35Path">
-      <summary>Gets or sets the path of the folder that contains the .NET Framework 3.5 assemblies.</summary>
-      <returns>The path of the folder that contains the .NET Framework 3.5 assemblies.</returns>
+      <summary>Gets or sets the path of the root that contains the .NET Framework 3.5 assemblies.</summary>
+      <returns>The path of the root that contains the .NET Framework 3.5 assemblies.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.GetFrameworkPath.FrameworkVersion40Path">
       <summary>Path to the v4.0 framework, if available</summary>
     </member>
     <member name="P:Microsoft.Build.Tasks.GetFrameworkPath.Path">
-      <summary>Gets or sets the path of the folder that contains the latest version of the .NET Framework assemblies.</summary>
-      <returns>The path of the folder that contains the latest version of the .NET Framework assemblies.</returns>
+      <summary>Gets or sets the path of the root that contains the latest version of the .NET Framework assemblies.</summary>
+      <returns>The path of the root that contains the latest version of the .NET Framework assemblies.</returns>
     </member>
     <member name="T:Microsoft.Build.Tasks.GetFrameworkSdkPath">
       <summary>Implements the GetFrameworkSdkPath task. Use the GetFrameworkSdkPath element in your project file to create and execute this task. For usage and parameter information, see GetFrameworkSdkPath Task.</summary>
@@ -1784,8 +1784,8 @@
       <param name="commandLine">Command line builder to add arguments to.</param>
     </member>
     <member name="P:Microsoft.Build.Tasks.ManagedCompiler.AdditionalLibPaths">
-      <summary>Gets or sets the additional folders in which to look for assemblies.</summary>
-      <returns>The additional folders in which to look for assemblies.</returns>
+      <summary>Gets or sets the additional roots in which to look for assemblies.</summary>
+      <returns>The additional roots in which to look for assemblies.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.ManagedCompiler.AddModules">
       <summary>Gets or sets the modules for the compiler to make available to the project you are currently compiling.</summary>
@@ -1962,8 +1962,8 @@
       <returns>Returns an item that represents the destination files.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.Move.DestinationFolder">
-      <summary>Gets or sets the destination folder for the source files.</summary>
-      <returns>Returns an item representing the destination folder.</returns>
+      <summary>Gets or sets the destination root for the source files.</summary>
+      <returns>Returns an item representing the destination root.</returns>
     </member>
     <member name="M:Microsoft.Build.Tasks.Move.Execute">
       <summary>Executes the move.</summary>
@@ -1974,7 +1974,7 @@
       <returns>Returns an item representing the files that were successfully moved.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.Move.OverwriteReadOnlyFiles">
-      <summary>Gets or sets a switch that selects whether files in the destination folder that have the read-only attribute set can be overwritten.</summary>
+      <summary>Gets or sets a switch that selects whether files in the destination root that have the read-only attribute set can be overwritten.</summary>
       <returns>Returns true if the files can be overwritten, false otherwise.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.Move.SourceFiles">
@@ -2185,8 +2185,8 @@
       <returns>true if the ClickOnce manifests are signed; false otherwise.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.RequiresFramework35SP1Assembly.SuiteName">
-      <summary>Gets or sets the name of the folder on the Start menu in which the application will be installed.</summary>
-      <returns>The name of the installation folder.</returns>
+      <summary>Gets or sets the name of the root on the Start menu in which the application will be installed.</summary>
+      <returns>The name of the installation root.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.RequiresFramework35SP1Assembly.TargetFrameworkVersion">
       <summary>Gets or sets the version of the .NET Framework that this application targets.</summary>
@@ -2263,8 +2263,8 @@
       <returns>Returns a list of items representing XML files that contain the full framework for the profile.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.ResolveAssemblyReference.FullFrameworkFolders">
-      <summary>Gets or sets a list of folders which contain a RedistList directory which represent the full framework for a given client profile, for example:%programfiles%\reference assemblies\microsoft\framework\v4.0</summary>
-      <returns>Returns a list of folders which contain a RedistList directory which represent the full framework for a given client profile</returns>
+      <summary>Gets or sets a list of roots which contain a RedistList directory which represent the full framework for a given client profile, for example:%programfiles%\reference assemblies\microsoft\framework\v4.0</summary>
+      <returns>Returns a list of roots which contain a RedistList directory which represent the full framework for a given client profile</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.ResolveAssemblyReference.FullTargetFrameworkSubsetNames">
       <summary>A string that contains the names of the subsets of the specified target framework.</summary>
@@ -3059,8 +3059,8 @@
       <returns>Returns the language of code to generate.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.WriteCodeFragment.OutputDirectory">
-      <summary>Gets or sets the destination folder for the generated code, typically the intermediate folder.</summary>
-      <returns>Returns the destination folder for the generated code.</returns>
+      <summary>Gets or sets the destination root for the generated code, typically the intermediate root.</summary>
+      <returns>Returns the destination root for the generated code.</returns>
     </member>
     <member name="P:Microsoft.Build.Tasks.WriteCodeFragment.OutputFile">
       <summary>Gets or sets the path to the file that was generated.</summary>
@@ -4597,7 +4597,7 @@
     <member name="M:Microsoft.Build.Tasks.Deployment.ManifestUtilities.ManifestReader.ReadManifest(System.String,System.Boolean)">
       <summary>Reads the specified manifest XML and returns an object representation.</summary>
       <returns>A <see cref="T:Microsoft.Build.Tasks.Deployment.ManifestUtilities.Manifest" /> object representation of the manifest. Can be cast to <see cref="T:Microsoft.Build.Tasks.Deployment.ManifestUtilities.AssemblyManifest" />, <see cref="T:Microsoft.Build.Tasks.Deployment.ManifestUtilities.ApplicationManifest" />, or <see cref="T:Microsoft.Build.Tasks.Deployment.ManifestUtilities.DeployManifest" /> to access more specific functionality.</returns>
-      <param name="path">The fully qualified path name of the input file. For example, the full path may be c:\directory\folder\filename.manifest.</param>
+      <param name="path">The fully qualified path name of the input file. For example, the full path may be c:\directory\root\filename.manifest.</param>
       <param name="preserveStream">Specifies whether to preserve the input stream in the <see cref="P:Microsoft.Build.Tasks.Deployment.ManifestUtilities.Manifest.InputStream" /> property of the resulting manifest object. Used by <see cref="T:Microsoft.Build.Tasks.Deployment.ManifestUtilities.ManifestWriter" /> to reconstitute input which is not represented in the object representation.</param>
     </member>
     <member name="M:Microsoft.Build.Tasks.Deployment.ManifestUtilities.ManifestReader.ReadManifest(System.String,System.IO.Stream,System.Boolean)">
