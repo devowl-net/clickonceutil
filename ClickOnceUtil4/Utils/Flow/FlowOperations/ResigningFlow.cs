@@ -1,8 +1,7 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Collections.Generic;
 
 using ClickOnceUtil4UI.Clickonce;
-
-using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
+using ClickOnceUtil4UI.UI.Models;
 
 namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
 {
@@ -28,10 +27,20 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         public override bool Execute(Container container, out string errorString)
         {
             errorString = null;
-            
+
             FlowUtils.SignFile(container.Application, container.Certificate);
             FlowUtils.SignFile(container.Deploy, container.Certificate);
             return true;
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<InfoData> GetBuildInformation(Container container)
+        {
+            string description = container.Certificate == null
+                ? "Certificate file will be generated automatically. Publisher name: \"CN = TempCA\""
+                : $"Certificate date:\n\r\n\r{container.Certificate}";
+
+            yield return new InfoData(nameof(container.Certificate), description);
         }
     }
 }

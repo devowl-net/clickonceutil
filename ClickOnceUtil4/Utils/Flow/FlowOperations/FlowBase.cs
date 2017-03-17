@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
+using System.Collections.Generic;
 using System.Text;
 
 using ClickOnceUtil4UI.Clickonce;
@@ -44,6 +44,35 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         public abstract bool Execute(Container container, out string errorString);
 
         /// <summary>
+        /// Get information text for user action.
+        /// </summary>
+        /// <param name="container">Objects container.</param>
+        /// <returns>Information data objects.</returns>
+        public abstract IEnumerable<InfoData> GetBuildInformation(Container container);
+
+        /// <summary>
+        /// Check filling of required for generation fields.
+        /// </summary>
+        /// <param name="container">Objects container.</param>
+        /// <param name="errorString">Contains error string.</param>
+        /// <returns></returns>
+        protected bool IsRequiredFieldsFilled(Container container, out string errorString)
+        {
+            errorString = null;
+            var deploy = container.Deploy;
+
+            if (string.IsNullOrEmpty(deploy.DeploymentUrl) ||
+                !deploy.DeploymentUrl.EndsWith(Constants.ApplicationExtension))
+            {
+                errorString =
+                    "[DeploymentUrl] parameter should have a URL (example: http(s)://site/appfilename.application) to your published file.";
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Validate <see cref="Manifest"/>.
         /// </summary>
         /// <param name="manifest">Reference to <see cref="Manifest"/>.</param>
@@ -78,6 +107,5 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
 
             return buffer;
         }
-
     }
 }

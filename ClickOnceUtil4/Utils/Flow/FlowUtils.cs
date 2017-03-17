@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Windows.Automation.Peers;
 
 using ClickOnceUtil4UI.Clickonce;
 
@@ -39,7 +37,10 @@ namespace ClickOnceUtil4UI.Utils.Flow
         {
             var @return = new DeployManifest($".NETFramework,Version={Constants.DefaultFramework}")
             {
-                SourcePath = Path.Combine(root, $"{Path.GetFileNameWithoutExtension(entrypoint)}.{Constants.ApplicationExtension}"),
+                SourcePath =
+                    Path.Combine(
+                        root,
+                        $"{Path.GetFileNameWithoutExtension(entrypoint)}.{Constants.ApplicationExtension}"),
                 Publisher = "Publisher",
                 Product = "Product",
                 MapFileExtensions = true,
@@ -96,7 +97,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 AssemblyIdentity = new AssemblyIdentity("Microsoft.Windows.CommonLanguageRuntime", "4.0.30319.0"),
                 IsPrerequisite = true
             };
-            
+
             application.AssemblyReferences.Add(commonLanguageRuntime);
 
             // Add all files references
@@ -121,44 +122,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
             return path;
         }
 
-        private static void InternalAddReferences(ApplicationManifest application, string currentDirectory, string root)
-        {
-            foreach (var file in Directory.GetFiles(currentDirectory))
-            {
-                var filePath = file;
-                if (Path.GetExtension(filePath) == DeployDotExtension)
-                {
-                    File.Move(filePath, filePath = GetNormalFilePath(filePath));
-                }
-
-                var fileExtension = Path.GetExtension(filePath);
-
-                if(fileExtension != null && IgnoreReferences.Any(item => string.Equals(item, fileExtension, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    continue;
-                }
-
-                BaseReference fileReference;
-                try
-                {
-                    AssemblyName.GetAssemblyName(filePath);
-                    AssemblyReference assemblyReference;
-                    fileReference = assemblyReference = application.AssemblyReferences.Add(filePath);
-                    assemblyReference.AssemblyIdentity = AssemblyIdentity.FromFile(filePath);
-                }
-                catch (BadImageFormatException)
-                {
-                    fileReference = application.FileReferences.Add(filePath);
-                }
-
-                fileReference.TargetPath = PathUtils.GetRelativePath(filePath, root);
-            }
-
-            foreach (var directory in Directory.GetDirectories(currentDirectory))
-            {
-                InternalAddReferences(application, directory, root);
-            }
-        }
         /// <summary>
         /// Rename .deploy files, just remove extension.
         /// </summary>
@@ -169,7 +132,9 @@ namespace ClickOnceUtil4UI.Utils.Flow
             RecursiveDirectoryWalker(
                 path,
                 fileName =>
-                    Path.GetExtension(fileName) != deployExtension && !IgnoreReferences.Any(item => string.Equals(item, Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
+                    Path.GetExtension(fileName) != deployExtension &&
+                    !IgnoreReferences.Any(
+                        item => string.Equals(item, Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
                         ? $"{fileName}{deployExtension}"
                         : fileName);
         }
@@ -187,26 +152,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
                     Path.GetExtension(fileName) == deployExtension
                         ? Path.GetFileNameWithoutExtension(fileName)
                         : fileName);
-        }
-
-        private static void RecursiveDirectoryWalker(string path, Func<string, string> action)
-        {
-            var currentDirectory = new DirectoryInfo(path);
-            foreach (var file in currentDirectory.GetFiles())
-            {
-                var fileName = file.Name;
-                var newName = action(fileName);
-                if (newName != fileName)
-                {
-                    var fullNewName = Path.Combine(path, newName);
-                    File.Move(file.FullName, fullNewName);
-                }
-            }
-
-            foreach (var subDirectory in currentDirectory.GetDirectories())
-            {
-                RecursiveDirectoryWalker(subDirectory.FullName, action);
-            }
         }
 
         /// <summary>
@@ -240,13 +185,79 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 {
                     assembly.AssemblyIdentity.ProcessorArchitecture = Architecture;
                     assembly.AssemblyIdentity.Culture = string.IsNullOrEmpty(assembly.AssemblyIdentity.Culture)
-                    ? Language
-                    : assembly.AssemblyIdentity.Culture;
+                        ? Language
+                        : assembly.AssemblyIdentity.Culture;
                 }
             }
 
             manifest.ResolveFiles();
             manifest.UpdateFileInfo(Constants.DefaultFramework);
+        }
+
+        private static void InternalAddReferences(ApplicationManifest application, string currentDirectory, string root)
+        {
+            foreach (var file in Directory.GetFiles(currentDirectory))
+            {
+                var filePath = file;
+                if (Path.GetExtension(filePath) == DeployDotExtension)
+                {
+                    File.Move(filePath, filePath = GetNormalFilePath(filePath));
+                }
+
+                var fileExtension = Path.GetExtension(filePath);
+
+                if (fileExtension != null &&
+                    IgnoreReferences.Any(
+                        item => string.Equals(item, fileExtension, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    continue;
+                }
+
+                BaseReference fileReference;
+                try
+                {
+                    AssemblyName.GetAssemblyName(filePath);
+                    AssemblyReference assemblyReference;
+                    fileReference = assemblyReference = application.AssemblyReferences.Add(filePath);
+                    assemblyReference.AssemblyIdentity = AssemblyIdentity.FromFile(filePath);
+                }
+                catch (BadImageFormatException)
+                {
+                    fileReference = application.FileReferences.Add(filePath);
+                }
+
+                fileReference.TargetPath = PathUtils.GetRelativePath(filePath, root);
+            }
+
+            foreach (var directory in Directory.GetDirectories(currentDirectory))
+            {
+                InternalAddReferences(application, directory, root);
+            }
+        }
+
+        private static void RecursiveDirectoryWalker(string path, Func<string, string> action)
+        {
+            var currentDirectory = new DirectoryInfo(path);
+            foreach (var file in currentDirectory.GetFiles())
+            {
+                var fileName = file.Name;
+                var newName = action(fileName);
+                if (newName != fileName)
+                {
+                    var fullNewName = Path.Combine(path, newName);
+                    File.Move(file.FullName, fullNewName);
+                }
+            }
+
+            foreach (var subDirectory in currentDirectory.GetDirectories())
+            {
+                RecursiveDirectoryWalker(subDirectory.FullName, action);
+            }
+        }
+
+        public static string ReadApplicationVersion(DeployManifest deploy)
+        {
+            return deploy.AssemblyIdentity.Version;
         }
     }
 }

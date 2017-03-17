@@ -35,8 +35,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         private UserActions _selectedAction = UserActions.None;
 
         private string _selectedEntrypoint = string.Empty;
-
-        private string _version = "1.0.0.0";
+        
+        private string _version;
 
         /// <summary>
         /// Constructor.
@@ -82,14 +82,17 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
         private void FolderUpdated(ClickOnceFolderInfo value)
         {
+            AvaliableActions.Clear();
+
             if (value != null)
-            {
-                AvaliableActions.Clear();
+            {    
                 foreach (var action in _flowsContainer.GetActions(value))
                 {
                     AvaliableActions.Add(action);
-                }
+                }   
             }
+
+            SelectedAction = AvaliableActions.FirstOrDefault();
         }
 
         /// <summary>
@@ -198,7 +201,9 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 Version = _version,
                 EntrypointPath = !string.IsNullOrEmpty(SelectedEntrypoint) ? Path.Combine(SelectedFolder.FullPath, SelectedEntrypoint) : null
             };
-            
+
+            IDictionary<string, string> buildInfo = _flowsContainer[SelectedAction].GetInformation();
+
             string errorString;
             if (
                 !_flowsContainer[SelectedAction].Execute(container, out errorString))
@@ -215,7 +220,6 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
                 _selectedFolder.Update(true);
                 FolderUpdated(_selectedFolder);
-                SelectedAction = AvaliableActions.FirstOrDefault();
             }
         }
         
@@ -265,6 +269,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             {
                 var deploy = SelectedFolder.DeployManifest ?? FlowUtils.CreateDeployManifest(SelectedFolder.FullPath, SelectedEntrypoint);
                 var application = SelectedFolder.ApplicationManifest ?? FlowUtils.CreateApplicationManifest(SelectedFolder.FullPath, SelectedEntrypoint);
+
+                Version = FlowUtils.ReadApplicationVersion(deploy) ?? Constants.DefaultVersion;
 
                 DeployManifest = new ManifestEditorViewModel<DeployManifest>(deploy);
                 ApplicationManifest = new ManifestEditorViewModel<ApplicationManifest>(application);

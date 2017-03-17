@@ -49,5 +49,10 @@
         /// Default target framework.
         /// </summary>
         public const string DefaultFramework = "v4.0";
+
+        /// <summary>
+        /// Default version value.
+        /// </summary>
+        public const string DefaultVersion = "1.0.0.0";
     }
 }

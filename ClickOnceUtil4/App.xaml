@@ -7,6 +7,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/Metro/Light/Metro.MSControls.Core.Implicit.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type TextBlock}" x:Key="MainTextStyle">
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Foreground" Value="MediumSeaGreen" />
+                <Setter Property="FontSize" Value="30" />
+            </Style>
             <Style x:Key="StepExpenderTextStyle" TargetType="{x:Type TextBlock}">
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="VerticalAlignment" Value="Center" />

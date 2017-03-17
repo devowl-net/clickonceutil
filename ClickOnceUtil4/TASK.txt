@@ -1,43 +1,10 @@
-﻿http://localhost/IISRoot/DELME/Launcher.application
-
-При выполнении на 
-INPUT: 
-1. SourcePath
-	1.1 Определить что есть в папке
-	1.2. Выяснить что для пункта 2. подходит
-2. Action
-3. Editor form
-
----
-Validation
----
-
-Output:
-1. Modified SourcePath
-2. Manifest file
-3. Application file
+﻿TODO:
+1. Возможность задать Version
+2. Выводить диалог с подтверждением действий
+3. Подписывать из файла
 
 
-Actions:
-1. New - Create new application.
-Все настройки просто доступны на редактирование
-2. Update - Update application presets. (Manual change application presets)
-Как и New (Все настройки просто доступны на редактирование)
-Но заполняется значениями из файла
-3. Remove - Remove ClickOnce label. (Remove ClickOnce label such as .deploy extensions and required files such as .application and .manifest)
-Удаляем файлы манифеста, делаем переименование если надо
-4. Resigning - Resigning ClickOnce files
-Подписываем манифест
-ДАТЬ ВОЗМОЖНОСТЬ ВЫБРАТЬ СЕРТИФИКАТ
 
-
-Какие есть папки?
-1. 
-	- hello.exe
-	- hello.dll
-
-2.	- win32.exe
-3.	
 
 
 http://localhost/IISRoot/DELME/Launcher.application

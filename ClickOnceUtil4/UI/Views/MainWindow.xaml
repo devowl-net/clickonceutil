@@ -137,8 +137,8 @@
             </Grid>
         </ScrollViewer>
         <StackPanel HorizontalAlignment="Right" Grid.Row="1" Orientation="Horizontal" Margin="5">
-            <Button Command="{Binding BuildCommand}">
-                <TextBlock Text="Build" FontWeight="Bold" Margin="5" Foreground="MediumSeaGreen" />
+            <Button Command="{Binding BuildCommand}" Width="150" Height="50">
+                <TextBlock Text="Build" Margin="5" Style="{StaticResource MainTextStyle}" />
             </Button>
         </StackPanel>
     </Grid>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -56,6 +57,13 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
                 errorString = exception.Message;
                 return false;
             }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<InfoData> GetBuildInformation(Container container)
+        {
+            yield return new InfoData("Files *.deploy", "This extension will be removed for all files in root and sub directories.");
+            yield return new InfoData("Files *.manifest and *.application", "Any ClickOnce application required files such as .application and .manifest will be deleted from the root.");
         }
     }
 }

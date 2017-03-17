@@ -110,6 +110,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Views\BuildInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\ChooseFolderDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,6 +137,11 @@
     <Compile Include="UI\Converters\EnumDisplayAttributeConverter.cs" />
     <Compile Include="UI\Converters\StringToUriConverter.cs" />
     <Compile Include="UI\Converters\TextLeftTrimmerConverter.cs" />
+    <Compile Include="UI\Models\InfoData.cs" />
+    <Compile Include="UI\ViewModels\BuildInfoViewModel.cs" />
+    <Compile Include="UI\Views\BuildInfoView.xaml.cs">
+      <DependentUpon>BuildInfoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\BuildTasks40SummaryUtils.cs" />
     <Compile Include="Utils\CertificateUtils.cs" />
     <Compile Include="Utils\DeepCopyExtension.cs" />

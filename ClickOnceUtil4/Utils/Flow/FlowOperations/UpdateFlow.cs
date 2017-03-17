@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 
 using ClickOnceUtil4UI.Clickonce;
+using ClickOnceUtil4UI.UI.Models;
 
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 

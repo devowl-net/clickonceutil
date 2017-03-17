@@ -58,7 +58,7 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <TextBlock Text="Drive: " Style="{StaticResource StepExpenderTextPrefix}" Margin="0,0,10,0"/>
-            <ComboBox ItemsSource="{Binding Drives}" SelectedItem="{Binding SelectedDrive}" IsSynchronizedWithCurrentItem="True" SelectedIndex="0" Width="70" Margin="10,0"/>
+            <ComboBox ItemsSource="{Binding Drives}" SelectedItem="{Binding SelectedDrive, Mode=TwoWay}" SelectedIndex="0" Width="70" Margin="10,0"/>
             <Button Margin="10,0" ToolTip="Up" Command="{Binding UpperFolderCommand}">
                 <Image Source="../../Images/ArrowUp.png" Width="20"/>
             </Button>

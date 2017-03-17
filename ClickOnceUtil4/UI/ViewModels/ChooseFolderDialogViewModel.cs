@@ -25,7 +25,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         private string _selectedFolderName;
 
         private ClickOnceFolderInfo _selectedFolder;
-
+        
         /// <summary>
         /// Constructor for <see cref="ChooseFolderDialog"/>.
         /// </summary>
@@ -35,8 +35,32 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             SelectedFolderDoubleClickCommand = new DelegateCommand(SelectedFolderDoubleClickHandler);
             SelectFolderCommand = new DelegateCommand(SelectFolderHandler, CanSelectFolder);
             RefreshFolderCommand = new DelegateCommand(RefreshFolderHandler);
+            
             Initialize();
-            SourcePath = sourcePath;
+
+            if (!string.IsNullOrEmpty(sourcePath))
+            {
+                if (Path.IsPathRooted(sourcePath))
+                {
+                    var rootDrive = Drives.FirstOrDefault(sourcePath.StartsWith);
+                    _selectedDrive = rootDrive;
+                }
+
+                var parent = Directory.GetParent(sourcePath);
+                if (parent != null)
+                {
+                    sourcePath = parent.FullName;
+                }
+
+                SourcePath = sourcePath;
+            }
+            else
+            {
+                if (Drives.Any())
+                {
+                    SourcePath = Drives.FirstOrDefault();
+                }
+            }
         }
 
         private bool CanSelectFolder(object obj)

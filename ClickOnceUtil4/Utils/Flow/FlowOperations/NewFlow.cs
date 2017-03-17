@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 using ClickOnceUtil4UI.Clickonce;
@@ -29,9 +28,11 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         /// <inheritdoc/>
         public override bool Execute(Container container, out string errorString)
         {
-            new List<OutputMessageCollection> { container.Application.OutputMessages, container.Deploy.OutputMessages}.ForEach(item => item.Clear());
+            new List<OutputMessageCollection> { container.Application.OutputMessages, container.Deploy.OutputMessages }
+                .ForEach(item => item.Clear());
 
-            if (!CreateManifestFile(container, out errorString) || !CreateDeployFile(container, out errorString))
+            if (!IsRequiredFieldsFilled(container, out errorString) || !CreateManifestFile(container, out errorString) ||
+                !CreateDeployFile(container, out errorString))
             {
                 return false;
             }
@@ -41,8 +42,6 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
                 FlowUtils.AddDeployExtention(container.FullPath);
             }
 
-            //FlowUtils.SignFile(container.Application, container.Certificate);
-            //FlowUtils.SignFile(container.Deploy, container.Certificate);
             return true;
         }
 
@@ -97,7 +96,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
 
             return true;
         }
-        
+
         private void AddManifestReference(Container container)
         {
             var deploy = container.Deploy;
@@ -124,7 +123,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         private void SetApplicationEndpointIdentity(Container container)
         {
             var application = container.Application;
-           
+
             for (int i = 0; i < application.AssemblyReferences.Count; i++)
             {
                 var refrence = application.AssemblyReferences[i];
