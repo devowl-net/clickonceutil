@@ -8,7 +8,7 @@
         xmlns:models="clr-namespace:ClickOnceUtil4UI.UI.Models"
         mc:Ignorable="d" WindowStartupLocation="CenterOwner" WindowStyle="ToolWindow" 
         d:DataContext="{d:DesignInstance viewModels:BuildInfoViewModel}" Name="BuildInfoWindow"
-        Title="Short information" Width="450" Height="350">
+        Title="Your PreBuild parameters set description." Width="450" Height="350">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <DataTemplate x:Key="InfoRow">

@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
         WindowStartupLocation="CenterScreen"
-        Title="ClickOnce application utility" MinHeight="450" MinWidth="800" Height="450" Width="800">
+        Title="ClickOnce application utility. Created by Sergey Vaulin" MinHeight="450" MinWidth="800" Height="450" Width="800">
     <Window.Resources>
         <ResourceDictionary>
             <Style TargetType="{x:Type Expander}" x:Key="GlobalExpanderStyle">

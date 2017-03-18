@@ -245,7 +245,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                     "Clean cache",
                     $@"You are going to clean local applications cache. Be sure that no deployed programs running now. Cache folder location: [{
                         appsFolder
-                        }], anyway next applications launch will make installation back. By the way its can be done manually:{Environment.NewLine}1. By cmd.exe command: ""rundll32 dfshim CleanOnlineAppCache""] {Environment.NewLine}2. Or just remove [{
+                        }], anyway next applications launch will make installation back. By the way cleaning can be done manually:{Environment.NewLine}1. By cmd.exe command: ""rundll32 dfshim CleanOnlineAppCache""] {Environment.NewLine}2. Or just remove [{
                         appsFolder}] folder content.")
             };
 

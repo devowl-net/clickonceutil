@@ -33,7 +33,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
             new List<OutputMessageCollection> { container.Application.OutputMessages, container.Deploy.OutputMessages }
                 .ForEach(item => item.Clear());
 
-            if (!IsRequiredFieldsFilled(container, out errorString) || !CreateManifestFile(container, out errorString) ||
+            if (!InfoUtils.IsRequiredFieldsFilled(container, out errorString) || !CreateManifestFile(container, out errorString) ||
                 !CreateDeployFile(container, out errorString))
             {
                 return false;
@@ -67,7 +67,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
             // Set global important settings
             FlowUtils.SetGlobals(container.Deploy);
 
-            if (!IsValidManifest(deploy, out errorString))
+            if (!InfoUtils.IsValidManifest(deploy, out errorString))
             {
                 return false;
             }
@@ -92,7 +92,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
             // Set global important settings
             FlowUtils.SetGlobals(container.Application);
 
-            if (!IsValidManifest(container.Application, out errorString))
+            if (!InfoUtils.IsValidManifest(container.Application, out errorString))
             {
                 return false;
             }
