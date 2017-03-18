@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 
+using ClickOnceUtil4UI.UI.Models;
 using ClickOnceUtil4UI.UI.Views;
 using ClickOnceUtil4UI.Utils.Prism;
 
@@ -14,7 +15,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         /// <summary>
         /// Constructor for <see cref="BuildInfoViewModel"/>.
         /// </summary>
-        public BuildInfoViewModel(IDictionary<string, string> info)
+        public BuildInfoViewModel(IEnumerable<InfoData> info)
         {
             Info = info;
             BuildCommand = new DelegateCommand(BuildHandler);
@@ -24,7 +25,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         /// <summary>
         /// Information key pairs. Key - name, Value description.
         /// </summary>
-        public IDictionary<string, string> Info { get; }
+        public IEnumerable<InfoData> Info { get; }
 
         /// <summary>
         /// Okay command.

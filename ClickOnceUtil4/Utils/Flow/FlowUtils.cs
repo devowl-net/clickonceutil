@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 
 using ClickOnceUtil4UI.Clickonce;
@@ -16,17 +15,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
     /// </summary>
     public static class FlowUtils
     {
-        private static readonly IEnumerable<string> IgnoreReferences = new[]
-        {
-            // .application
-            $".{Constants.ApplicationExtension}",
-
-            // .manifest
-            $".{Constants.ManifestExtension}"
-        };
-
-        private static readonly string DeployDotExtension = $".{Constants.DeployFileExtension}";
-
         /// <summary>
         /// Create default <see cref="DeployManifest"/>.
         /// </summary>
@@ -71,6 +59,12 @@ namespace ClickOnceUtil4UI.Utils.Flow
         }
 
         /// <summary>
+        /// Clean applications cache.
+        /// </summary>
+        [DllImport("Dfshim.dll", CharSet = CharSet.Auto, ExactSpelling = false)]
+        public static extern void CleanOnlineAppCache();
+
+        /// <summary>
         /// Sign file with certificate.
         /// </summary>
         /// <param name="manifest">Manifest file reference.</param>
@@ -78,48 +72,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
         public static void SignFile(Manifest manifest, X509Certificate2 certificate)
         {
             SecurityUtilities.SignFile(certificate, null, manifest.SourcePath);
-        }
-
-        /// <summary>
-        /// Add required files from root directory.
-        /// </summary>
-        /// <param name="application"><see cref="ApplicationManifest"/> file reference.</param>
-        /// <param name="root">Root path to directory.</param>
-        public static void AddReferences(ApplicationManifest application, string root)
-        {
-            // Cleaning references
-            application.AssemblyReferences.Clear();
-            application.FileReferences.Clear();
-
-            // CommonLanguageRuntime (this reference came from VS exported application)
-            var commonLanguageRuntime = new AssemblyReference()
-            {
-                AssemblyIdentity = new AssemblyIdentity("Microsoft.Windows.CommonLanguageRuntime", "4.0.30319.0"),
-                IsPrerequisite = true
-            };
-
-            application.AssemblyReferences.Add(commonLanguageRuntime);
-
-            // Add all files references
-            InternalAddReferences(application, root, root);
-
-            application.ResolveFiles();
-            application.UpdateFileInfo(Constants.DefaultFramework);
-        }
-
-        /// <summary>
-        /// Get normal file path, just removes .deploy extension if it is.
-        /// </summary>
-        /// <param name="path">Path to file.</param>
-        /// <returns>Normalized path.</returns>
-        public static string GetNormalFilePath(string path)
-        {
-            if (Path.GetExtension(path) == DeployDotExtension)
-            {
-                return path.Substring(0, path.Length - DeployDotExtension.Length);
-            }
-
-            return path;
         }
 
         /// <summary>
@@ -133,7 +85,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 path,
                 fileName =>
                     Path.GetExtension(fileName) != deployExtension &&
-                    !IgnoreReferences.Any(
+                    !Constants.IgnoreReferences.Any(
                         item => string.Equals(item, Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
                         ? $"{fileName}{deployExtension}"
                         : fileName);
@@ -194,45 +146,14 @@ namespace ClickOnceUtil4UI.Utils.Flow
             manifest.UpdateFileInfo(Constants.DefaultFramework);
         }
 
-        private static void InternalAddReferences(ApplicationManifest application, string currentDirectory, string root)
+        /// <summary>
+        /// Reads ClickOnce application version.
+        /// </summary>
+        /// <param name="deploy"><see cref="DeployManifest"/> file instance.</param>
+        /// <returns>Version inside <see cref="DeployManifest"/>.</returns>
+        public static string ReadApplicationVersion(DeployManifest deploy)
         {
-            foreach (var file in Directory.GetFiles(currentDirectory))
-            {
-                var filePath = file;
-                if (Path.GetExtension(filePath) == DeployDotExtension)
-                {
-                    File.Move(filePath, filePath = GetNormalFilePath(filePath));
-                }
-
-                var fileExtension = Path.GetExtension(filePath);
-
-                if (fileExtension != null &&
-                    IgnoreReferences.Any(
-                        item => string.Equals(item, fileExtension, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    continue;
-                }
-
-                BaseReference fileReference;
-                try
-                {
-                    AssemblyName.GetAssemblyName(filePath);
-                    AssemblyReference assemblyReference;
-                    fileReference = assemblyReference = application.AssemblyReferences.Add(filePath);
-                    assemblyReference.AssemblyIdentity = AssemblyIdentity.FromFile(filePath);
-                }
-                catch (BadImageFormatException)
-                {
-                    fileReference = application.FileReferences.Add(filePath);
-                }
-
-                fileReference.TargetPath = PathUtils.GetRelativePath(filePath, root);
-            }
-
-            foreach (var directory in Directory.GetDirectories(currentDirectory))
-            {
-                InternalAddReferences(application, directory, root);
-            }
+            return deploy.AssemblyIdentity.Version;
         }
 
         private static void RecursiveDirectoryWalker(string path, Func<string, string> action)
@@ -253,11 +174,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
             {
                 RecursiveDirectoryWalker(subDirectory.FullName, action);
             }
-        }
-
-        public static string ReadApplicationVersion(DeployManifest deploy)
-        {
-            return deploy.AssemblyIdentity.Version;
         }
     }
 }

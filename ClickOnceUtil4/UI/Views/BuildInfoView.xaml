@@ -5,18 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClickOnceUtil4UI.UI.Views"
         xmlns:viewModels="clr-namespace:ClickOnceUtil4UI.UI.ViewModels"
+        xmlns:models="clr-namespace:ClickOnceUtil4UI.UI.Models"
         mc:Ignorable="d" WindowStartupLocation="CenterOwner" WindowStyle="ToolWindow" 
         d:DataContext="{d:DesignInstance viewModels:BuildInfoViewModel}" Name="BuildInfoWindow"
-        Title="BuildInfoView" SizeToContent="WidthAndHeight" Margin="10" Width="350" MinHeight="150">
+        Title="Short information" Width="450" Height="350">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <DataTemplate x:Key="InfoRow">
-            <Grid>
+            <Grid d:DataContext="{d:DesignInstance models:InfoData}" Margin="10,5,10,5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Key}" Style="{StaticResource StepExpenderTextPrefix}" />
-                <TextBlock Grid.Column="1" Text="{Binding Value}" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                    <TextBlock  Style="{StaticResource StepExpenderTextPrefix}" Text="(!)" Foreground="OrangeRed" Visibility="{Binding IsWarning, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock  Style="{StaticResource StepExpenderTextPrefix}" Text="{Binding Name}" Foreground="MediumSeaGreen" TextWrapping="Wrap" />
+                </StackPanel>
+                <TextBox Style="{Binding}" Grid.Column="1" Background="Transparent" BorderThickness="0" Text="{Binding Description, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" />
             </Grid>
         </DataTemplate>
     </Window.Resources>
@@ -26,10 +31,12 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>    
         <Grid>
-            <ItemsControl ItemsSource="{Binding Info}" ItemTemplate="{StaticResource InfoRow}"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Info}" ItemTemplate="{StaticResource InfoRow}"/>
+            </ScrollViewer>
         </Grid>
-        <Border Grid.Row="1" HorizontalAlignment="Center">
-            <StackPanel Orientation="Horizontal">
+        <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="DarkGoldenrod">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                 <Button Command="{Binding BuildCommand}" Width="150" Height="50" CommandParameter="{Binding ElementName=BuildInfoWindow}">
                     <TextBlock Text="Okay" Margin="5"  Style="{StaticResource MainTextStyle}" />
                 </Button>

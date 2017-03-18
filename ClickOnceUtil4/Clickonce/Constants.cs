@@ -1,4 +1,6 @@
-﻿namespace ClickOnceUtil4UI.Clickonce
+﻿using System.Collections.Generic;
+
+namespace ClickOnceUtil4UI.Clickonce
 {
     /// <summary>
     /// File contains known constants.
@@ -54,5 +56,22 @@
         /// Default version value.
         /// </summary>
         public const string DefaultVersion = "1.0.0.0";
+
+        /// <summary>
+        /// ClickOnce required file extensions.
+        /// </summary>
+        public static readonly IEnumerable<string> IgnoreReferences = new[]
+        {
+            // .application
+            $".{ApplicationExtension}",
+
+            // .manifest
+            $".{ManifestExtension}"
+        };
+
+        /// <summary>
+        /// .deploy extension string.
+        /// </summary>
+        public static readonly string DeployDotExtension = $".{DeployFileExtension}";
     }
 }

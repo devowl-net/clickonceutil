@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using ClickOnceUtil4UI.Clickonce;
+using ClickOnceUtil4UI.UI.Models;
 
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 
@@ -45,6 +47,13 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
             return true;
         }
 
+        /// <inheritdoc/>
+        public override IEnumerable<InfoData> GetBuildInformation(Container container)
+        {
+            return
+                InfoUtils.GetApplicationInfoData(container.Application)
+                    .Union(InfoUtils.GetDeployInfoData(container.Deploy));
+        }
         private bool CreateDeployFile(Container container, out string errorString)
         {
             DeployManifest deploy = container.Deploy;
@@ -72,7 +81,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         private bool CreateManifestFile(Container container, out string errorString)
         {
             // Add other file references
-            FlowUtils.AddReferences(container.Application, container.FullPath);
+            ReferenceUtils.AddReferences(container.Application, container.FullPath);
 
             // Set TrustInfo property
             SetApplicationTrustInfo(container);

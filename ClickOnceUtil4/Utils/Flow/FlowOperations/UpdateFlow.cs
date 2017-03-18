@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 
 using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.UI.Models;
@@ -48,6 +48,14 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
             ManifestWriter.WriteManifest(deploy);
 
             return true;
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<InfoData> GetBuildInformation(Container container)
+        {
+            return
+                InfoUtils.GetApplicationInfoData(container.Application)
+                    .Union(InfoUtils.GetDeployInfoData(container.Deploy));
         }
     }
 }

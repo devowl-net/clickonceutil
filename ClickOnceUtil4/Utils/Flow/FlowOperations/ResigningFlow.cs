@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.UI.Models;
@@ -38,7 +39,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         {
             string description = container.Certificate == null
                 ? "Certificate file will be generated automatically. Publisher name: \"CN = TempCA\""
-                : $"Certificate date:\n\r\n\r{container.Certificate}";
+                : $"Certificate date:{Environment.NewLine}{container.Certificate}";
 
             yield return new InfoData(nameof(container.Certificate), description);
         }

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Versioning;
 using System.Windows;
 
 using ClickOnceUtil4UI.Clickonce;
@@ -12,7 +9,6 @@ using ClickOnceUtil4UI.UI.Models;
 using ClickOnceUtil4UI.UI.Views;
 using ClickOnceUtil4UI.Utils;
 using ClickOnceUtil4UI.Utils.Flow;
-using ClickOnceUtil4UI.Utils.Flow.FlowOperations;
 using ClickOnceUtil4UI.Utils.Prism;
 
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
@@ -35,7 +31,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         private UserActions _selectedAction = UserActions.None;
 
         private string _selectedEntrypoint = string.Empty;
-        
+
         private string _version;
 
         /// <summary>
@@ -45,6 +41,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         {
             ChooseCommand = new DelegateCommand(ChooseHandler);
             BuildCommand = new DelegateCommand(BuildHandler);
+            CleanCacheCommand = new DelegateCommand(CleanCacheHandler);
 
             // TODO DELETE
             var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
@@ -63,6 +60,11 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         public DelegateCommand BuildCommand { get; private set; }
 
         /// <summary>
+        /// Clean cache button command.
+        /// </summary>
+        public DelegateCommand CleanCacheCommand { get; private set; }
+
+        /// <summary>
         /// Folder source path.
         /// </summary>
         public ClickOnceFolderInfo SelectedFolder
@@ -76,23 +78,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             {
                 _selectedFolder = value;
                 RaisePropertyChanged(() => SelectedFolder);
-                FolderUpdated(value);   
+                FolderUpdated(value);
             }
-        }
-
-        private void FolderUpdated(ClickOnceFolderInfo value)
-        {
-            AvaliableActions.Clear();
-
-            if (value != null)
-            {    
-                foreach (var action in _flowsContainer.GetActions(value))
-                {
-                    AvaliableActions.Add(action);
-                }   
-            }
-
-            SelectedAction = AvaliableActions.FirstOrDefault();
         }
 
         /// <summary>
@@ -190,6 +177,21 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             }
         }
 
+        private void FolderUpdated(ClickOnceFolderInfo value)
+        {
+            AvaliableActions.Clear();
+
+            if (value != null)
+            {
+                foreach (var action in _flowsContainer.GetActions(value))
+                {
+                    AvaliableActions.Add(action);
+                }
+            }
+
+            SelectedAction = AvaliableActions.FirstOrDefault();
+        }
+
         private void BuildHandler(object obj)
         {
             var container = new Container
@@ -199,14 +201,25 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 Deploy = DeployManifest?.Manifest,
                 Certificate = CertificateUtils.GenerateSelfSignedCertificate(),
                 Version = _version,
-                EntrypointPath = !string.IsNullOrEmpty(SelectedEntrypoint) ? Path.Combine(SelectedFolder.FullPath, SelectedEntrypoint) : null
+                EntrypointPath =
+                    !string.IsNullOrEmpty(SelectedEntrypoint)
+                        ? Path.Combine(SelectedFolder.FullPath, SelectedEntrypoint)
+                        : null
             };
 
-            IDictionary<string, string> buildInfo = _flowsContainer[SelectedAction].GetInformation();
+            var buildInfo = _flowsContainer[SelectedAction].GetBuildInformation(container).ToArray();
+            if (buildInfo.Any())
+            {
+                var buildModel = new BuildInfoViewModel(buildInfo);
+                var buildView = new BuildInfoView(buildModel) { Owner = Application.Current.MainWindow };
+                if (!buildView.ShowDialog().GetValueOrDefault())
+                {
+                    return;
+                }
+            }
 
             string errorString;
-            if (
-                !_flowsContainer[SelectedAction].Execute(container, out errorString))
+            if (!_flowsContainer[SelectedAction].Execute(container, out errorString))
             {
                 MessageBox.Show(errorString, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -222,7 +235,34 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 FolderUpdated(_selectedFolder);
             }
         }
-        
+
+        private void CleanCacheHandler(object obj)
+        {
+            var appsFolder = $@"C:\Users\{Environment.UserName}\AppData\Local\Apps";
+            var buildInfo = new[]
+            {
+                new InfoData(
+                    "Clean cache",
+                    $@"You are going to clean local applications cache. Be sure that no deployed programs running now. Cache folder location: [{
+                        appsFolder
+                        }], anyway next applications launch will make installation back. By the way its can be done manually:{Environment.NewLine}1. By cmd.exe command: ""rundll32 dfshim CleanOnlineAppCache""] {Environment.NewLine}2. Or just remove [{
+                        appsFolder}] folder content.")
+            };
+
+            var buildModel = new BuildInfoViewModel(buildInfo);
+            var buildView = new BuildInfoView(buildModel) { Owner = Application.Current.MainWindow };
+            if (buildView.ShowDialog().GetValueOrDefault())
+            {
+                FlowUtils.CleanOnlineAppCache();
+                
+                MessageBox.Show(
+                    "Operation completed!",
+                    "Information",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+        }
+
         private void ChooseHandler(object obj)
         {
             var dataContext = new ChooseFolderDialogViewModel(SelectedFolder?.FullPath);
@@ -242,11 +282,12 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                     var rootDirectory = new DirectoryInfo(SelectedFolder.FullPath);
                     var entrypoints =
                         rootDirectory.GetFiles("*.exe")
-                            .Union(rootDirectory.GetFiles($"*.{Constants.DeployFileExtension}")).ToArray();
-                    
+                            .Union(rootDirectory.GetFiles($"*.{Constants.DeployFileExtension}"))
+                            .ToArray();
+
                     foreach (var entrypointFile in entrypoints)
                     {
-                        ApplicationEntryPoints.Add(FlowUtils.GetNormalFilePath(entrypointFile.Name));
+                        ApplicationEntryPoints.Add(ReferenceUtils.GetNormalFilePath(entrypointFile.Name));
                     }
 
                     SelectedEntrypoint = entrypoints.Select(entry => entry.Name).FirstOrDefault();
@@ -267,8 +308,10 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             InitEntrypoints(action);
             if (action == UserActions.New || action == UserActions.Update)
             {
-                var deploy = SelectedFolder.DeployManifest ?? FlowUtils.CreateDeployManifest(SelectedFolder.FullPath, SelectedEntrypoint);
-                var application = SelectedFolder.ApplicationManifest ?? FlowUtils.CreateApplicationManifest(SelectedFolder.FullPath, SelectedEntrypoint);
+                var deploy = SelectedFolder.DeployManifest ??
+                             FlowUtils.CreateDeployManifest(SelectedFolder.FullPath, SelectedEntrypoint);
+                var application = SelectedFolder.ApplicationManifest ??
+                                  FlowUtils.CreateApplicationManifest(SelectedFolder.FullPath, SelectedEntrypoint);
 
                 Version = FlowUtils.ReadApplicationVersion(deploy) ?? Constants.DefaultVersion;
 

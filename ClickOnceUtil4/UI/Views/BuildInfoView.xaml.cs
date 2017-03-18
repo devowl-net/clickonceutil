@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace ClickOnceUtil4UI.UI.Views
+﻿namespace ClickOnceUtil4UI.UI.Views
 {
     /// <summary>
     /// Interaction logic for BuildInfoView.xaml
@@ -10,8 +8,9 @@ namespace ClickOnceUtil4UI.UI.Views
         /// <summary>
         /// Constructor for <see cref="BuildInfoView"/>.
         /// </summary>
-        public BuildInfoView()
+        public BuildInfoView(object dataContext)
         {
+            DataContext = dataContext;
             InitializeComponent();
         }
     }

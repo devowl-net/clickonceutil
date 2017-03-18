@@ -8,10 +8,11 @@
         /// <summary>
         /// Constructor for <see cref="InfoData"/>.
         /// </summary>
-        public InfoData(string name, string description)
+        public InfoData(string name, string description, bool isWarning = false)
         {
             Name = name;
             Description = description;
+            IsWarning = isWarning;
         }
 
         /// <summary>
@@ -23,5 +24,10 @@
         /// Description text.
         /// </summary>
         public string Description { get; private set; }
+
+        /// <summary>
+        /// Is information have a warning tag.
+        /// </summary>
+        public bool IsWarning { get; set; }
     }
 }
