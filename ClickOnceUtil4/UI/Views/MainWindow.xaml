@@ -115,8 +115,18 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.ColumnSpan="2" Orientation="Vertical">
                                 <StackPanel Orientation="Vertical">
-                                    <TextBlock Text="Entry point executable file" Style="{StaticResource ManifestNameTitleStyle}" />
+                                    <StackPanel>
+                                        <TextBlock Text="Entry point executable file" Style="{StaticResource ManifestNameTitleStyle}" />
+                                        <TextBlock Text="(This file will be launched after download)" Style="{StaticResource ManifestNameTitleStyle}" />
+                                    </StackPanel>
                                     <ComboBox ItemsSource="{Binding ApplicationEntryPoints}" SelectedItem="{Binding SelectedEntrypoint, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" />
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel>
+                                        <TextBlock Text="Application instance name" Style="{StaticResource ManifestNameTitleStyle}" />
+                                        <TextBlock Text="(Usually its a same name with executable file, but in the case when you have two published applications with a same name and versions second application installation will have an error result [same application already installed], there for two unique names for similar applications solves a problem)" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <TextBox Text="{Binding ApplicationName, Mode=TwoWay}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="ClickOnce application version (Not your application)" Style="{StaticResource ManifestNameTitleStyle}" />

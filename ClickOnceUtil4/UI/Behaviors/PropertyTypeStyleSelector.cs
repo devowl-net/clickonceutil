@@ -17,6 +17,11 @@ namespace ClickOnceUtil4UI.UI.Behaviors
     /// </summary>
     public class PropertyTypeStyleSelector : StyleSelector
     {
+        private readonly IEnumerable<string> _ignoredProperties = new[]
+        {
+            nameof(ApplicationManifest.IsClickOnceManifest)
+        };
+
         private readonly Dictionary<Type, string> _mapping = new Dictionary<Type, string>()
         {
             { typeof(string), "StringProperty" },
@@ -51,9 +56,9 @@ namespace ClickOnceUtil4UI.UI.Behaviors
             {
                 key = "UriStringProperty";
             }
-
+            
             // Last check
-            if (key == null && !_mapping.TryGetValue(propertyType, out key))
+            if (_ignoredProperties.Contains(propertyObject.PropertyName) || key == null && !_mapping.TryGetValue(propertyType, out key))
             {
                 return (Style)resources["Empty"];
             }

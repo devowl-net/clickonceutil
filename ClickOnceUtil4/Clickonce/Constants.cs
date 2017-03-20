@@ -55,7 +55,7 @@ namespace ClickOnceUtil4UI.Clickonce
         /// <summary>
         /// Default version value.
         /// </summary>
-        public const string DefaultVersion = "1.0.0.0";
+        public const string DefaultVersion = "1.1.1.1";
 
         /// <summary>
         /// ClickOnce required file extensions.

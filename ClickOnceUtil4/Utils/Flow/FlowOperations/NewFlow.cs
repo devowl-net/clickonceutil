@@ -132,7 +132,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         private void SetApplicationEndpointIdentity(Container container)
         {
             var application = container.Application;
-
+            
             for (int i = 0; i < application.AssemblyReferences.Count; i++)
             {
                 var refrence = application.AssemblyReferences[i];
@@ -143,9 +143,9 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
                     break;
                 }
             }
-
-            // application.AssemblyIdentity.Name = Path.GetFileName(container.EntrypointPath);
-            // application.AssemblyIdentity.Version = container.Version;
+            
+            application.AssemblyIdentity.Version = container.Version;
+            application.AssemblyIdentity.Name = container.ApplicationName;
 
             /*
              In the case of assembly damaged or assembly reference not exists in directory. Be insure about accessibility of all assemblies.
@@ -167,7 +167,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         private void SetDeployEntrypointIdentity(Container container)
         {
             var manifestPath = container.Application.SourcePath;
-            container.Deploy.AssemblyIdentity.Name = Path.GetFileName(container.Deploy.SourcePath);
+            container.Deploy.AssemblyIdentity.Name = container.ApplicationName;
 
             container.Deploy.AssemblyIdentity.Version = container.Version;
 

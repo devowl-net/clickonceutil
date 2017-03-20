@@ -175,5 +175,15 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 RecursiveDirectoryWalker(subDirectory.FullName, action);
             }
         }
+
+        /// <summary>
+        /// Reads ClickOnce application name.
+        /// </summary>
+        /// <param name="application"><see cref="ApplicationManifest"/> instance.</param>
+        /// <returns>Application Name.</returns>
+        public static string ReadApplicationName(ApplicationManifest application)
+        {
+            return application.AssemblyIdentity.Name ?? application.EntryPoint.AssemblyIdentity.Name;
+        }
     }
 }

@@ -34,6 +34,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
         private string _version;
 
+        private string _applicationName;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -174,6 +176,25 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             {
                 _selectedEntrypoint = value;
                 RaisePropertyChanged(() => SelectedEntrypoint);
+                ApplicationName = SelectedEntrypoint;
+            }
+        }
+
+        /// <summary>
+        /// Application name. 
+        /// </summary>
+        /// <remarks>The name shouldn't be like executable file name.</remarks>
+        public string ApplicationName
+        {
+            get
+            {
+                return _applicationName;
+            }
+
+            set
+            {
+                _applicationName = value;
+                RaisePropertyChanged(() => ApplicationName);
             }
         }
 
@@ -197,8 +218,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             var container = new Container
             {
                 FullPath = SelectedFolder.FullPath,
-                Application = ApplicationManifest?.Manifest,
-                Deploy = DeployManifest?.Manifest,
+                Application = ApplicationManifest?.Manifest ?? SelectedFolder.ApplicationManifest,
+                Deploy = DeployManifest?.Manifest ?? SelectedFolder.DeployManifest,
                 Certificate = CertificateUtils.GenerateSelfSignedCertificate(),
                 Version = _version,
                 EntrypointPath =
@@ -206,6 +227,9 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                         ? Path.Combine(SelectedFolder.FullPath, SelectedEntrypoint)
                         : null
             };
+
+            container.ApplicationName =
+                    !string.IsNullOrEmpty(ApplicationName) ? ApplicationName : Path.GetFileName(container.EntrypointPath);
 
             var buildInfo = _flowsContainer[SelectedAction].GetBuildInformation(container).ToArray();
             if (buildInfo.Any())
@@ -314,6 +338,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                                   FlowUtils.CreateApplicationManifest(SelectedFolder.FullPath, SelectedEntrypoint);
 
                 Version = FlowUtils.ReadApplicationVersion(deploy) ?? Constants.DefaultVersion;
+                ApplicationName = FlowUtils.ReadApplicationName(application);
 
                 DeployManifest = new ManifestEditorViewModel<DeployManifest>(deploy);
                 ApplicationManifest = new ManifestEditorViewModel<ApplicationManifest>(application);
