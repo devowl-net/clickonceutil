@@ -29,8 +29,10 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         {
             errorString = null;
 
-            FlowUtils.SignFile(container.Application, container.Certificate);
-            FlowUtils.SignFile(container.Deploy, container.Certificate);
+            var certificate = container.Certificate ?? CertificateUtils.GenerateSelfSignedCertificate();
+
+            FlowUtils.SignFile(container.Application, certificate);
+            FlowUtils.SignFile(container.Deploy, certificate);
             return true;
         }
 

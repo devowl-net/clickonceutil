@@ -176,7 +176,21 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             {
                 _selectedEntrypoint = value;
                 RaisePropertyChanged(() => SelectedEntrypoint);
-                ApplicationName = SelectedEntrypoint;
+                SelectedEntrypointChanged(_selectedEntrypoint);
+            }
+        }
+
+        private void SelectedEntrypointChanged(string selectedEntrypoint)
+        {
+            ApplicationName = selectedEntrypoint;
+            if (DeployManifest != null)
+            {
+                DeployManifest.Manifest.DeploymentUrl = FlowUtils.GetDeployUrl(
+                    SelectedFolder.FullPath,
+                    $"{SelectedEntrypoint}{Constants.DeployDotExtension}");
+
+                //RaisePropertyChanged(() => DeployManifest);
+                Нужен raise свойства!
             }
         }
 
@@ -220,7 +234,9 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 FullPath = SelectedFolder.FullPath,
                 Application = ApplicationManifest?.Manifest ?? SelectedFolder.ApplicationManifest,
                 Deploy = DeployManifest?.Manifest ?? SelectedFolder.DeployManifest,
-                Certificate = CertificateUtils.GenerateSelfSignedCertificate(),
+
+                // TODO no sets
+                Certificate = null,
                 Version = _version,
                 EntrypointPath =
                     !string.IsNullOrEmpty(SelectedEntrypoint)

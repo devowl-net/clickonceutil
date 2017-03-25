@@ -61,6 +61,8 @@ namespace ClickOnceUtil4UI.Utils
 
         private static void MakecertDialogBot(Process process)
         {
+            // TODO Prevent to use a MUI C:\Windows\System32\ru-RU\mssign32.dll.mui
+
             // Spy++ :
             // title: "Create Private Key Password"
             // None button: "None"

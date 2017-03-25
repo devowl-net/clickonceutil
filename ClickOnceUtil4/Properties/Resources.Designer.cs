@@ -92,9 +92,29 @@ namespace ClickOnceUtil4UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] Microsoft_Web_Administration {
+            get {
+                object obj = ResourceManager.GetObject("Microsoft_Web_Administration", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] pvk2pfx {
             get {
                 object obj = ResourceManager.GetObject("pvk2pfx", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] System_Windows_Interactivity {
+            get {
+                object obj = ResourceManager.GetObject("System_Windows_Interactivity", resourceCulture);
                 return ((byte[])(obj));
             }
         }

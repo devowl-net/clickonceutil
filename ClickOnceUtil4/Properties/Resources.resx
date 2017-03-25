@@ -127,4 +127,10 @@
   <data name="pvk2pfx" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pvk2pfx.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Microsoft_Web_Administration" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft.Web.Administration.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="System_Windows_Interactivity" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\System.Windows.Interactivity.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

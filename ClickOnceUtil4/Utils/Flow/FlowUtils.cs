@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 
 using ClickOnceUtil4UI.Clickonce;
 
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
+using Microsoft.Web.Administration;
 
 namespace ClickOnceUtil4UI.Utils.Flow
 {
@@ -23,22 +25,65 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// <returns>Returns <see cref="DeployManifest"/> instance.</returns>
         public static DeployManifest CreateDeployManifest(string root, string entrypoint)
         {
-            var @return = new DeployManifest($".NETFramework,Version={Constants.DefaultFramework}")
+            var fileName = $"{Path.GetFileNameWithoutExtension(entrypoint)}.{Constants.ApplicationExtension}";
+            return new DeployManifest($".NETFramework,Version={Constants.DefaultFramework}")
             {
                 SourcePath =
                     Path.Combine(
                         root,
-                        $"{Path.GetFileNameWithoutExtension(entrypoint)}.{Constants.ApplicationExtension}"),
+                        fileName),
                 Publisher = "Publisher",
                 Product = "Product",
                 MapFileExtensions = true,
                 UpdateMode = UpdateMode.Foreground,
-                UpdateEnabled = true
+                UpdateEnabled = true,
+                DeploymentUrl = GetDeployUrl(root, fileName)
             };
+        }
 
-            // TODO DELETE
-            @return.DeploymentUrl = "http://localhost/IISRoot/DELME/ClickOnceGen.application";
-            return @return;
+        /// <summary>
+        /// Get deploy file url.
+        /// </summary>
+        /// <param name="root">Root folder path.</param>
+        /// <param name="applicationFileName">Application file name.</param>
+        /// <returns></returns>
+        public static string GetDeployUrl(string root, string applicationFileName)
+        {
+            foreach (var site in new ServerManager().Sites)
+            {
+                foreach (var application in site.Applications)
+                {
+                    foreach (VirtualDirectory directory in application.VirtualDirectories)
+                    {
+                        if (root.StartsWith(directory.PhysicalPath))
+                        {
+                            var protocols = new[]
+                            {
+                                "http",
+                                "https"
+                            };
+
+                            var binding = site.Bindings.FirstOrDefault(b => protocols.Contains(b.Protocol));
+                            if (binding != null)
+                            {
+                                string protocol = binding.Protocol;
+                                string domainName = Environment.MachineName;
+                                if (!Equals(binding.EndPoint.Address, IPAddress.Any))
+                                {
+                                    domainName = binding.EndPoint.Address.ToString();
+                                }
+
+                                var deployUrl =
+                                    $"{protocol}://{domainName}{directory.Path}{root.Substring(directory.PhysicalPath.Length).Replace("\\", "/")}/{applicationFileName}";
+
+                                return deployUrl;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return $"http://domain/subfolder/{applicationFileName}";
         }
 
         /// <summary>
@@ -183,7 +228,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// <returns>Application Name.</returns>
         public static string ReadApplicationName(ApplicationManifest application)
         {
-            return application.AssemblyIdentity.Name ?? application.EntryPoint.AssemblyIdentity.Name;
+            return application.AssemblyIdentity.Name ?? application.EntryPoint?.AssemblyIdentity?.Name ?? Path.GetFileNameWithoutExtension(application.SourcePath);
         }
     }
 }
