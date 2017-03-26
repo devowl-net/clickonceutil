@@ -65,23 +65,46 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
             AddManifestReference(container);
 
             // Set global important settings
-            FlowUtils.SetGlobals(container.Deploy);
+            FlowUtils.SetGlobals(container.Deploy, container);
 
             if (!InfoUtils.IsValidManifest(deploy, out errorString))
             {
                 return false;
             }
-
+            
             // Writing to file
-            ManifestWriter.WriteManifest(deploy, deploy.SourcePath, Constants.DefaultFramework);
+            ManifestWriter.WriteManifest(deploy, deploy.SourcePath, FlowUtils.GetTargetFramework(container));
 
+            ProcessAfterSave(deploy, container.Application.TargetFrameworkVersion);
             return true;
         }
 
+        private void ProcessAfterSave(Manifest manifest, string targetFrameworkVersion)
+        {
+            if (targetFrameworkVersion == "v4.5")
+            {
+                // TODO Bugfix
+                // https://connect.microsoft.com/VisualStudio/feedback/details/754487/mage-exe-hashes-with-sha1-but-maintains-to-hash-with-sha256
+                /*
+                    "Application manifest has either a different computed hash than the one specified or no hash specified at all."
+
+                    Simply change
+                        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+                    to
+                        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+                    in the affected manifest files.
+                */
+
+                string text = File.ReadAllText(manifest.SourcePath);
+                text = text.Replace("http://www.w3.org/2000/09/xmldsig#sha1", "http://www.w3.org/2000/09/xmldsig#sha256");
+                File.WriteAllText(manifest.SourcePath, text);
+            }
+        }
+        
         private bool CreateManifestFile(Container container, out string errorString)
         {
             // Add other file references
-            ReferenceUtils.AddReferences(container.Application, container.FullPath);
+            ReferenceUtils.AddReferences(container);
 
             // Set TrustInfo property
             SetApplicationTrustInfo(container);
@@ -90,7 +113,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
             SetApplicationEndpointIdentity(container);
 
             // Set global important settings
-            FlowUtils.SetGlobals(container.Application);
+            FlowUtils.SetGlobals(container.Application, container);
 
             if (!InfoUtils.IsValidManifest(container.Application, out errorString))
             {
@@ -101,7 +124,9 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
             ManifestWriter.WriteManifest(
                 container.Application,
                 container.Application.SourcePath,
-                Constants.DefaultFramework);
+                FlowUtils.GetTargetFramework(container));
+
+            ProcessAfterSave(container.Application, container.Application.TargetFrameworkVersion);
 
             return true;
         }

@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
+using ClickOnceUtil4UI.Utils.Prism;
+
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 
 namespace ClickOnceUtil4UI.UI.Models
@@ -12,7 +14,7 @@ namespace ClickOnceUtil4UI.UI.Models
     /// <summary>
     /// Property editor object.
     /// </summary>
-    public class PropertyObject : IDataErrorInfo
+    public class PropertyObject : NotificationObject, IDataErrorInfo
     {
         private readonly object _sourceObject;
 
@@ -74,6 +76,7 @@ namespace ClickOnceUtil4UI.UI.Models
             set
             {
                 SetPropertyValue(value);
+                RaisePropertyChanged(() => StringValue);
             }
         }
 
@@ -90,6 +93,7 @@ namespace ClickOnceUtil4UI.UI.Models
             set
             {
                 _property.SetValue(_sourceObject, value, null);
+                RaisePropertyChanged(() => BooleanValue);
             }
         }
 
@@ -117,6 +121,7 @@ namespace ClickOnceUtil4UI.UI.Models
             set
             {
                 _property.SetValue(_sourceObject, value, null);
+                RaisePropertyChanged(() => SelectedEnumValue);
             }
         }
 
@@ -133,6 +138,7 @@ namespace ClickOnceUtil4UI.UI.Models
             set
             {
                 _property.SetValue(_sourceObject, value, null);
+                RaisePropertyChanged(() => IntegerValue);
             }
         }
 

@@ -12,6 +12,7 @@ using ClickOnceUtil4UI.Utils.Flow;
 using ClickOnceUtil4UI.Utils.Prism;
 
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
+using BuildDeployManifest = Microsoft.Build.Tasks.Deployment.ManifestUtilities.DeployManifest;
 
 namespace ClickOnceUtil4UI.UI.ViewModels
 {
@@ -185,12 +186,26 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             ApplicationName = selectedEntrypoint;
             if (DeployManifest != null)
             {
-                DeployManifest.Manifest.DeploymentUrl = FlowUtils.GetDeployUrl(
-                    SelectedFolder.FullPath,
-                    $"{SelectedEntrypoint}{Constants.DeployDotExtension}");
+                var deployFileName =
+                    $"{Path.GetFileNameWithoutExtension(SelectedEntrypoint)}.{Constants.ApplicationExtension}";
 
-                //RaisePropertyChanged(() => DeployManifest);
-                Нужен raise свойства!
+                // Set DeployUrl
+                var deploymentUrl = FlowUtils.GetDeployUrl(
+                    SelectedFolder.FullPath,
+                    deployFileName);
+
+                var propertyField =
+                    DeployManifest.Properties.First(
+                        p =>
+                            p.PropertyName ==
+                            nameof(BuildDeployManifest.DeploymentUrl));
+
+                propertyField.StringValue = deploymentUrl;
+
+                // Set SourcePath
+                var root = SelectedFolder.FullPath;
+                propertyField = DeployManifest.Properties.First(p => p.PropertyName == nameof(BuildDeployManifest.SourcePath));
+                propertyField.StringValue = Path.Combine(root, deployFileName);
             }
         }
 

@@ -40,7 +40,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 DeploymentUrl = GetDeployUrl(root, fileName)
             };
         }
-
+        
         /// <summary>
         /// Get deploy file url.
         /// </summary>
@@ -99,7 +99,9 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 SourcePath = Path.Combine(root, $"{entrypoint}.{Constants.ManifestExtension}"),
 
                 // Windows XP
-                OSVersion = "4.10.0.0"
+                OSVersion = "4.10.0.0",
+
+                TargetFrameworkVersion = Constants.DefaultFramework
             };
         }
 
@@ -152,11 +154,24 @@ namespace ClickOnceUtil4UI.Utils.Flow
         }
 
         /// <summary>
+        /// Get target framework.
+        /// </summary>
+        /// <param name="container">Container instance.</param>
+        /// <returns>Target framework.</returns>
+        public static string GetTargetFramework(Container container)
+        {
+            return container.Application.TargetFrameworkVersion;
+        }
+
+        /// <summary>
         /// Set global important settings.
         /// </summary>
         /// <param name="manifest">Manifest file reference.</param>
-        public static void SetGlobals(Manifest manifest)
+        /// <param name="container">Container instance.</param>
+        public static void SetGlobals(Manifest manifest, Container container)
         {
+            var targetFramewrok = GetTargetFramework(container);
+
             /*
                 * Activation of http://localhost/IISRoot/DELME/Launcher.application resulted in exception. Following failure messages were detected:
 		            + Exception reading manifest from http://localhost/IISRoot/DELME/Launcher.application: the manifest may not be valid or the file could not be opened.
@@ -167,7 +182,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
              */
             const string Architecture = "msil";
             const string Language = "neutral";
-
+            
             if (manifest.AssemblyIdentity != null)
             {
                 manifest.AssemblyIdentity.ProcessorArchitecture = Architecture;
@@ -188,7 +203,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
             }
 
             manifest.ResolveFiles();
-            manifest.UpdateFileInfo(Constants.DefaultFramework);
+            manifest.UpdateFileInfo(targetFramewrok);
         }
 
         /// <summary>

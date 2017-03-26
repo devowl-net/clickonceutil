@@ -17,10 +17,12 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// <summary>
         /// Add required files from root directory.
         /// </summary>
-        /// <param name="application"><see cref="ApplicationManifest"/> file reference.</param>
-        /// <param name="root">Root path to directory.</param>
-        public static void AddReferences(ApplicationManifest application, string root)
+        /// <param name="container">Container object.</param>
+        public static void AddReferences(Container container)
         {
+            string root = container.FullPath;
+            ApplicationManifest application = container.Application;
+
             // Cleaning references
             application.AssemblyReferences.Clear();
             application.FileReferences.Clear();
@@ -38,7 +40,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
             InternalAddReferences(application, root, root);
 
             application.ResolveFiles();
-            application.UpdateFileInfo(Constants.DefaultFramework);
+            application.UpdateFileInfo(application.TargetFrameworkVersion);
         }
 
         /// <summary>
