@@ -37,7 +37,8 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 MapFileExtensions = true,
                 UpdateMode = UpdateMode.Foreground,
                 UpdateEnabled = true,
-                DeploymentUrl = GetDeployUrl(root, fileName)
+                DeploymentUrl = GetDeployUrl(root, fileName),
+                CreateDesktopShortcut = true
             };
         }
         
@@ -187,30 +188,43 @@ namespace ClickOnceUtil4UI.Utils.Flow
 
                 My current OS is windows10 x64, so x86 marks did a bad things
              */
-            const string Architecture = "msil";
-            const string Language = "neutral";
-            
+
+            // EntryPoint
+            UpdateAssemblyIdentity(manifest.EntryPoint.AssemblyIdentity);
+
+            // AssemblyIdentity
             if (manifest.AssemblyIdentity != null)
             {
-                manifest.AssemblyIdentity.ProcessorArchitecture = Architecture;
-                manifest.AssemblyIdentity.Culture = string.IsNullOrEmpty(manifest.AssemblyIdentity.Culture)
-                    ? Language
-                    : manifest.AssemblyIdentity.Culture;
+                UpdateAssemblyIdentity(manifest.AssemblyIdentity);
             }
 
+            // AssemblyReferences
             foreach (AssemblyReference assembly in manifest.AssemblyReferences)
             {
                 if (assembly.AssemblyIdentity != null)
                 {
-                    assembly.AssemblyIdentity.ProcessorArchitecture = Architecture;
-                    assembly.AssemblyIdentity.Culture = string.IsNullOrEmpty(assembly.AssemblyIdentity.Culture)
-                        ? Language
-                        : assembly.AssemblyIdentity.Culture;
+                    UpdateAssemblyIdentity(assembly.AssemblyIdentity);
                 }
             }
 
             manifest.ResolveFiles();
             manifest.UpdateFileInfo(targetFramewrok);
+        }
+
+        private static void UpdateAssemblyIdentity(AssemblyIdentity assemblyIdentity)
+        {
+            if (assemblyIdentity.Name == "Microsoft.Windows.CommonLanguageRuntime")
+            {
+                return;
+            }
+
+            const string Architecture = "msil";
+            const string Language = "neutral";
+
+            assemblyIdentity.ProcessorArchitecture = Architecture;
+            assemblyIdentity.Culture = string.IsNullOrEmpty(assemblyIdentity.Culture)
+                ? Language
+                : assemblyIdentity.Culture;
         }
 
         /// <summary>

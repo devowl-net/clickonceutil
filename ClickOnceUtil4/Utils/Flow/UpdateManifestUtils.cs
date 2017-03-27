@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
+using ClickOnceUtil4UI.Clickonce;
+
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 
 namespace ClickOnceUtil4UI.Utils.Flow
@@ -142,6 +144,8 @@ namespace ClickOnceUtil4UI.Utils.Flow
 
             for (int i = 0; i < application.AssemblyReferences.Count; i++)
             {
+                // Strong-Name signing
+                // https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx
                 var refrence = application.AssemblyReferences[i];
                 if (refrence.SourcePath == container.EntrypointPath)
                 {
@@ -174,14 +178,14 @@ namespace ClickOnceUtil4UI.Utils.Flow
         private static void SetDeployEntrypointIdentity(Container container)
         {
             var manifestPath = container.Application.SourcePath;
-            container.Deploy.AssemblyIdentity.Name = container.ApplicationName;
-
+            container.Deploy.AssemblyIdentity.Name = $"{container.ApplicationName}.{Constants.ApplicationExtension}";
             container.Deploy.AssemblyIdentity.Version = container.Version;
 
             var manifestReference = new AssemblyReference(manifestPath)
             {
                 AssemblyIdentity = new AssemblyIdentity(container.Application.AssemblyIdentity)
             };
+
             container.Deploy.AssemblyReferences.Add(manifestReference);
             container.Deploy.EntryPoint = manifestReference;
         }
