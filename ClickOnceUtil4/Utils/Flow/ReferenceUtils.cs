@@ -18,7 +18,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// Add required files from root directory.
         /// </summary>
         /// <param name="container">Container object.</param>
-        public static void AddReferences(Container container)
+        public static void AddAssemblyReferences(Container container)
         {
             string root = container.FullPath;
             ApplicationManifest application = container.Application;
@@ -37,7 +37,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
             application.AssemblyReferences.Add(commonLanguageRuntime);
 
             // Add all files references
-            InternalAddReferences(application, root, root);
+            InternalAddAssemblyReferences(application, root, root);
 
             application.ResolveFiles();
             application.UpdateFileInfo(application.TargetFrameworkVersion);
@@ -59,7 +59,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
             return path;
         }
 
-        private static void InternalAddReferences(ApplicationManifest application, string currentDirectory, string root)
+        private static void InternalAddAssemblyReferences(ApplicationManifest application, string currentDirectory, string root)
         {
             foreach (var file in Directory.GetFiles(currentDirectory))
             {
@@ -96,7 +96,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
 
             foreach (var directory in Directory.GetDirectories(currentDirectory))
             {
-                InternalAddReferences(application, directory, root);
+                InternalAddAssemblyReferences(application, directory, root);
             }
         }
     }

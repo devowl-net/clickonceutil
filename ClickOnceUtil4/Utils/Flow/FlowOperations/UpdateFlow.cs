@@ -44,10 +44,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
                 throw new ArgumentNullException(nameof(deploy));
             }
 
-            ManifestWriter.WriteManifest(application);
-            ManifestWriter.WriteManifest(deploy);
-
-            return true;
+            return UpdateManifestUtils.RecreateReferences(container, out errorString);
         }
 
         /// <inheritdoc/>

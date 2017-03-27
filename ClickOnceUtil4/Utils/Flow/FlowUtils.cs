@@ -67,14 +67,21 @@ namespace ClickOnceUtil4UI.Utils.Flow
                             if (binding != null)
                             {
                                 string protocol = binding.Protocol;
-                                string domainName = Environment.MachineName;
+                                int portNumber = binding.EndPoint.Port;
+                                string domainName = Environment.MachineName.ToLower();
                                 if (!Equals(binding.EndPoint.Address, IPAddress.Any))
                                 {
                                     domainName = binding.EndPoint.Address.ToString();
                                 }
 
+                                string port = string.Empty;
+                                if (protocol == "http" && portNumber != 80 || protocol == "https" && portNumber != 443)
+                                {
+                                    port = $":{portNumber}";
+                                }
+
                                 var deployUrl =
-                                    $"{protocol}://{domainName}{directory.Path}{root.Substring(directory.PhysicalPath.Length).Replace("\\", "/")}/{applicationFileName}";
+                                    $"{protocol}://{domainName}{port}{directory.Path}{root.Substring(directory.PhysicalPath.Length).Replace("\\", "/")}/{applicationFileName}";
 
                                 return deployUrl;
                             }

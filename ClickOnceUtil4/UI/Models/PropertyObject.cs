@@ -150,29 +150,7 @@ namespace ClickOnceUtil4UI.UI.Models
                 throw new NotImplementedException();
             }
         }
-
-        /// <summary>
-        /// Assembly reference list.
-        /// </summary>
-        public ObservableCollection<AssemblyReference> AssemblyReferences { get; } =
-            new ObservableCollection<AssemblyReference>();
-
-        /// <summary>
-        /// Selected assembly reference.
-        /// </summary>
-        public AssemblyReference SelectedAssemblyReference
-        {
-            get
-            {
-                return (AssemblyReference)_property.GetValue(_sourceObject, null);
-            }
-
-            set
-            {
-                _property.SetValue(_sourceObject, value, null);
-            }
-        }
-
+        
         /// <inheritdoc/>
         public string this[string columnName]
         {

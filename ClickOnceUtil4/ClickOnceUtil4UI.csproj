@@ -173,6 +173,7 @@
     <Compile Include="Utils\Flow\FlowUtils.cs" />
     <Compile Include="Utils\Flow\InfoUtils.cs" />
     <Compile Include="Utils\Flow\ReferenceUtils.cs" />
+    <Compile Include="Utils\Flow\UpdateManifestUtils.cs" />
     <Compile Include="Utils\HyperlinkExtensions.cs" />
     <Compile Include="Utils\Prism\DelegateCommand.cs" />
     <Compile Include="Utils\PathUtils.cs" />
