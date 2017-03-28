@@ -43,7 +43,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
         }
         
         /// <summary>
-        /// Get deploy file url.
+        /// Get deploy file URL.
         /// </summary>
         /// <param name="root">Root folder path.</param>
         /// <param name="applicationFileName">Application file name.</param>
@@ -56,7 +56,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 {
                     foreach (VirtualDirectory directory in application.VirtualDirectories)
                     {
-                        if (root.StartsWith(directory.PhysicalPath))
+                        if (IsPathInside(root, directory.PhysicalPath))
                         {
                             var protocols = new[]
                             {
@@ -80,9 +80,9 @@ namespace ClickOnceUtil4UI.Utils.Flow
                                 {
                                     port = $":{portNumber}";
                                 }
-
+                                
                                 var deployUrl =
-                                    $"{protocol}://{domainName}{port}{directory.Path}{root.Substring(directory.PhysicalPath.Length).Replace("\\", "/")}/{applicationFileName}";
+                                    $"{protocol}://{domainName}{port}{directory.Path}{root.Substring(directory.PhysicalPath.Length).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)}/{applicationFileName}";
 
                                 return deployUrl;
                             }
@@ -92,6 +92,21 @@ namespace ClickOnceUtil4UI.Utils.Flow
             }
 
             return $"http://domain/subfolder/{applicationFileName}";
+        }
+
+        private static bool IsPathInside(string root, string physicalPath)
+        {
+            if (root == physicalPath)
+            {
+                return true;
+            }
+
+            if (root.StartsWith(physicalPath) && root[physicalPath.Length] == Path.DirectorySeparatorChar)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

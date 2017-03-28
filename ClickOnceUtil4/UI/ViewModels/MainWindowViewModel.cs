@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 
 using ClickOnceUtil4UI.Clickonce;
@@ -12,6 +13,8 @@ using ClickOnceUtil4UI.Utils.Flow;
 using ClickOnceUtil4UI.Utils.Prism;
 
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
+using Microsoft.Win32;
+
 using BuildDeployManifest = Microsoft.Build.Tasks.Deployment.ManifestUtilities.DeployManifest;
 
 namespace ClickOnceUtil4UI.UI.ViewModels
@@ -37,6 +40,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
         private string _applicationName;
 
+        private string _selectedCetificatePath;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -45,11 +50,53 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             ChooseCommand = new DelegateCommand(ChooseHandler);
             BuildCommand = new DelegateCommand(BuildHandler);
             CleanCacheCommand = new DelegateCommand(CleanCacheHandler);
+            ChooseCertificateCommand = new DelegateCommand(ChooseCertificateHandler);
 
             // TODO DELETE
             var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
             newFolder.Update(true);
             SelectedFolder = newFolder;
+        }
+
+        private void ChooseCertificateHandler(object obj)
+        {
+            // https://msdn.microsoft.com/en-us/library/che5h906.aspx
+            var fileDialog = new OpenFileDialog()
+            {
+                CheckFileExists = true,
+                Filter = "Certificate Files|*.pfx",
+                Multiselect = false,
+                InitialDirectory = Environment.CurrentDirectory,
+                Title = "Please choose certificate file",
+                CheckPathExists = true
+            };
+
+            if (fileDialog.ShowDialog(Application.Current.MainWindow).GetValueOrDefault())
+            {
+                SelectedCetificatePath = fileDialog.FileName;
+            }
+        }
+
+        /// <summary>
+        /// Create and use temporary certificate.
+        /// </summary>
+        public bool IsTemporaryCertificate { get; set; }
+
+        /// <summary>
+        /// Path to selected certificate file.
+        /// </summary>
+        public string SelectedCetificatePath
+        {
+            get
+            {
+                return _selectedCetificatePath;
+            }
+
+            set
+            {
+                _selectedCetificatePath = value;
+                RaisePropertyChanged(() => SelectedCetificatePath);
+            }
         }
 
         /// <summary>
@@ -66,6 +113,11 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         /// Clean cache button command.
         /// </summary>
         public DelegateCommand CleanCacheCommand { get; private set; }
+
+        /// <summary>
+        /// Choose certificate file command.
+        /// </summary>
+        public DelegateCommand ChooseCertificateCommand { get; private set; }
 
         /// <summary>
         /// Folder source path.
@@ -249,9 +301,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 FullPath = SelectedFolder.FullPath,
                 Application = ApplicationManifest?.Manifest ?? SelectedFolder.ApplicationManifest,
                 Deploy = DeployManifest?.Manifest ?? SelectedFolder.DeployManifest,
-
-                // TODO no sets
-                Certificate = null,
+                Certificate = GetCertificate(),
                 Version = _version,
                 EntrypointPath =
                     !string.IsNullOrEmpty(SelectedEntrypoint)
@@ -289,6 +339,16 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 _selectedFolder.Update(true);
                 FolderUpdated(_selectedFolder);
             }
+        }
+
+        private X509Certificate2 GetCertificate()
+        {
+            if (IsTemporaryCertificate)
+            {
+                return null;
+            }
+
+            return new X509Certificate2(X509Certificate.CreateFromSignedFile(SelectedCetificatePath));
         }
 
         private void CleanCacheHandler(object obj)
