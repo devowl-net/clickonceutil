@@ -53,9 +53,9 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             ChooseCertificateCommand = new DelegateCommand(ChooseCertificateHandler);
 
             // TODO DELETE
-            var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
-            newFolder.Update(true);
-            SelectedFolder = newFolder;
+            //var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
+            //newFolder.Update(true);
+            //SelectedFolder = newFolder;
         }
 
         private void ChooseCertificateHandler(object obj)
@@ -343,7 +343,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
         private X509Certificate2 GetCertificate()
         {
-            if (IsTemporaryCertificate)
+            if (IsTemporaryCertificate || string.IsNullOrEmpty(SelectedCetificatePath))
             {
                 return null;
             }

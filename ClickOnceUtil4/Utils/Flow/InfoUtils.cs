@@ -6,6 +6,7 @@ using System.Text;
 
 using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.UI.Models;
+using ClickOnceUtil4UI.Utils.EmbeddedManifests;
 
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 
@@ -102,6 +103,24 @@ namespace ClickOnceUtil4UI.Utils.Flow
             }
         }
 
+        private static bool HasEmbeddedManifestInsideExecutableAssemblies(Manifest application, out string assemblyNames)
+        {
+            bool hasAssemblies = false;
+            var assemblies = new List<string>();
+            foreach (AssemblyReference assembly in application.AssemblyReferences)
+            {
+                if (Path.GetExtension(assembly.SourcePath) == $".{Constants.ExecutableFileExtension}" &&
+                    EmbeddedManifest.Read(assembly.SourcePath) != null)
+                {
+                    assemblies.Add(Path.GetFileName(assembly.SourcePath));
+                    hasAssemblies = true;
+                }
+            }
+
+            assemblyNames = string.Join(", ", assemblies);
+            return hasAssemblies;
+        }
+
         private static bool HasStrongNameExecutableAssemblies(Manifest application, out string assemblyNames)
         {
             bool hasAssemblies = false;
@@ -159,16 +178,28 @@ namespace ClickOnceUtil4UI.Utils.Flow
                     $"{manifest.GetType().Name} errors:{Environment.NewLine + Environment.NewLine}{ReadOutputMessages(manifest.OutputMessages)}";
                 return false;
             }
-
-
+            
             string assemblies;
             if (HasStrongNameExecutableAssemblies(manifest, out assemblies))
             {
                 // https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx
                 errorString = $"You have a Strong namged EXE files ({assemblies}) its not allowed, unless it will be deployed to GAC. Read information from here https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx (ClickOnce Manifest Signing and Strong-Name Assembly Signing Using Visual Studio Project Designer's Signing Page)";
+
                 return false;
             }
 
+            if (HasEmbeddedManifestInsideExecutableAssemblies(manifest, out assemblies))
+            {
+                errorString = $"You have assemblies ({assemblies}) contains embedded manifest information, its unacceptable and will be cause of error:"
+                    + Environment.NewLine + Environment.NewLine +
+                    "+ Reference in the manifest does not match the identity of the downloaded assembly [AppName.exe]"
+                    + Environment.NewLine + Environment.NewLine +
+                    @"So just go to [Project property] -> [Application tab] -> and change [Embed manifest with default settings] to [Create application without a manifest]."
+                    + Environment.NewLine +
+                    "If you have not access to source code then you can use [mt.exe] utility by Microsoft for adding or modification of assemblies. BTW the problem source is <assemblyIdentity /> tag of manifest (Didn't try to remove).";
+
+                return false;
+            }
 
             return true;
         }

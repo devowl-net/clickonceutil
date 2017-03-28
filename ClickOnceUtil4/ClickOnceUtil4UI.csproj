@@ -150,6 +150,8 @@
     <Compile Include="Utils\BuildTasks40SummaryUtils.cs" />
     <Compile Include="Utils\CertificateUtils.cs" />
     <Compile Include="Utils\DeepCopyExtension.cs" />
+    <Compile Include="Utils\EmbeddedManifests\EmbeddedManifest.cs" />
+    <Compile Include="Utils\EmbeddedManifests\NativeMethods.cs" />
     <Compile Include="Utils\Flow\Container.cs" />
     <Compile Include="Utils\Flow\FlowsContainer.cs" />
     <Compile Include="Utils\Flow\FlowOperations\FlowBase.cs" />
