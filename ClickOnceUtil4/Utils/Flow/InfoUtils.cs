@@ -121,23 +121,23 @@ namespace ClickOnceUtil4UI.Utils.Flow
             return hasAssemblies;
         }
 
-        private static bool HasStrongNameExecutableAssemblies(Manifest application, out string assemblyNames)
-        {
-            bool hasAssemblies = false;
-            var assemblies = new List<string>();
-            foreach (AssemblyReference assembly in application.AssemblyReferences)
-            {
-                if (Path.GetExtension(assembly.SourcePath) == $".{Constants.ExecutableFileExtension}" &&
-                    assembly.AssemblyIdentity.IsStrongName)
-                {
-                    assemblies.Add(Path.GetFileName(assembly.SourcePath));
-                    hasAssemblies = true;
-                }
-            }
+        //private static bool HasStrongNameExecutableAssemblies(Manifest application, out string assemblyNames)
+        //{
+        //    bool hasAssemblies = false;
+        //    var assemblies = new List<string>();
+        //    foreach (AssemblyReference assembly in application.AssemblyReferences)
+        //    {
+        //        if (Path.GetExtension(assembly.SourcePath) == $".{Constants.ExecutableFileExtension}" &&
+        //            assembly.AssemblyIdentity.IsStrongName)
+        //        {
+        //            assemblies.Add(Path.GetFileName(assembly.SourcePath));
+        //            hasAssemblies = true;
+        //        }
+        //    }
 
-            assemblyNames = string.Join(", ", assemblies);
-            return hasAssemblies;
-        }
+        //    assemblyNames = string.Join(", ", assemblies);
+        //    return hasAssemblies;
+        //}
 
         /// <summary>
         /// Check filling of required for generation fields.
@@ -180,13 +180,13 @@ namespace ClickOnceUtil4UI.Utils.Flow
             }
             
             string assemblies;
-            if (HasStrongNameExecutableAssemblies(manifest, out assemblies))
-            {
-                // https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx
-                errorString = $"You have a Strong namged EXE files ({assemblies}) its not allowed, unless it will be deployed to GAC. Read information from here https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx (ClickOnce Manifest Signing and Strong-Name Assembly Signing Using Visual Studio Project Designer's Signing Page)";
+            //if (HasStrongNameExecutableAssemblies(manifest, out assemblies))
+            //{
+            //    // https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx
+            //    errorString = $"You have a Strong namged EXE files ({assemblies}) its not allowed, unless it will be deployed to GAC. Read information from here https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx (ClickOnce Manifest Signing and Strong-Name Assembly Signing Using Visual Studio Project Designer's Signing Page)";
 
-                return false;
-            }
+            //    return false;
+            //}
 
             if (HasEmbeddedManifestInsideExecutableAssemblies(manifest, out assemblies))
             {

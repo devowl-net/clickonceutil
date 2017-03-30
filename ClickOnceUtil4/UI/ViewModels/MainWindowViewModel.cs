@@ -47,15 +47,16 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         /// </summary>
         public MainWindowViewModel()
         {
+            MenuViewModel = new MenuViewModel(this);
             ChooseCommand = new DelegateCommand(ChooseHandler);
             BuildCommand = new DelegateCommand(BuildHandler);
             CleanCacheCommand = new DelegateCommand(CleanCacheHandler);
             ChooseCertificateCommand = new DelegateCommand(ChooseCertificateHandler);
 
             // TODO DELETE
-            //var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
-            //newFolder.Update(true);
-            //SelectedFolder = newFolder;
+            var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
+            newFolder.Update(true);
+            SelectedFolder = newFolder;
         }
 
         private void ChooseCertificateHandler(object obj)
@@ -76,6 +77,11 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 SelectedCetificatePath = fileDialog.FileName;
             }
         }
+
+        /// <summary>
+        /// Menu view model.
+        /// </summary>
+        public MenuViewModel MenuViewModel { get; set; }
 
         /// <summary>
         /// Create and use temporary certificate.

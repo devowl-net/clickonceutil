@@ -310,9 +310,17 @@ namespace ClickOnceUtil4UI.UI.Models
             else
             {
                 // deciding about ClickOnce application possibilities 
-                if (ClickOnceFolderInfoUtils.IsFolderCanBeClickOnceApplication(FullPath))
+                if (ClickOnceFolderInfoUtils.IsFolderCanBeClickOnceApplication(FullPath, out errorMessage))
                 {
                     FolderType = FolderTypes.CanBeAnApplication;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        ApplicationManifestError = errorMessage;
+                        FolderType = FolderTypes.UnknownClickOnceApplication;
+                    }
                 }
             }
         }

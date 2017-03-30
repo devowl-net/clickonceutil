@@ -144,6 +144,7 @@
     <Compile Include="UI\Converters\TextLeftTrimmerConverter.cs" />
     <Compile Include="UI\Models\InfoData.cs" />
     <Compile Include="UI\ViewModels\BuildInfoViewModel.cs" />
+    <Compile Include="UI\ViewModels\MenuViewModel.cs" />
     <Compile Include="UI\Views\BuildInfoView.xaml.cs">
       <DependentUpon>BuildInfoView.xaml</DependentUpon>
     </Compile>

@@ -69,9 +69,12 @@ namespace ClickOnceUtil4UI.Utils
         /// Folder can to be the ClickOnce application.
         /// </summary>
         /// <param name="fullPath">Folder path.</param>
+        /// <param name="errorString">Error text.</param>
         /// <returns>Is it possible.</returns>
-        public static bool IsFolderCanBeClickOnceApplication(string fullPath)
+        public static bool IsFolderCanBeClickOnceApplication(string fullPath, out string errorString)
         {
+            errorString = null;
+
             /*
              Requirements:
              1. Inside folder exists any executable file which one target is v4.0. (EntryPoint)
@@ -79,13 +82,22 @@ namespace ClickOnceUtil4UI.Utils
              */
             foreach (
                 var executableFilePath in
-                    Directory.GetFiles(fullPath, $"*.{Clickonce.Constants.ExecutableFileExtension}"))
+                    Directory.GetFiles(fullPath, $"*.{Constants.ExecutableFileExtension}"))
             {
                 Assembly assembly;
 
                 try
                 {
                     assembly = Assembly.LoadFile(executableFilePath);
+                }
+                catch (NotSupportedException)
+                {
+                    // Its happens when you downloaded executable assembly from Internet and Windows marked it as unknown. 
+                    // Solution is go to [File property] -> [Unblock] or [Check Unblock and press Apply]
+                    errorString =
+                        $"Assembly {executableFilePath} was downloaded from Internet and have lock mark by Windows. Just go to [File property] -> [Unblock] or [Check Unblock and press Apply]";
+                    
+                    continue;
                 }
                 catch (BadImageFormatException)
                 {

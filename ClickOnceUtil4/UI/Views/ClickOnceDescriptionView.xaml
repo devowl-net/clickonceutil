@@ -66,7 +66,7 @@
             </StackPanel>
             
             <!-- Application info-->
-            <StackPanel Visibility="{Binding DeployManifestError, Mode=OneWay, Converter={StaticResource InvertedAnyValueToVisibilityConverter}}" Orientation="Vertical">
+            <StackPanel Visibility="{Binding DeployManifest, Mode=OneWay, Converter={StaticResource AnyValueToVisibilityConverter}}" Orientation="Vertical">
                 <TextBlock>
                     Publisher:<Run Text="{Binding DeployManifest.Publisher, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
                 </TextBlock>
@@ -118,7 +118,7 @@
             </StackPanel>
 
             <!-- Application info-->
-            <StackPanel Visibility="{Binding ApplicationManifestError, Mode=OneWay, Converter={StaticResource InvertedAnyValueToVisibilityConverter}}" Orientation="Vertical">
+            <StackPanel Visibility="{Binding ApplicationManifest, Mode=OneWay, Converter={StaticResource AnyValueToVisibilityConverter}}" Orientation="Vertical">
                 <TextBlock>
                     Publisher:<Run Text="{Binding ApplicationManifest.Product, Mode=OneWay}" Style="{StaticResource CommonRunTextStyle}" />
                 </TextBlock>
