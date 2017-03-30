@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.UI.Models;
 
+using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
+
 namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
 {
     /// <summary>
@@ -31,8 +33,14 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
 
             var certificate = container.Certificate ?? CertificateUtils.GenerateSelfSignedCertificate();
 
-            FlowUtils.SignFile(container.Application, certificate);
-            FlowUtils.SignFile(container.Deploy, certificate);
+            // Signing .manifest
+            FlowUtils.SignFile(container.Application.SourcePath, certificate);
+
+            // Recompute hash for .manifest file reference in .application
+            UpdateApplicationHash(container);
+
+            // Signing .application
+            FlowUtils.SignFile(container.Deploy.SourcePath, certificate);
             return true;
         }
 
@@ -44,6 +52,21 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
                 : $"Certificate date:{Environment.NewLine}{container.Certificate}";
 
             yield return new InfoData(nameof(container.Certificate), description);
+        }
+
+        private static void UpdateApplicationHash(Container container)
+        {
+            var deploy = container.Deploy;
+            deploy.AssemblyReferences.Clear();
+
+            var manifestReference = new AssemblyReference(container.Application.SourcePath)
+            {
+                ReferenceType = AssemblyReferenceType.ClickOnceManifest
+            };
+            deploy.AssemblyReferences.Add(manifestReference);
+            deploy.ResolveFiles();
+            deploy.UpdateFileInfo();
+            ManifestWriter.WriteManifest(deploy);
         }
     }
 }

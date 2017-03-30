@@ -137,11 +137,11 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// <summary>
         /// Sign file with certificate.
         /// </summary>
-        /// <param name="manifest">Manifest file reference.</param>
+        /// <param name="manifestPath">Path to manifest file.</param>
         /// <param name="certificate">Certificate file reference.</param>
-        public static void SignFile(Manifest manifest, X509Certificate2 certificate)
+        public static void SignFile(string manifestPath, X509Certificate2 certificate)
         {
-            SecurityUtilities.SignFile(certificate, null, manifest.SourcePath);
+            SecurityUtilities.SignFile(certificate, null, manifestPath);
         }
 
         /// <summary>

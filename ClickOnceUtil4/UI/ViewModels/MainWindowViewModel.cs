@@ -12,6 +12,7 @@ using ClickOnceUtil4UI.Utils;
 using ClickOnceUtil4UI.Utils.Flow;
 using ClickOnceUtil4UI.Utils.Prism;
 
+using Microsoft.Build.Tasks;
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 using Microsoft.Win32;
 
@@ -52,7 +53,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             BuildCommand = new DelegateCommand(BuildHandler);
             CleanCacheCommand = new DelegateCommand(CleanCacheHandler);
             ChooseCertificateCommand = new DelegateCommand(ChooseCertificateHandler);
-
+            
             // TODO DELETE
             var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
             newFolder.Update(true);

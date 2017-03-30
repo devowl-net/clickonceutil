@@ -115,6 +115,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Views\AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\BuildInfoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -145,6 +149,9 @@
     <Compile Include="UI\Models\InfoData.cs" />
     <Compile Include="UI\ViewModels\BuildInfoViewModel.cs" />
     <Compile Include="UI\ViewModels\MenuViewModel.cs" />
+    <Compile Include="UI\Views\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\BuildInfoView.xaml.cs">
       <DependentUpon>BuildInfoView.xaml</DependentUpon>
     </Compile>
@@ -154,6 +161,7 @@
     <Compile Include="Utils\EmbeddedManifests\EmbeddedManifest.cs" />
     <Compile Include="Utils\EmbeddedManifests\NativeMethods.cs" />
     <Compile Include="Utils\Flow\Container.cs" />
+    <Compile Include="Utils\Flow\FlowOperations\BootstrapperFileFlow.cs" />
     <Compile Include="Utils\Flow\FlowsContainer.cs" />
     <Compile Include="Utils\Flow\FlowOperations\FlowBase.cs" />
     <Compile Include="Utils\Flow\FlowOperations\NewFlow.cs" />

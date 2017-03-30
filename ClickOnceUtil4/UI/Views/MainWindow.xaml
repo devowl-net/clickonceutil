@@ -188,7 +188,7 @@
                             <StackPanel Orientation="Vertical">
                                 <StackPanel>
                                     <TextBlock Text="Choose certificate" Style="{StaticResource ManifestNameTitleStyle}" />
-                                    <TextBlock Text="(ClickOnce application can be signed or unsigned. Unsigned manifests can simplify development and testing of your application. However, unsigned manifests introduce substantial security risks in a production environment. Only consider using unsigned manifests if your ClickOnce application runs on computers within an intranet that is completely isolated from the internet or other sources of malicious code.)" Style="{StaticResource ManifestNameTitleStyle}" />
+                                    <TextBlock TextWrapping="Wrap" TextTrimming="WordEllipsis" Text="(ClickOnce application can be signed or unsigned. Unsigned manifests can simplify development and testing of your application. However, unsigned manifests introduce substantial security risks in a production environment. Only consider using unsigned manifests if your ClickOnce application runs on computers within an intranet that is completely isolated from the internet or other sources of malicious code.)" />
                                 </StackPanel>
                                 <CheckBox IsChecked="{Binding IsTemporaryCertificate}" Content="Create and use temporary certificate (&quot;CN=TempCA&quot;)" x:Name="TemporaryCheckBox" />
                                 <Grid Margin="5">

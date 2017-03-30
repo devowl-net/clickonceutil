@@ -1,5 +1,6 @@
 ﻿using ClickOnceUtil4UI.UI.Views;
 using ClickOnceUtil4UI.Utils.Prism;
+using System.Windows;
 
 namespace ClickOnceUtil4UI.UI.ViewModels
 {
@@ -21,7 +22,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
         private void AboutHandler(object obj)
         {
-            throw new System.NotImplementedException();
+            new AboutWindow { Owner = Application.Current.MainWindow }.ShowDialog();
         }
 
         /// <summary>

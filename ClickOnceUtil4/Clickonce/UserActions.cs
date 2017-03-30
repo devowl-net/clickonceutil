@@ -36,5 +36,11 @@ namespace ClickOnceUtil4UI.Clickonce
         /// </summary>
         [Description("Resigning ClickOnce files")]
         Resigning,
+
+        /// <summary>
+        /// Create bootstrapper file.
+        /// </summary>
+        [Description("Create bootstrapper file.")]
+        BootstrapperFile,
     }
 }
