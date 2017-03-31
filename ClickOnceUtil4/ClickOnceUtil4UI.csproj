@@ -142,6 +142,7 @@
     <Compile Include="Clickonce\Constants.cs" />
     <Compile Include="Clickonce\UserActions.cs" />
     <Compile Include="UI\Behaviors\IntegerUpDownBehavior.cs" />
+    <Compile Include="UI\Behaviors\PasswordBoxBehavior.cs" />
     <Compile Include="UI\Converters\AnyValueToVisibilityConverter.cs" />
     <Compile Include="UI\Converters\EnumDisplayAttributeConverter.cs" />
     <Compile Include="UI\Converters\StringToUriConverter.cs" />

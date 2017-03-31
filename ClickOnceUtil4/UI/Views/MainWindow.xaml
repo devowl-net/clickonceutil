@@ -6,6 +6,8 @@
         xmlns:viewModels="clr-namespace:ClickOnceUtil4UI.UI.ViewModels"
         xmlns:converters="clr-namespace:ClickOnceUtil4UI.UI.Converters"
         xmlns:views="clr-namespace:ClickOnceUtil4UI.UI.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviors="clr-namespace:ClickOnceUtil4UI.UI.Behaviors"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
         WindowStartupLocation="CenterScreen"
@@ -191,26 +193,40 @@
                                     <TextBlock TextWrapping="Wrap" TextTrimming="WordEllipsis" Text="(ClickOnce application can be signed or unsigned. Unsigned manifests can simplify development and testing of your application. However, unsigned manifests introduce substantial security risks in a production environment. Only consider using unsigned manifests if your ClickOnce application runs on computers within an intranet that is completely isolated from the internet or other sources of malicious code.)" />
                                 </StackPanel>
                                 <CheckBox IsChecked="{Binding IsTemporaryCertificate}" Content="Create and use temporary certificate (&quot;CN=TempCA&quot;)" x:Name="TemporaryCheckBox" />
-                                <Grid Margin="5">
-                                    <Grid.Style>
-                                        <Style TargetType="{x:Type Grid}">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel.Style>
+                                        <Style TargetType="{x:Type StackPanel}">
                                             <Setter Property="Visibility" Value="Visible" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ElementName=TemporaryCheckBox, Path=IsChecked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed" />        
+                                                    <Setter Property="Visibility" Value="Collapsed" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Grid.Style>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource StepExpenderTextPrefix}" Text="Certificate file (*.pfx)"/>
-                                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedCetificatePath, Mode=OneWay}" />
-                                    <Button Content="Choose" Grid.Column="2" Command="{Binding ChooseCertificateCommand}"/>
-                                </Grid>
+                                    </StackPanel.Style>
+                                    <Grid Margin="5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Style="{StaticResource StepExpenderTextPrefix}" Text="Certificate file (*.pfx)"/>
+                                        <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedCetificatePath, Mode=OneWay}" />
+                                        <Button Content="Choose" Grid.Column="2" Command="{Binding ChooseCertificateCommand}"/>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Style="{StaticResource StepExpenderTextPrefix}" Text="Certificate Password:" />
+                                        <PasswordBox Grid.Column="1">
+                                            <i:Interaction.Behaviors>
+                                                <behaviors:PasswordBoxBehavior Password="{Binding Password, Mode=OneWayToSource}" />
+                                            </i:Interaction.Behaviors>
+                                        </PasswordBox>
+                                    </Grid>
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </Expander.Content>

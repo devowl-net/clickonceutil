@@ -8,11 +8,9 @@ using System.Windows;
 using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.UI.Models;
 using ClickOnceUtil4UI.UI.Views;
-using ClickOnceUtil4UI.Utils;
 using ClickOnceUtil4UI.Utils.Flow;
 using ClickOnceUtil4UI.Utils.Prism;
 
-using Microsoft.Build.Tasks;
 using Microsoft.Build.Tasks.Deployment.ManifestUtilities;
 using Microsoft.Win32;
 
@@ -29,7 +27,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
         private ClickOnceFolderInfo _selectedFolder;
 
-        private ManifestEditorViewModel<DeployManifest> _deployManifest;
+        private ManifestEditorViewModel<BuildDeployManifest> _deployManifest;
 
         private ManifestEditorViewModel<ApplicationManifest> _applicationManifest;
 
@@ -53,30 +51,11 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             BuildCommand = new DelegateCommand(BuildHandler);
             CleanCacheCommand = new DelegateCommand(CleanCacheHandler);
             ChooseCertificateCommand = new DelegateCommand(ChooseCertificateHandler);
-            
+
             // TODO DELETE
             var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
             newFolder.Update(true);
             SelectedFolder = newFolder;
-        }
-
-        private void ChooseCertificateHandler(object obj)
-        {
-            // https://msdn.microsoft.com/en-us/library/che5h906.aspx
-            var fileDialog = new OpenFileDialog()
-            {
-                CheckFileExists = true,
-                Filter = "Certificate Files|*.pfx",
-                Multiselect = false,
-                InitialDirectory = Environment.CurrentDirectory,
-                Title = "Please choose certificate file",
-                CheckPathExists = true
-            };
-
-            if (fileDialog.ShowDialog(Application.Current.MainWindow).GetValueOrDefault())
-            {
-                SelectedCetificatePath = fileDialog.FileName;
-            }
         }
 
         /// <summary>
@@ -208,6 +187,11 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         public ObservableCollection<string> ApplicationEntryPoints { get; } = new ObservableCollection<string>();
 
         /// <summary>
+        /// Certificate file password.
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
         /// ClickOnce application version
         /// </summary>
         public string Version
@@ -240,34 +224,6 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             }
         }
 
-        private void SelectedEntrypointChanged(string selectedEntrypoint)
-        {
-            ApplicationName = selectedEntrypoint;
-            if (DeployManifest != null)
-            {
-                var deployFileName =
-                    $"{Path.GetFileNameWithoutExtension(SelectedEntrypoint)}.{Constants.ApplicationExtension}";
-
-                // Set DeployUrl
-                var deploymentUrl = FlowUtils.GetDeployUrl(
-                    SelectedFolder.FullPath,
-                    deployFileName);
-
-                var propertyField =
-                    DeployManifest.Properties.First(
-                        p =>
-                            p.PropertyName ==
-                            nameof(BuildDeployManifest.DeploymentUrl));
-
-                propertyField.StringValue = deploymentUrl;
-
-                // Set SourcePath
-                var root = SelectedFolder.FullPath;
-                propertyField = DeployManifest.Properties.First(p => p.PropertyName == nameof(BuildDeployManifest.SourcePath));
-                propertyField.StringValue = Path.Combine(root, deployFileName);
-            }
-        }
-
         /// <summary>
         /// Application name. 
         /// </summary>
@@ -286,6 +242,49 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             }
         }
 
+        private void ChooseCertificateHandler(object obj)
+        {
+            // https://msdn.microsoft.com/en-us/library/che5h906.aspx
+            var fileDialog = new OpenFileDialog()
+            {
+                CheckFileExists = true,
+                Filter = "Certificate Files|*.pfx",
+                Multiselect = false,
+                InitialDirectory = Environment.CurrentDirectory,
+                Title = "Please choose certificate file",
+                CheckPathExists = true
+            };
+
+            if (fileDialog.ShowDialog(Application.Current.MainWindow).GetValueOrDefault())
+            {
+                SelectedCetificatePath = fileDialog.FileName;
+            }
+        }
+
+        private void SelectedEntrypointChanged(string selectedEntrypoint)
+        {
+            ApplicationName = selectedEntrypoint;
+            if (DeployManifest != null)
+            {
+                var deployFileName =
+                    $"{Path.GetFileNameWithoutExtension(SelectedEntrypoint)}.{Constants.ApplicationExtension}";
+
+                // Set DeployUrl
+                var deploymentUrl = FlowUtils.GetDeployUrl(SelectedFolder.FullPath, deployFileName);
+
+                var propertyField =
+                    DeployManifest.Properties.First(p => p.PropertyName == nameof(BuildDeployManifest.DeploymentUrl));
+
+                propertyField.StringValue = deploymentUrl;
+
+                // Set SourcePath
+                var root = SelectedFolder.FullPath;
+                propertyField =
+                    DeployManifest.Properties.First(p => p.PropertyName == nameof(BuildDeployManifest.SourcePath));
+                propertyField.StringValue = Path.Combine(root, deployFileName);
+            }
+        }
+
         private void FolderUpdated(ClickOnceFolderInfo value)
         {
             AvaliableActions.Clear();
@@ -299,6 +298,15 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             }
 
             SelectedAction = AvaliableActions.FirstOrDefault();
+        }
+        private X509Certificate2 GetCertificate()
+        {
+            if (IsTemporaryCertificate || string.IsNullOrEmpty(SelectedCetificatePath))
+            {
+                return null;
+            }
+
+            return new X509Certificate2(X509Certificate.CreateFromSignedFile(SelectedCetificatePath));
         }
 
         private void BuildHandler(object obj)
@@ -316,8 +324,9 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                         : null
             };
 
-            container.ApplicationName =
-                    !string.IsNullOrEmpty(ApplicationName) ? ApplicationName : Path.GetFileName(container.EntrypointPath);
+            container.ApplicationName = !string.IsNullOrEmpty(ApplicationName)
+                ? ApplicationName
+                : Path.GetFileName(container.EntrypointPath);
 
             var buildInfo = _flowsContainer[SelectedAction].GetBuildInformation(container).ToArray();
             if (buildInfo.Any())
@@ -347,28 +356,19 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 FolderUpdated(_selectedFolder);
             }
         }
-
-        private X509Certificate2 GetCertificate()
-        {
-            if (IsTemporaryCertificate || string.IsNullOrEmpty(SelectedCetificatePath))
-            {
-                return null;
-            }
-
-            return new X509Certificate2(X509Certificate.CreateFromSignedFile(SelectedCetificatePath));
-        }
-
+        
         private void CleanCacheHandler(object obj)
         {
-            var appsFolder = $@"C:\Users\{Environment.UserName}\AppData\Local\Apps";
+            var appsFolder = $@"C:\Users\{Environment.UserName}\AppData\Local\Apps\2.0";
             var buildInfo = new[]
             {
                 new InfoData(
                     "Clean cache",
                     $@"You are going to clean local applications cache. Be sure that no deployed programs running now. Cache folder location: [{
                         appsFolder
-                        }], anyway next applications launch will make installation back. By the way cleaning can be done manually:{Environment.NewLine}1. By cmd.exe command: ""rundll32 dfshim CleanOnlineAppCache""] {Environment.NewLine}2. Or just remove [{
-                        appsFolder}] folder content.")
+                        }], anyway next applications launch will make installation back. By the way cleaning can be done manually:{
+                        Environment.NewLine}1. By cmd.exe command: ""rundll32 dfshim CleanOnlineAppCache""] {
+                        Environment.NewLine}2. Or just remove [{appsFolder}] folder content.")
             };
 
             var buildModel = new BuildInfoViewModel(buildInfo);
@@ -376,12 +376,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             if (buildView.ShowDialog().GetValueOrDefault())
             {
                 FlowUtils.CleanOnlineAppCache();
-                
-                MessageBox.Show(
-                    "Operation completed!",
-                    "Information",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+
+                MessageBox.Show("Operation completed!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
