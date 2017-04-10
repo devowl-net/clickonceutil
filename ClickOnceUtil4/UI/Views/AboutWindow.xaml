@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" WindowStyle="ToolWindow"
         WindowStartupLocation="CenterOwner"
-        Title="About" Height="150" Width="250">
+        Title="About" Height="120" Width="250">
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}" x:Key="NameStyle">
             <Setter Property="FontWeight" Value="Bold" />
@@ -42,12 +42,6 @@
                 ru-csharp.blogspot.ru
             </Hyperlink>
         </TextBlock>
-        <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource DescriptionStyle}">
-            <Hyperlink NavigateUri="http://eng-csharp.blogspot.ru/" RequestNavigate="Hyperlink_RequestNavigate">
-                eng-csharp.blogspot.com
-            </Hyperlink>
-        </TextBlock>
-
         <TextBlock Grid.Row="4" Text="License:" Style="{StaticResource NameStyle}" />
         <TextBlock Grid.Row="4" Grid.Column="1" Text="&quot;As is&quot;" Style="{StaticResource DescriptionStyle}" />
     </Grid>

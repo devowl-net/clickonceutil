@@ -36,9 +36,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         /// <inheritdoc/>
         public override IEnumerable<InfoData> GetBuildInformation(Container container)
         {
-            return
-                InfoUtils.GetApplicationInfoData(container.Application)
-                    .Union(InfoUtils.GetDeployInfoData(container.Deploy));
+            return InfoUtils.GetFullInfoData(container);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -51,6 +52,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             BuildCommand = new DelegateCommand(BuildHandler);
             CleanCacheCommand = new DelegateCommand(CleanCacheHandler);
             ChooseCertificateCommand = new DelegateCommand(ChooseCertificateHandler);
+            BrowseCommand = new DelegateCommand(BrowseHandler, CanBrowse);
 
             // TODO DELETE
             var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
@@ -101,6 +103,11 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         public DelegateCommand CleanCacheCommand { get; private set; }
 
         /// <summary>
+        /// Browse button command.
+        /// </summary>
+        public DelegateCommand BrowseCommand { get; private set; }
+        
+        /// <summary>
         /// Choose certificate file command.
         /// </summary>
         public DelegateCommand ChooseCertificateCommand { get; private set; }
@@ -120,6 +127,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 _selectedFolder = value;
                 RaisePropertyChanged(() => SelectedFolder);
                 FolderUpdated(value);
+                BrowseCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -242,6 +250,37 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             }
         }
 
+        private bool CanBrowse(object obj)
+        {
+            return SelectedFolder != null && SelectedFolder.HasDeployManifest &&
+                   !string.IsNullOrEmpty(SelectedFolder.DeployManifest.DeploymentUrl);
+        }
+
+        private void BrowseHandler(object obj)
+        {
+            if (CanBrowse(null))
+            {
+                var deployUrl = SelectedFolder.DeployManifest.DeploymentUrl.Trim();
+                if (deployUrl.StartsWith(Uri.UriSchemeHttp))
+                {
+                    Process.Start("IEXPLORE.EXE", deployUrl);
+                }
+                else if (deployUrl.StartsWith("\\\\"))
+                {
+                    Process.Start(deployUrl);
+                }
+                else
+                {
+                    MessageBox.Show("Unknown deploy address");
+                }
+
+            }
+            else
+            {
+                BrowseCommand.RaiseCanExecuteChanged();
+            }
+        }
+
         private void ChooseCertificateHandler(object obj)
         {
             // https://msdn.microsoft.com/en-us/library/che5h906.aspx
@@ -355,6 +394,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 _selectedFolder.Update(true);
                 FolderUpdated(_selectedFolder);
             }
+
+            BrowseCommand.RaiseCanExecuteChanged();
         }
         
         private void CleanCacheHandler(object obj)

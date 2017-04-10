@@ -18,25 +18,56 @@ namespace ClickOnceUtil4UI.Utils.Flow
     public static class InfoUtils
     {
         /// <summary>
+        /// Get full build info data.
+        /// </summary>
+        /// <param name="container">Container instance.</param>
+        /// <returns><see cref="InfoData"/> items.</returns>
+        public static IEnumerable<InfoData> GetFullInfoData(Container container)
+        {
+            var deploy = container.Deploy;
+            var application = container.Application;
+
+            return GetGeneralInfoData(container).Union(GetDeployInfoData(deploy)).Union(GetApplicationInfoData(application));
+        }
+        
+        private static IEnumerable<InfoData> GetGeneralInfoData(Container container)
+        {
+            var entryPointIdentity = AssemblyIdentity.FromFile(container.EntrypointPath);
+            if (entryPointIdentity != null && entryPointIdentity.IsStrongName)
+            {
+                // https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx
+                yield return
+                    new InfoData(
+                        "EntryPoint [.exe]",
+                        $"You have a Strong named EXE file ({Path.GetFileName(container.EntrypointPath)}). Its means you should make a singing after ClickOnce application build done. Otherwise your try to deploy will have an error result \"Manifest XML signature is not valid\"",
+                        true);
+            }
+        }
+
+        /// <summary>
         /// Reads important information from <see cref="DeployManifest"/>.
         /// </summary>
         /// <param name="deploy"><see cref="DeployManifest"/> instance.</param>
         /// <returns><see cref="InfoData"/> items.</returns>
-        public static IEnumerable<InfoData> GetDeployInfoData(DeployManifest deploy)
+        private static IEnumerable<InfoData> GetDeployInfoData(DeployManifest deploy)
         {
             var fileName = Path.GetFileName(deploy.SourcePath);
             var urlFileName = GetUrlFileName(deploy.DeploymentUrl);
 
-
             if (!string.Equals(fileName, urlFileName, StringComparison.OrdinalIgnoreCase))
             {
-                yield return new InfoData(nameof(deploy.SourcePath), "SourcePath application file name is not equals to DeploymentUrl file name.", true);
+                yield return
+                    new InfoData(
+                        nameof(deploy.SourcePath),
+                        "SourcePath application file name is not equals to DeploymentUrl file name.",
+                        true);
             }
 
             yield return
                 new InfoData(
                     nameof(deploy.DeploymentUrl),
                     $"Your application hosting service must publishing your folder: \"{Path.GetDirectoryName(deploy.SourcePath)}\" and clients will try to activate your application from URI: {deploy.DeploymentUrl}");
+
 
             yield return
                 new InfoData(
@@ -50,8 +81,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 yield return
                     new InfoData(
                         nameof(deploy.TrustUrlParameters),
-                        "Any URL activation parameters will be passed to your application entry point as command line arguments.")
-                    ;
+                        "Any URL activation parameters will be passed to your application entry point as command line arguments.");
             }
 
             if (!deploy.UpdateEnabled)
@@ -67,77 +97,31 @@ namespace ClickOnceUtil4UI.Utils.Flow
                         : "Your application starts with a current copy and downloading new copy while works.");
         }
 
-        private static string GetUrlFileName(string deploymentUrl)
-        {
-            if (string.IsNullOrEmpty(deploymentUrl))
-            {
-                return string.Empty;
-            }
-
-            var buffer = new StringBuilder(); 
-            var pointer = deploymentUrl.Length - 1;
-            while (pointer >= 0 && !new[] { '\\', '/' }.Contains(deploymentUrl[pointer]))
-            {
-                buffer.Append(deploymentUrl[pointer]);
-                pointer --;
-            }
-
-            return new string(buffer.ToString().Reverse().ToArray());
-        }
-
         /// <summary>
         /// Reads important information from <see cref="ApplicationManifest"/>.
         /// </summary>
         /// <param name="application"><see cref="ApplicationManifest"/> instance.</param>
         /// <returns><see cref="InfoData"/> items.</returns>
-        public static IEnumerable<InfoData> GetApplicationInfoData(ApplicationManifest application)
+        private static IEnumerable<InfoData> GetApplicationInfoData(ApplicationManifest application)
         {
             if (!application.IsClickOnceManifest)
             {
-                yield return new InfoData(nameof(application.IsClickOnceManifest), "Your are going to create ClickOnceApplication for none managed Win32 application.", true);
+                yield return
+                    new InfoData(
+                        nameof(application.IsClickOnceManifest),
+                        "Your are going to create ClickOnceApplication for none managed Win32 application.",
+                        true);
             }
 
             if (string.IsNullOrWhiteSpace(application.SuiteName))
             {
-                yield return new InfoData(nameof(application.SuiteName), "No name of the folder on the Start menu where the application is located after ClickOnce deployment. Your name will be application name.", true);
+                yield return
+                    new InfoData(
+                        nameof(application.SuiteName),
+                        "No name of the folder on the Start menu where the application is located after ClickOnce deployment. Your name will be application name.",
+                        true);
             }
         }
-
-        private static bool HasEmbeddedManifestInsideExecutableAssemblies(Manifest application, out string assemblyNames)
-        {
-            bool hasAssemblies = false;
-            var assemblies = new List<string>();
-            foreach (AssemblyReference assembly in application.AssemblyReferences)
-            {
-                if (Path.GetExtension(assembly.SourcePath) == $".{Constants.ExecutableFileExtension}" &&
-                    EmbeddedManifest.Read(assembly.SourcePath) != null)
-                {
-                    assemblies.Add(Path.GetFileName(assembly.SourcePath));
-                    hasAssemblies = true;
-                }
-            }
-
-            assemblyNames = string.Join(", ", assemblies);
-            return hasAssemblies;
-        }
-
-        //private static bool HasStrongNameExecutableAssemblies(Manifest application, out string assemblyNames)
-        //{
-        //    bool hasAssemblies = false;
-        //    var assemblies = new List<string>();
-        //    foreach (AssemblyReference assembly in application.AssemblyReferences)
-        //    {
-        //        if (Path.GetExtension(assembly.SourcePath) == $".{Constants.ExecutableFileExtension}" &&
-        //            assembly.AssemblyIdentity.IsStrongName)
-        //        {
-        //            assemblies.Add(Path.GetFileName(assembly.SourcePath));
-        //            hasAssemblies = true;
-        //        }
-        //    }
-
-        //    assemblyNames = string.Join(", ", assemblies);
-        //    return hasAssemblies;
-        //}
 
         /// <summary>
         /// Check filling of required for generation fields.
@@ -178,24 +162,17 @@ namespace ClickOnceUtil4UI.Utils.Flow
                     $"{manifest.GetType().Name} errors:{Environment.NewLine + Environment.NewLine}{ReadOutputMessages(manifest.OutputMessages)}";
                 return false;
             }
-            
+
             string assemblies;
-            //if (HasStrongNameExecutableAssemblies(manifest, out assemblies))
-            //{
-            //    // https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx
-            //    errorString = $"You have a Strong namged EXE files ({assemblies}) its not allowed, unless it will be deployed to GAC. Read information from here https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx (ClickOnce Manifest Signing and Strong-Name Assembly Signing Using Visual Studio Project Designer's Signing Page)";
-
-            //    return false;
-            //}
-
             if (HasEmbeddedManifestInsideExecutableAssemblies(manifest, out assemblies))
             {
-                errorString = $"You have assemblies ({assemblies}) contains embedded manifest information, its unacceptable and will be cause of error:"
-                    + Environment.NewLine + Environment.NewLine +
-                    "+ Reference in the manifest does not match the identity of the downloaded assembly [AppName.exe]"
-                    + Environment.NewLine + Environment.NewLine +
-                    @"So just go to [Project property] -> [Application tab] -> and change [Embed manifest with default settings] to [Create application without a manifest]."
-                    + Environment.NewLine +
+                errorString =
+                    $"You have assemblies ({assemblies}) contains embedded manifest information, its unacceptable and will be cause of error:" +
+                    Environment.NewLine + Environment.NewLine +
+                    "+ Reference in the manifest does not match the identity of the downloaded assembly [AppName.exe]" +
+                    Environment.NewLine + Environment.NewLine +
+                    @"So just go to [Project property] -> [Application tab] -> and change [Embed manifest with default settings] to [Create application without a manifest]." +
+                    Environment.NewLine +
                     "If you have not access to source code then you can use [mt.exe] utility by Microsoft for adding or modification of assemblies. BTW the problem source is <assemblyIdentity /> tag of manifest (Didn't try to remove).";
 
                 return false;
@@ -204,6 +181,48 @@ namespace ClickOnceUtil4UI.Utils.Flow
             return true;
         }
 
+        private static string GetUrlFileName(string deploymentUrl)
+        {
+            if (string.IsNullOrEmpty(deploymentUrl))
+            {
+                return string.Empty;
+            }
+
+            var buffer = new StringBuilder();
+            var pointer = deploymentUrl.Length - 1;
+            while (pointer >= 0 && !new[]
+            {
+                '\\',
+                '/'
+            }.Contains(deploymentUrl[pointer]))
+            {
+                buffer.Append(deploymentUrl[pointer]);
+                pointer --;
+            }
+
+            return new string(buffer.ToString().Reverse().ToArray());
+        }
+
+        private static bool HasEmbeddedManifestInsideExecutableAssemblies(
+            Manifest application,
+            out string assemblyNames)
+        {
+            bool hasAssemblies = false;
+            var assemblies = new List<string>();
+            foreach (AssemblyReference assembly in application.AssemblyReferences)
+            {
+                if (Path.GetExtension(assembly.SourcePath) == $".{Constants.ExecutableFileExtension}" &&
+                    EmbeddedManifest.Read(assembly.SourcePath) != null)
+                {
+                    assemblies.Add(Path.GetFileName(assembly.SourcePath));
+                    hasAssemblies = true;
+                }
+            }
+
+            assemblyNames = string.Join(", ", assemblies);
+            return hasAssemblies;
+        }
+        
         private static StringBuilder ReadOutputMessages(OutputMessageCollection outputMessages)
         {
             var buffer = new StringBuilder();

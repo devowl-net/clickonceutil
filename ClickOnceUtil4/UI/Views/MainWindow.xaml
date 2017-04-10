@@ -37,12 +37,24 @@
         </Grid.RowDefinitions>
         <Menu DataContext="{Binding MenuViewModel}" d:DataContext="{d:DesignInstance viewModels:MenuViewModel}">
             <MenuItem Header="File">
-                <MenuItem Header="New"></MenuItem>
-                <MenuItem Header="Open"></MenuItem>
-                <MenuItem Header="Save"></MenuItem>
-                <MenuItem Header="SaveAs..."></MenuItem>
-                <Separator></Separator>
-                <MenuItem Header="Exit"></MenuItem>
+                <MenuItem Header="Exit" Command="{Binding CloseCommand}" />
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem.Resources>
+                    <Style TargetType="{x:Type MenuItem}" />
+                </MenuItem.Resources>
+                <MenuItem Header="Main window">
+                    <MenuItem Header="[.Application file]" Command="{Binding ShowHelpCommand}" CommandParameter="DeployColumn" />
+                    <MenuItem Header="[.Manifest file]" Command="{Binding ShowHelpCommand}" CommandParameter="ApplicationColumn" />
+                </MenuItem>
+                <MenuItem Header="ClickOnce Security and Deployment" Command="{Binding ShowHelpCommand}" CommandParameter="SecurityAndDeploy" />
+                <MenuItem Header="Features">
+                    <MenuItem Header="Checking for known application embed manifest assembly identity problem" Command="{Binding ShowHelpCommand}" CommandParameter="CreateApplicationWithoutManifest" />
+                    <MenuItem Header="Warring if entry point .exe file is strong named (have public token). Message about required signing." Command="{Binding ShowHelpCommand}" CommandParameter="ClickOnceStrongName" />
+                    <MenuItem Header="In the case when .NET framework do not have a hotfix, then we doing a replace." Command="{Binding ShowHelpCommand}" CommandParameter="NetFrameworkHotfix" />
+                    <MenuItem Header="If your application is already inside some virtual directory, then DeploymentUrl should be auto filled." Command="{Binding ShowHelpCommand}" CommandParameter="VirtualDirectoryDeploymentUrl" />
+                    <MenuItem Header="Works correctly with a .deploy extension and appending [mapFileExtensions] attribute in the case of true value." Command="{Binding ShowHelpCommand}" CommandParameter="DeployExtension" />
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="About" Command="{Binding AboutCommand}"/>
         </Menu>
@@ -235,10 +247,13 @@
         </ScrollViewer>
         <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="DarkGoldenrod">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="5">
-                <Button Command="{Binding CleanCacheCommand}" Width="150" Height="50">
+                <Button Command="{Binding BrowseCommand}" Width="150" Height="50" ToolTip="Browse application deploy URL.">
+                    <TextBlock Text="Browse" Margin="5" Style="{StaticResource MainTextStyle}" Foreground="Blue" HorizontalAlignment="Left" />
+                </Button>
+                <Button Command="{Binding CleanCacheCommand}" Width="150" Height="50" ToolTip="ClickOnce cache cleaning action">
                     <TextBlock Text="Clean" Margin="5" Style="{StaticResource MainTextStyle}" Foreground="Black" HorizontalAlignment="Left" />
                 </Button>
-                <Button Command="{Binding BuildCommand}" Width="150" Height="50">
+                <Button Command="{Binding BuildCommand}" Width="150" Height="50" ToolTip="Build current action">
                     <TextBlock Text="Build" Margin="5" Style="{StaticResource MainTextStyle}" />
                 </Button>
             </StackPanel>

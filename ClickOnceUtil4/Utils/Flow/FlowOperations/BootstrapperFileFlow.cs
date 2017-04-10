@@ -33,6 +33,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         {
             errorString = null;
 
+            // C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDK\Bootstrapper
             return true;
             /*
                 <BootstrapperPackage Include=".NETFramework,Version=v4.0">
