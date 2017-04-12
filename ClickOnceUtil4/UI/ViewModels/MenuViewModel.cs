@@ -26,7 +26,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             { "DeployExtension", "http://stackoverflow.com/questions/25777441/use-mage-exe-to-create-a-clickonce-deployment-manifest-for-deploy-files" },
             { "TroubleshootingClickOnce", "https://msdn.microsoft.com/en-us/library/ms229001.aspx" },
             { "TimestampServices", "http://stackoverflow.com/questions/25052925/does-anyone-know-a-freetrial-timestamp-server-service" },
-            { "TimestampClickOnceAndAuthenticode", "https://msdn.microsoft.com/en-us/library/ms172240.aspx" }
+            { "TimestampClickOnceAndAuthenticode", "https://msdn.microsoft.com/en-us/library/ms172240.aspx" },
+            { "MageUpdateStrategy", "https://social.msdn.microsoft.com/Forums/windows/en-US/2d32037b-e43a-4c4f-b55d-27eab1b7bd58/urgent-mageexe-issue-with-requiredupdate?forum=winformssetup" }
         };
 
         /// <summary>
