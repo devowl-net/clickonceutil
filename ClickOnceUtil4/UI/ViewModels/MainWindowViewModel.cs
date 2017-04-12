@@ -3,12 +3,14 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 
 using ClickOnceUtil4UI.Clickonce;
 using ClickOnceUtil4UI.UI.Models;
 using ClickOnceUtil4UI.UI.Views;
+using ClickOnceUtil4UI.Utils;
 using ClickOnceUtil4UI.Utils.Flow;
 using ClickOnceUtil4UI.Utils.Prism;
 
@@ -42,6 +44,8 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
         private string _selectedCetificatePath;
 
+        private string _timestampUrl;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -54,16 +58,36 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             ChooseCertificateCommand = new DelegateCommand(ChooseCertificateHandler);
             BrowseCommand = new DelegateCommand(BrowseHandler, CanBrowse);
 
-            // TODO DELETE
+            /*
             var newFolder = new ClickOnceFolderInfo(@"C:\IISRoot\DELME");
             newFolder.Update(true);
             SelectedFolder = newFolder;
+
+            SelectedCetificatePath = @"C:\IISRoot\Certificate_Password_123456.pfx";
+            */
         }
 
         /// <summary>
         /// Menu view model.
         /// </summary>
         public MenuViewModel MenuViewModel { get; set; }
+
+        /// <summary>
+        /// Timestamp server URL.
+        /// </summary>
+        public string TimestampUrl
+        {
+            get
+            {
+                return _timestampUrl;
+            }
+
+            set
+            {
+                _timestampUrl = value;
+                RaisePropertyChanged(() => TimestampUrl);
+            }
+        }
 
         /// <summary>
         /// Create and use temporary certificate.
@@ -106,7 +130,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         /// Browse button command.
         /// </summary>
         public DelegateCommand BrowseCommand { get; private set; }
-        
+
         /// <summary>
         /// Choose certificate file command.
         /// </summary>
@@ -273,7 +297,6 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 {
                     MessageBox.Show("Unknown deploy address");
                 }
-
             }
             else
             {
@@ -303,7 +326,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
         private void SelectedEntrypointChanged(string selectedEntrypoint)
         {
             ApplicationName = selectedEntrypoint;
-            if (DeployManifest != null)
+            if (DeployManifest != null && !string.IsNullOrEmpty(SelectedEntrypoint))
             {
                 var deployFileName =
                     $"{Path.GetFileNameWithoutExtension(SelectedEntrypoint)}.{Constants.ApplicationExtension}";
@@ -338,6 +361,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
             SelectedAction = AvaliableActions.FirstOrDefault();
         }
+
         private X509Certificate2 GetCertificate()
         {
             if (IsTemporaryCertificate || string.IsNullOrEmpty(SelectedCetificatePath))
@@ -345,17 +369,82 @@ namespace ClickOnceUtil4UI.UI.ViewModels
                 return null;
             }
 
-            return new X509Certificate2(X509Certificate.CreateFromSignedFile(SelectedCetificatePath));
+            if (string.IsNullOrEmpty(Password))
+            {
+                return new X509Certificate2(X509Certificate.CreateFromSignedFile(SelectedCetificatePath));
+            }
+            var secureString = new SecureString();
+            foreach (var chr in Password)
+            {
+                secureString.AppendChar(chr);
+            }
+            
+            return new X509Certificate2(
+                SelectedCetificatePath,
+                secureString,
+                X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet);
         }
 
         private void BuildHandler(object obj)
         {
+            if (SelectedAction == UserActions.Resigning)
+            {
+                if (!IsTemporaryCertificate && string.IsNullOrEmpty(SelectedCetificatePath))
+                {
+                    MessageBox.Show(
+                        "No certificates was selected",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(TimestampUrl))
+                {
+                    try
+                    {
+                        var uri = new Uri(TimestampUrl);
+                        if (string.IsNullOrEmpty(uri.Host))
+                        {
+                            throw new Exception("No host name in Uri");
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        string text = $"Unable to create Uri from timestamp {TimestampUrl}. Error text below:{Environment.NewLine + Environment.NewLine}{exception.Message}";
+                        MessageBox.Show(text, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                }
+            }
+            
+
+            X509Certificate2 certificate = null;
+
+            if (SelectedAction == UserActions.Resigning)
+            {
+                try
+                {
+                    certificate = GetCertificate();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(
+                        exception.Message,
+                        "Certificate error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+            }
+
             var container = new Container
             {
+                TimestampUrl = TimestampUrl,
                 FullPath = SelectedFolder.FullPath,
                 Application = ApplicationManifest?.Manifest ?? SelectedFolder.ApplicationManifest,
                 Deploy = DeployManifest?.Manifest ?? SelectedFolder.DeployManifest,
-                Certificate = GetCertificate(),
+                Certificate = certificate,
                 Version = _version,
                 EntrypointPath =
                     !string.IsNullOrEmpty(SelectedEntrypoint)
@@ -397,7 +486,7 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
             BrowseCommand.RaiseCanExecuteChanged();
         }
-        
+
         private void CleanCacheHandler(object obj)
         {
             var appsFolder = $@"C:\Users\{Environment.UserName}\AppData\Local\Apps\2.0";
@@ -405,20 +494,27 @@ namespace ClickOnceUtil4UI.UI.ViewModels
             {
                 new InfoData(
                     "Clean cache",
-                    $@"You are going to clean local applications cache. Be sure that no deployed programs running now. Cache folder location: [{
-                        appsFolder
-                        }], anyway next applications launch will make installation back. By the way cleaning can be done manually:{
-                        Environment.NewLine}1. By cmd.exe command: ""rundll32 dfshim CleanOnlineAppCache""] {
-                        Environment.NewLine}2. Or just remove [{appsFolder}] folder content.")
+                    $@"You are going to clean local applications cache. Be sure that no deployed programs running now. Cache folder location: ""{
+                        appsFolder}"". By the way cleaning can be done manually:{Environment.NewLine
+                        }1. By cmd.exe command: ""rundll32 dfshim CleanOnlineAppCache""] {Environment.NewLine
+                        }2. Or just remove [{appsFolder}] folder content.")
             };
 
             var buildModel = new BuildInfoViewModel(buildInfo);
             var buildView = new BuildInfoView(buildModel) { Owner = Application.Current.MainWindow };
             if (buildView.ShowDialog().GetValueOrDefault())
             {
-                FlowUtils.CleanOnlineAppCache();
+                string errorString, messageText;
+                if (FlowUtils.CleanCache(out errorString))
+                {
+                    messageText = "Operation completed!";
+                }
+                else
+                {
+                    messageText = $"Unable complete cleaning cause of error:{Environment.NewLine}{errorString}";
+                }
 
-                MessageBox.Show("Operation completed!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(messageText, "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 

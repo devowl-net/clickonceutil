@@ -32,6 +32,8 @@ namespace ClickOnceUtil4UI.UI.Models
 
         private string _deployManifestError;
 
+        private object _syncUpdate = new object();
+
         /// <summary>
         /// Constructor for  <see cref="ClickOnceFolderInfo"/>.
         /// </summary>
@@ -51,6 +53,7 @@ namespace ClickOnceUtil4UI.UI.Models
             {
                 return _folderType;
             }
+
             set
             {
                 _folderType = value;
@@ -233,93 +236,102 @@ namespace ClickOnceUtil4UI.UI.Models
 
         private void InternalUpdate()
         {
-            ApplicationManifest = null;
-            DeployManifest = null;
-
-            if (!PathUtils.CheckFolderReadPermissions(FullPath))
+            lock (_syncUpdate)
             {
-                FolderType = FolderTypes.HaveProblems;
-                ErrorDescription = "No folder read permissions";
-                return;
-            }
+                ApplicationManifest = null;
+                DeployManifest = null;
 
-            string deployManifestFile, manifestFile, errorMessage;
-            int deployManifestFileCount, manifestFileCount;
-
-            // Reads .application
-            if (ClickOnceFolderInfoUtils.TryGetSingleFile(
-                FullPath,
-                Constants.ManifestExtension,
-                out deployManifestFileCount,
-                out deployManifestFile))
-            {
-                ApplicationFileName = Path.GetFileName(deployManifestFile);
-                ApplicationManifest appManifest;
-
-                if (
-                    !ClickOnceFolderInfoUtils.TryReadClickOnceFile(
-                        deployManifestFile,
-                        out appManifest,
-                        out errorMessage))
+                if (!PathUtils.CheckFolderReadPermissions(FullPath))
                 {
-                    ApplicationManifestError = errorMessage;
-                    FolderType = FolderTypes.UnknownClickOnceApplication;
+                    FolderType = FolderTypes.HaveProblems;
+                    ErrorDescription = "No folder read permissions";
                     return;
                 }
 
-                ApplicationManifest = appManifest;
-            }
-            else
-            {
-                if (deployManifestFileCount > 1)
-                {
-                    ApplicationManifestError = GetFilesAmountError(Constants.ManifestExtension, deployManifestFileCount);
-                }
-            }
+                string deployManifestFile, manifestFile, errorMessage;
+                int deployManifestFileCount, manifestFileCount;
 
-            // Reads .manifest
-            if (ClickOnceFolderInfoUtils.TryGetSingleFile(
-                FullPath,
-                Constants.ApplicationExtension,
-                out manifestFileCount,
-                out manifestFile))
-            {
-                ManifestFileName = Path.GetFileName(manifestFile);
-                DeployManifest deployManifest;
-                if (!ClickOnceFolderInfoUtils.TryReadClickOnceFile(manifestFile, out deployManifest, out errorMessage))
+                // Reads .application
+                if (ClickOnceFolderInfoUtils.TryGetSingleFile(
+                    FullPath,
+                    Constants.ManifestExtension,
+                    out deployManifestFileCount,
+                    out deployManifestFile))
                 {
-                    ApplicationManifestError = errorMessage;
-                    FolderType = FolderTypes.UnknownClickOnceApplication;
-                    return;
-                }
+                    ApplicationFileName = Path.GetFileName(deployManifestFile);
+                    ApplicationManifest appManifest;
 
-                DeployManifest = deployManifest;
-            }
-            else
-            {
-                if (manifestFileCount > 1)
-                {
-                    DeployManifestError = GetFilesAmountError(Constants.ApplicationExtension, manifestFileCount);
-                }
-            }
-
-            if (HasApplicationManifest && HasDeployManifest)
-            {
-                FolderType = FolderTypes.ClickOnceApplication;
-            }
-            else
-            {
-                // deciding about ClickOnce application possibilities 
-                if (ClickOnceFolderInfoUtils.IsFolderCanBeClickOnceApplication(FullPath, out errorMessage))
-                {
-                    FolderType = FolderTypes.CanBeAnApplication;
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(errorMessage))
+                    if (
+                        !ClickOnceFolderInfoUtils.TryReadClickOnceFile(
+                            deployManifestFile,
+                            out appManifest,
+                            out errorMessage))
                     {
                         ApplicationManifestError = errorMessage;
                         FolderType = FolderTypes.UnknownClickOnceApplication;
+                        return;
+                    }
+
+                    ApplicationManifest = appManifest;
+                }
+                else
+                {
+                    if (deployManifestFileCount > 1)
+                    {
+                        ApplicationManifestError = GetFilesAmountError(
+                            Constants.ManifestExtension,
+                            deployManifestFileCount);
+                    }
+                }
+
+                // Reads .manifest
+                if (ClickOnceFolderInfoUtils.TryGetSingleFile(
+                    FullPath,
+                    Constants.ApplicationExtension,
+                    out manifestFileCount,
+                    out manifestFile))
+                {
+                    ManifestFileName = Path.GetFileName(manifestFile);
+                    DeployManifest deployManifest;
+                    if (
+                        !ClickOnceFolderInfoUtils.TryReadClickOnceFile(
+                            manifestFile,
+                            out deployManifest,
+                            out errorMessage))
+                    {
+                        ApplicationManifestError = errorMessage;
+                        FolderType = FolderTypes.UnknownClickOnceApplication;
+                        return;
+                    }
+
+                    DeployManifest = deployManifest;
+                }
+                else
+                {
+                    if (manifestFileCount > 1)
+                    {
+                        DeployManifestError = GetFilesAmountError(Constants.ApplicationExtension, manifestFileCount);
+                    }
+                }
+
+                if (HasApplicationManifest && HasDeployManifest)
+                {
+                    FolderType = FolderTypes.ClickOnceApplication;
+                }
+                else
+                {
+                    // deciding about ClickOnce application possibilities 
+                    if (ClickOnceFolderInfoUtils.IsFolderCanBeClickOnceApplication(FullPath, out errorMessage))
+                    {
+                        FolderType = FolderTypes.CanBeAnApplication;
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            ApplicationManifestError = errorMessage;
+                            FolderType = FolderTypes.UnknownClickOnceApplication;
+                        }
                     }
                 }
             }

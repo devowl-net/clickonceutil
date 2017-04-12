@@ -33,14 +33,16 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
 
             var certificate = container.Certificate ?? CertificateUtils.GenerateSelfSignedCertificate();
 
+            var timestamp = !string.IsNullOrEmpty(container.TimestampUrl) ? new Uri(container.TimestampUrl) : null;
+
             // Signing .manifest
-            FlowUtils.SignFile(container.Application.SourcePath, certificate);
+            FlowUtils.SignFile(container.Application.SourcePath, timestamp, certificate);
 
             // Recompute hash for .manifest file reference in .application
             UpdateApplicationHash(container);
 
             // Signing .application
-            FlowUtils.SignFile(container.Deploy.SourcePath, certificate);
+            FlowUtils.SignFile(container.Deploy.SourcePath, timestamp, certificate);
             return true;
         }
 

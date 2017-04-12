@@ -32,15 +32,24 @@ namespace ClickOnceUtil4UI.Utils.Flow
         
         private static IEnumerable<InfoData> GetGeneralInfoData(Container container)
         {
-            var entryPointIdentity = AssemblyIdentity.FromFile(container.EntrypointPath);
-            if (entryPointIdentity != null && entryPointIdentity.IsStrongName)
+            var entryPoint = container.EntrypointPath;
+            entryPoint = File.Exists(entryPoint)
+                ? entryPoint
+                : File.Exists(entryPoint = $"{entryPoint}{Constants.DeployDotExtension}") ? entryPoint : null;
+
+            
+            if (!string.IsNullOrEmpty(entryPoint))
             {
-                // https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx
-                yield return
-                    new InfoData(
-                        "EntryPoint [.exe]",
-                        $"You have a Strong named EXE file ({Path.GetFileName(container.EntrypointPath)}). Its means you should make a singing after ClickOnce application build done. Otherwise your try to deploy will have an error result \"Manifest XML signature is not valid\"",
-                        true);
+                var entryPointIdentity = AssemblyIdentity.FromFile(entryPoint);
+                if (entryPointIdentity != null && entryPointIdentity.IsStrongName)
+                {
+                    // https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx
+                    yield return
+                        new InfoData(
+                            "EntryPoint [.exe]",
+                            $"You have a strong named entry point .exe file ({Path.GetFileName(entryPoint)}). Its means you should make a singing after ClickOnce application build done. Otherwise your try to deploy will have an error result \"Manifest XML signature is not valid\"",
+                            true);
+                }
             }
         }
 

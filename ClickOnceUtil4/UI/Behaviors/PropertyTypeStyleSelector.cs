@@ -19,7 +19,8 @@ namespace ClickOnceUtil4UI.UI.Behaviors
     {
         private readonly IEnumerable<string> _ignoredProperties = new[]
         {
-            nameof(ApplicationManifest.IsClickOnceManifest)
+            nameof(ApplicationManifest.IsClickOnceManifest),
+            nameof(ApplicationManifest.SourcePath)
         };
 
         private readonly Dictionary<Type, string> _mapping = new Dictionary<Type, string>()

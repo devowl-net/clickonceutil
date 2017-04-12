@@ -23,7 +23,7 @@ namespace ClickOnceUtil4UI.Utils.Flow.FlowOperations
         public override bool IsFlowApplicable(FolderTypes folderType, string fullPath)
         {
             return folderType == FolderTypes.ClickOnceApplication ||
-                   Directory.GetFiles(fullPath, $"*. {Constants.DeployFileExtension}").Any();
+                   Directory.GetFiles(fullPath, $"*.{Constants.DeployFileExtension}").Any();
         }
 
         /// <inheritdoc/>

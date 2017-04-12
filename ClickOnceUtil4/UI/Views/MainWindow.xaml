@@ -43,6 +43,7 @@
                 <MenuItem.Resources>
                     <Style TargetType="{x:Type MenuItem}" />
                 </MenuItem.Resources>
+                <MenuItem Header="ClickOnce and Authenticode (timestamp)" Command="{Binding ShowHelpCommand}" CommandParameter="TimestampClickOnceAndAuthenticode" />
                 <MenuItem Header="Main window">
                     <MenuItem Header="[.Application file]" Command="{Binding ShowHelpCommand}" CommandParameter="DeployColumn" />
                     <MenuItem Header="[.Manifest file]" Command="{Binding ShowHelpCommand}" CommandParameter="ApplicationColumn" />
@@ -50,11 +51,14 @@
                 <MenuItem Header="ClickOnce Security and Deployment" Command="{Binding ShowHelpCommand}" CommandParameter="SecurityAndDeploy" />
                 <MenuItem Header="Features">
                     <MenuItem Header="Checking for known application embed manifest assembly identity problem" Command="{Binding ShowHelpCommand}" CommandParameter="CreateApplicationWithoutManifest" />
-                    <MenuItem Header="Warring if entry point .exe file is strong named (have public token). Message about required signing." Command="{Binding ShowHelpCommand}" CommandParameter="ClickOnceStrongName" />
-                    <MenuItem Header="In the case when .NET framework do not have a hotfix, then we doing a replace." Command="{Binding ShowHelpCommand}" CommandParameter="NetFrameworkHotfix" />
-                    <MenuItem Header="If your application is already inside some virtual directory, then DeploymentUrl should be auto filled." Command="{Binding ShowHelpCommand}" CommandParameter="VirtualDirectoryDeploymentUrl" />
-                    <MenuItem Header="Works correctly with a .deploy extension and appending [mapFileExtensions] attribute in the case of true value." Command="{Binding ShowHelpCommand}" CommandParameter="DeployExtension" />
+                    <MenuItem Header="Warring if entry point .exe file is strong named (have public token). Message about required signing" Command="{Binding ShowHelpCommand}" CommandParameter="ClickOnceStrongName" />
+                    <MenuItem Header="In the case when .NET framework do not have a hotfix, then we doing a replace" Command="{Binding ShowHelpCommand}" CommandParameter="NetFrameworkHotfix" />
+                    <MenuItem Header="If your application is already inside some virtual directory, then DeploymentUrl should be auto filled" Command="{Binding ShowHelpCommand}" CommandParameter="VirtualDirectoryDeploymentUrl" />
+                    <MenuItem Header="Works correctly with a .deploy extension and appending [mapFileExtensions] attribute in the case of true value" Command="{Binding ShowHelpCommand}" CommandParameter="DeployExtension" />
+                    <MenuItem Header="Mage.exe unable change update strategy" Command="{Binding ShowHelpCommand}" CommandParameter="MageUpdateStrategy" />
                 </MenuItem>
+                <MenuItem Header="Troubleshooting Specific Errors in ClickOnce Deployments" Command="{Binding ShowHelpCommand}" CommandParameter="TroubleshootingClickOnce" />
+                <MenuItem Header="Timestamp services" Command="{Binding ShowHelpCommand}" CommandParameter="TimestampServices" />
             </MenuItem>
             <MenuItem Header="About" Command="{Binding AboutCommand}"/>
         </Menu>
@@ -199,6 +203,12 @@
                     </Expander.Header>
                     <Expander.Content>
                         <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel>
+                                    <TextBlock Text="Timestamp server url" Style="{StaticResource ManifestNameTitleStyle}" />
+                                </StackPanel>
+                                <TextBox Text="{Binding TimestampUrl, Mode=TwoWay}" />
+                            </StackPanel>
                             <StackPanel Orientation="Vertical">
                                 <StackPanel>
                                     <TextBlock Text="Choose certificate" Style="{StaticResource ManifestNameTitleStyle}" />

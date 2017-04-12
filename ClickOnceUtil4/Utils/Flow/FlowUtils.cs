@@ -28,10 +28,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
             var fileName = $"{Path.GetFileNameWithoutExtension(entrypoint)}.{Constants.ApplicationExtension}";
             return new DeployManifest($".NETFramework,Version={Constants.DefaultFramework}")
             {
-                SourcePath =
-                    Path.Combine(
-                        root,
-                        fileName),
+                SourcePath = Path.Combine(root, fileName),
                 Publisher = "Publisher",
                 Product = "Product",
                 MapFileExtensions = true,
@@ -41,7 +38,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
                 CreateDesktopShortcut = true
             };
         }
-        
+
         /// <summary>
         /// Get deploy file URL.
         /// </summary>
@@ -80,7 +77,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
                                 {
                                     port = $":{portNumber}";
                                 }
-                                
+
                                 var deployUrl =
                                     $"{protocol}://{domainName}{port}{directory.Path}{root.Substring(directory.PhysicalPath.Length).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)}/{applicationFileName}";
 
@@ -92,21 +89,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
             }
 
             return $"http://domain/subfolder/{applicationFileName}";
-        }
-
-        private static bool IsPathInside(string root, string physicalPath)
-        {
-            if (root == physicalPath)
-            {
-                return true;
-            }
-
-            if (root.StartsWith(physicalPath) && root[physicalPath.Length] == Path.DirectorySeparatorChar)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -123,7 +105,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
 
                 // Windows XP
                 OSVersion = "4.10.0.0",
-
                 TargetFrameworkVersion = Constants.DefaultFramework
             };
         }
@@ -138,10 +119,11 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// Sign file with certificate.
         /// </summary>
         /// <param name="manifestPath">Path to manifest file.</param>
+        /// <param name="timestampUrl">Timestamp server URL.</param>
         /// <param name="certificate">Certificate file reference.</param>
-        public static void SignFile(string manifestPath, X509Certificate2 certificate)
+        public static void SignFile(string manifestPath, Uri timestampUrl, X509Certificate2 certificate)
         {
-            SecurityUtilities.SignFile(certificate, null, manifestPath);
+            SecurityUtilities.SignFile(certificate, timestampUrl, manifestPath);
         }
 
         /// <summary>
@@ -226,6 +208,67 @@ namespace ClickOnceUtil4UI.Utils.Flow
             manifest.UpdateFileInfo(targetFramewrok);
         }
 
+        /// <summary>
+        /// Reads ClickOnce application version.
+        /// </summary>
+        /// <param name="deploy"><see cref="DeployManifest"/> file instance.</param>
+        /// <returns>Version inside <see cref="DeployManifest"/>.</returns>
+        public static string ReadApplicationVersion(DeployManifest deploy)
+        {
+            return deploy.AssemblyIdentity.Version;
+        }
+
+        /// <summary>
+        /// Reads ClickOnce application name.
+        /// </summary>
+        /// <param name="application"><see cref="ApplicationManifest"/> instance.</param>
+        /// <returns>Application Name.</returns>
+        public static string ReadApplicationName(ApplicationManifest application)
+        {
+            return application.AssemblyIdentity.Name ??
+                   application.EntryPoint?.AssemblyIdentity?.Name ??
+                   Path.GetFileNameWithoutExtension(application.SourcePath);
+        }
+
+        /// <summary>
+        /// Clean application cache.
+        /// </summary>
+        /// <param name="errorString"></param>
+        public static bool CleanCache(out string errorString)
+        {
+            errorString = null;
+            var appsFolder = $@"C:\Users\{Environment.UserName}\AppData\Local\Apps\2.0";
+            try
+            {
+                if (Directory.Exists(appsFolder))
+                {
+                    Directory.Delete(appsFolder, true);
+                }
+                
+                return true;
+            }
+            catch (Exception exception)
+            {
+                errorString = exception.Message;
+                return false;
+            }
+        }
+
+        private static bool IsPathInside(string root, string physicalPath)
+        {
+            if (root == physicalPath)
+            {
+                return true;
+            }
+
+            if (root.StartsWith(physicalPath) && root[physicalPath.Length] == Path.DirectorySeparatorChar)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private static void UpdateAssemblyIdentity(AssemblyIdentity assemblyIdentity)
         {
             if (assemblyIdentity.Name == "Microsoft.Windows.CommonLanguageRuntime")
@@ -240,16 +283,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
             assemblyIdentity.Culture = string.IsNullOrEmpty(assemblyIdentity.Culture)
                 ? Language
                 : assemblyIdentity.Culture;
-        }
-
-        /// <summary>
-        /// Reads ClickOnce application version.
-        /// </summary>
-        /// <param name="deploy"><see cref="DeployManifest"/> file instance.</param>
-        /// <returns>Version inside <see cref="DeployManifest"/>.</returns>
-        public static string ReadApplicationVersion(DeployManifest deploy)
-        {
-            return deploy.AssemblyIdentity.Version;
         }
 
         private static void RecursiveDirectoryWalker(string path, Func<string, string> action)
@@ -270,16 +303,6 @@ namespace ClickOnceUtil4UI.Utils.Flow
             {
                 RecursiveDirectoryWalker(subDirectory.FullName, action);
             }
-        }
-
-        /// <summary>
-        /// Reads ClickOnce application name.
-        /// </summary>
-        /// <param name="application"><see cref="ApplicationManifest"/> instance.</param>
-        /// <returns>Application Name.</returns>
-        public static string ReadApplicationName(ApplicationManifest application)
-        {
-            return application.AssemblyIdentity.Name ?? application.EntryPoint?.AssemblyIdentity?.Name ?? Path.GetFileNameWithoutExtension(application.SourcePath);
         }
     }
 }

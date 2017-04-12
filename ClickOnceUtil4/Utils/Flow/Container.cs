@@ -48,5 +48,10 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// file name.
         /// </remarks>
         public string ApplicationName { get; set; }
+
+        /// <summary>
+        /// Timestamp server URL.
+        /// </summary>
+        public string TimestampUrl { get; set; }
     }
 }
