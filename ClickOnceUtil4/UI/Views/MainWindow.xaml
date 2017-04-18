@@ -77,7 +77,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Step 1. " Style="{StaticResource StepExpenderTextPrefix}" />
                             <TextBlock Text="Choose source root" Style="{StaticResource StepExpenderTextDescription}" />
-                            <TextBlock Text="{Binding SelectedFolder.FullPath, Converter={StaticResource TextLeftTrimmerConverter}}" ToolTip="{Binding SelectedFolder.FullPath}" />
+                            <TextBlock Text="{Binding SelectedFolder.FullPath, Converter={StaticResource TextLeftTrimmerConverter}}" ToolTip="{Binding SelectedFolder.FullPath}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Expander.Header>
                     <Expander.Content>

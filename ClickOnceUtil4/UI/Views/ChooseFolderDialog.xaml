@@ -10,10 +10,10 @@
         mc:Ignorable="d"
         x:Name="ChooseWindow"
         d:DataContext="{d:DesignInstance viewModels:ChooseFolderDialogViewModel}"
-        MinHeight="500"
-        MinWidth="750"
-        Height="500"
-        Width="750"
+        MinHeight="650"
+        MinWidth="900"
+        Height="650"
+        Width="900"
         Title="Choose root dialog" >
     <Window.Resources>
         <converters1:AnyValueToVisibilityConverter x:Key="AnyValueToVisibilityConverter" />

@@ -22,13 +22,13 @@ namespace ClickOnceUtil4UI.Clickonce
         /// <summary>
         /// Unknown type of application or manifest files.
         /// </summary>
-        [Description("Folder can be an application")]
+        [Description("Unknown application")]
         UnknownClickOnceApplication,
 
         /// <summary>
         /// Folder can be chosen as target for ClickOnce application.
         /// </summary>
-        [Description("Unknown ClickOnce application")]
+        [Description("Can be an application")]
         CanBeAnApplication,
 
         /// <summary>
