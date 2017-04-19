@@ -9,5 +9,5 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          - MONO_IOMAP=case xbuild /t:Build /p:Configuration="Release" /p:Platform="Any CPU" ClickOnceUtil4\ClickOnceUtil4.sln
+          - MONO_IOMAP=case xbuild /t:Build /p:Configuration="Release" /p:Platform="Any CPU" ClickOnceUtil4/ClickOnceUtil4.sln
 
