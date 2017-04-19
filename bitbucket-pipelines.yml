@@ -9,7 +9,5 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          - dotnet restore
-          - nuget restore
           - MONO_IOMAP=case xbuild /t:Build /p:Configuration="Release" /p:Platform="Any CPU" ClickOnceUtil4.sln
 
