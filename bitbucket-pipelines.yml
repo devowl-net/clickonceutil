@@ -10,7 +10,7 @@ pipelines:
     - step:
         script: 
           # https://docs.microsoft.com/ru-ru/dotnet/articles/core/tools/dotnet-restore
-          - dotnet restore ClickOnceUtil4/ClickOnceUtil4UI.csproj
+          #- dotnet restore ClickOnceUtil4/ClickOnceUtil4UI.csproj
           
           # https://docs.microsoft.com/ru-ru/dotnet/articles/core/tools/dotnet-build
           - dotnet msbuild ClickOnceUtil4/ClickOnceUtil4.sln
