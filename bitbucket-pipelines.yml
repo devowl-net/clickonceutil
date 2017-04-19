@@ -8,6 +8,9 @@ image: microsoft/dotnet:onbuild
 pipelines:
   default:
     - step:
-        script: # Modify the commands below to build your repository.
-          - dotnet restore
-          - dotnet build ClickOnceUtil4/ClickOnceUtil4UI.csproj
+        script: 
+          # https://docs.microsoft.com/ru-ru/dotnet/articles/core/tools/dotnet-restore
+          - dotnet restore ClickOnceUtil4/ClickOnceUtil4UI.csproj
+          
+          # https://docs.microsoft.com/ru-ru/dotnet/articles/core/tools/dotnet-build
+          - dotnet msbuild ClickOnceUtil4/ClickOnceUtil4.sln
