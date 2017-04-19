@@ -10,4 +10,4 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - dotnet restore
-          - dotnet build ClickOnceUtil4/ClickOnceUtil4.sln
+          - dotnet build ClickOnceUtil4/ClickOnceUtil4UI.csproj
