@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ClickOnceUtil4")]
-[assembly: AssemblyDescription("Help to you create ClickOnce Applications")]
+[assembly: AssemblyDescription("ClickOnce Applications")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ClickOnceUtil4")]
-[assembly: AssemblyCopyright("2017 © to Sergey Valulin")]
+[assembly: AssemblyCopyright("2017 © to Sergey Vaulin. All rights reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
