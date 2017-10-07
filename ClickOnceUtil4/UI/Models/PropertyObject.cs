@@ -174,7 +174,7 @@ namespace ClickOnceUtil4UI.UI.Models
                     if (!Uri.TryCreate(stringValue, UriKind.RelativeOrAbsolute, out result) || !result.IsAbsoluteUri ||
                         !supportingSchemes.Contains(result.Scheme))
                     {
-                        return "Warring: Incorrect HTTP(s) format.";
+                        return "Warning: Incorrect HTTP(s) format.";
                     }
                 }
 
