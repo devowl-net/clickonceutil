@@ -43,11 +43,12 @@
                 <MenuItem.Resources>
                     <Style TargetType="{x:Type MenuItem}" />
                 </MenuItem.Resources>
-                <MenuItem Header="ClickOnce and Authenticode (timestamp)" Command="{Binding ShowHelpCommand}" CommandParameter="TimestampClickOnceAndAuthenticode" />
-                <MenuItem Header="Main window">
-                    <MenuItem Header="[.Application file]" Command="{Binding ShowHelpCommand}" CommandParameter="DeployColumn" />
-                    <MenuItem Header="[.Manifest file]" Command="{Binding ShowHelpCommand}" CommandParameter="ApplicationColumn" />
+                <MenuItem Header="Homepage" Command="{Binding ShowHelpCommand}" CommandParameter="HomePage" />
+                <MenuItem Header="Application help">
+                    <MenuItem Header="[.Application file] window part" Command="{Binding ShowHelpCommand}" CommandParameter="DeployColumn" />
+                    <MenuItem Header="[.Manifest file] window part" Command="{Binding ShowHelpCommand}" CommandParameter="ApplicationColumn" />
                 </MenuItem>
+                <MenuItem Header="ClickOnce and Authenticode (timestamp)" Command="{Binding ShowHelpCommand}" CommandParameter="TimestampClickOnceAndAuthenticode" />
                 <MenuItem Header="ClickOnce Security and Deployment" Command="{Binding ShowHelpCommand}" CommandParameter="SecurityAndDeploy" />
                 <MenuItem Header="Features">
                     <MenuItem Header="Checking for known application embed manifest assembly identity problem" Command="{Binding ShowHelpCommand}" CommandParameter="CreateApplicationWithoutManifest" />

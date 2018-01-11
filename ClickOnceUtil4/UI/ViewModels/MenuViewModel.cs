@@ -16,8 +16,9 @@ namespace ClickOnceUtil4UI.UI.ViewModels
 
         private readonly IDictionary<string, string> _helpLinks = new Dictionary<string, string>()
         {
-            { "ApplicationColumn", "https://msdn.microsoft.com/en-us/library/microsoft.build.tasks.deployment.manifestutilities.applicationmanifest_properties.aspx" },
-            { "DeployColumn", "https://msdn.microsoft.com/en-us/library/microsoft.build.tasks.deployment.manifestutilities.deploymanifest_properties.aspx" },
+            { "HomePage", "http://www.devowl.net/2017/04/Alternative-Mage-UI-Sozdanie-ClickOnce-prilozheniya.html" },
+            { "ApplicationColumn", "https://msdn.microsoft.com/en-us/library/microsoft.build.tasks.deployment.manifestutilities.applicationmanifest_properties(v=vs.100).aspx" },
+            { "DeployColumn", "https://msdn.microsoft.com/en-us/library/microsoft.build.tasks.deployment.manifestutilities.deploymanifest_properties(v=vs.100).aspx" },
             { "SecurityAndDeploy", "https://msdn.microsoft.com/en-us/library/ms228995.aspx" },
             { "CreateApplicationWithoutManifest", "http://stackoverflow.com/questions/5337458/error-deploying-clickonce-application-reference-in-the-manifest-does-not-match" },
             { "ClickOnceStrongName", "https://msdn.microsoft.com/en-us/library/aa730868(v=vs.80).aspx" },
