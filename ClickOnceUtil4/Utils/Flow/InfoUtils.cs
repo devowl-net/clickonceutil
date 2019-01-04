@@ -60,6 +60,11 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// <returns><see cref="InfoData"/> items.</returns>
         private static IEnumerable<InfoData> GetDeployInfoData(DeployManifest deploy)
         {
+            if (deploy == null)
+            {
+                yield break;
+            }
+
             var fileName = Path.GetFileName(deploy.SourcePath);
             var urlFileName = GetUrlFileName(deploy.DeploymentUrl);
 

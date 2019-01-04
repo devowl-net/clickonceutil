@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Windows;
 
 using ClickOnceUtil4UI.Clickonce;
 
@@ -47,48 +48,60 @@ namespace ClickOnceUtil4UI.Utils.Flow
         /// <returns></returns>
         public static string GetDeployUrl(string root, string applicationFileName)
         {
-            foreach (var site in new ServerManager().Sites)
+            try
             {
-                foreach (var application in site.Applications)
+                foreach (var site in new ServerManager().Sites)
                 {
-                    foreach (VirtualDirectory directory in application.VirtualDirectories)
+                    foreach (var application in site.Applications)
                     {
-                        if (IsPathInside(root, directory.PhysicalPath))
+                        foreach (var directory in application.VirtualDirectories)
                         {
-                            var protocols = new[]
+                            if (IsPathInside(root, directory.PhysicalPath))
                             {
-                                "http",
-                                "https"
-                            };
-
-                            var binding = site.Bindings.FirstOrDefault(b => protocols.Contains(b.Protocol));
-                            if (binding != null)
-                            {
-                                string protocol = binding.Protocol;
-                                int portNumber = binding.EndPoint.Port;
-                                string domainName = Environment.MachineName.ToLower();
-                                if (!Equals(binding.EndPoint.Address, IPAddress.Any))
+                                var protocols = new[]
                                 {
-                                    domainName = binding.EndPoint.Address.ToString();
-                                }
+                                    "http",
+                                    "https"
+                                };
 
-                                string port = string.Empty;
-                                if (protocol == "http" && portNumber != 80 || protocol == "https" && portNumber != 443)
+                                var binding = site.Bindings.FirstOrDefault(b => protocols.Contains(b.Protocol));
+                                if (binding != null)
                                 {
-                                    port = $":{portNumber}";
+                                    string protocol = binding.Protocol;
+                                    int portNumber = binding.EndPoint.Port;
+                                    string domainName = Environment.MachineName.ToLower();
+                                    if (!Equals(binding.EndPoint.Address, IPAddress.Any))
+                                    {
+                                        domainName = binding.EndPoint.Address.ToString();
+                                    }
+
+                                    string port = string.Empty;
+                                    if (protocol == "http" && portNumber != 80 ||
+                                        protocol == "https" && portNumber != 443)
+                                    {
+                                        port = $":{portNumber}";
+                                    }
+
+                                    var deployUrl =
+                                        $"{protocol}://{domainName}{port}{directory.Path}{root.Substring(directory.PhysicalPath.Length).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)}/{applicationFileName}";
+
+                                    return deployUrl;
                                 }
-
-                                var deployUrl =
-                                    $"{protocol}://{domainName}{port}{directory.Path}{root.Substring(directory.PhysicalPath.Length).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)}/{applicationFileName}";
-
-                                return deployUrl;
                             }
                         }
                     }
                 }
             }
+            catch (Exception exception)
+            {
+                MessageBox.Show(
+                    $"Unable to resolve deploy URL, because of exception:{Environment.NewLine}{Environment.NewLine}{exception.Message}",
+                    "Warning",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
 
-            return $"http://domain/subfolder/{applicationFileName}";
+            return $"http://domain_port_or_ip_port/subfolder/{applicationFileName}";
         }
 
         /// <summary>
@@ -110,7 +123,7 @@ namespace ClickOnceUtil4UI.Utils.Flow
         }
 
         /// <summary>
-        /// Clean applications cache.
+        /// Cleanup applications cache.
         /// </summary>
         [DllImport("Dfshim.dll", CharSet = CharSet.Auto, ExactSpelling = false)]
         public static extern void CleanOnlineAppCache();
